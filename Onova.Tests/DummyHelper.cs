@@ -96,6 +96,7 @@ namespace Onova.Tests
             // Create packages
             CreateDummyPackage(Version.Parse("1.0.0.0"));
             CreateDummyPackage(Version.Parse("2.0.0.0"));
+            CreateDummyPackage(Version.Parse("3.0.0.0"));
         }
 
         public static async Task<Version> GetDummyVersionAsync()

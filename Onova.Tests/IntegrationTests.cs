@@ -31,7 +31,7 @@ namespace Onova.Tests
 
             // Check current version again
             var newVersion = await DummyHelper.GetDummyVersionAsync();
-            Assert.That(newVersion, Is.EqualTo(Version.Parse("2.0.0.0")));
+            Assert.That(newVersion, Is.EqualTo(Version.Parse("3.0.0.0")));
         }
     }
 }

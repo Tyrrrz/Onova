@@ -57,3 +57,9 @@ if (result.CanUpdate)
         await manager.EnqueueApplyPackageAsync(result.LastVersion);
 }
 ```
+
+## Libraries used
+
+- [NUnit](https://github.com/nunit/nunit)
+- [CliWrap](https://github.com/Tyrrrz/CliWrap)
+- [Mono.Cecil](https://github.com/jbevain/cecil)

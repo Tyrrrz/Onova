@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net45</TargetFramework>
+        <Version>0.0.1</Version>
+        <Company>Tyrrrz</Company>
+        <Authors>$(Company)</Authors>
+        <Copyright>Copyright (C) 2018 Alexey Golub</Copyright>
+        <Description>Compact and extensible auto-update library</Description>
+        <PackageTags>auto update</PackageTags>
+        <PackageProjectUrl>https://github.com/Tyrrrz/Onova</PackageProjectUrl>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/Tyrrrz/Onova/master/License.txt</PackageLicenseUrl>
+        <PackageIconUrl>https://raw.githubusercontent.com/Tyrrrz/Onova/master/favicon.png</PackageIconUrl>
+        <RepositoryUrl>https://github.com/Tyrrrz/Onova</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="System.IO.Compression" />
+    </ItemGroup>
+
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+        <Copy SourceFiles="$(SolutionDir)Onova.Updater\$(OutDir)Onova.Updater.exe" DestinationFiles="$(ProjectDir)Updater.exe" />
+    </Target>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Updater.exe" />
+    </ItemGroup>
+
+</Project>

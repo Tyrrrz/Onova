@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net45</TargetFramework>
+        <AssemblyName>Onova.Tests</AssemblyName>
+        <RootNamespace>Onova.Tests</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="System.IO.Compression" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CliWrap" Version="1.8.2" />
+        <PackageReference Include="Mono.Cecil" Version="0.9.6.4" />
+        <PackageReference Include="NUnit" Version="3.9.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Onova\Onova.csproj" />
+        <ProjectReference Include="..\Onova.Tests.Dummy\Onova.Tests.Dummy.csproj" />
+    </ItemGroup>
+
+</Project>

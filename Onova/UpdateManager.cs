@@ -24,7 +24,7 @@ namespace Onova
         private readonly string _storageDirPath;
 
         /// <summary>
-        /// Initializes an instance <see cref="UpdateManager"/>.
+        /// Initializes an instance of <see cref="UpdateManager"/>.
         /// </summary>
         public UpdateManager(AssemblyInfo updateeAssemblyInfo,
             IPackageResolver packageResolver, IPackageExtractor packageExtractor)
@@ -40,7 +40,7 @@ namespace Onova
         }
 
         /// <summary>
-        /// Initializes an instance <see cref="UpdateManager"/> on the entry assembly.
+        /// Initializes an instance of <see cref="UpdateManager"/> on the entry assembly.
         /// </summary>
         public UpdateManager(IPackageResolver packageResolver, IPackageExtractor packageExtractor)
             : this(new AssemblyInfo(Assembly.GetEntryAssembly()), packageResolver, packageExtractor)

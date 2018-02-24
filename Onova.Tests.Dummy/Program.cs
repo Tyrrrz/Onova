@@ -31,7 +31,7 @@ namespace Onova.Tests.Dummy
             // Update to latest version
             else if (command == "update")
             {
-                await UpdateManager.PerformUpdateAsync(false);
+                await UpdateManager.PerformUpdateIfAvailableAsync(false);
             }
         }
 

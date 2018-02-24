@@ -185,7 +185,7 @@ namespace Onova
         /// <summary>
         /// Checks for updates and updates to newest version if available.
         /// </summary>
-        public async Task PerformUpdateAsync(bool restart = true)
+        public async Task PerformUpdateIfAvailableAsync(bool restart = true)
         {
             // Check for updates
             var checkForUpdatesResult = await CheckForUpdatesAsync().ConfigureAwait(false);

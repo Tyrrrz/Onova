@@ -31,7 +31,7 @@ var extractor = new ZipPackageExtractor();
 var manager = new UpdateManager(resolver, extractor);
 
 // Perform an update if necessary
-await manager.PerformUpdateAsync();
+await manager.PerformUpdateIfAvailableAsync();
 ```
 
 ##### Handling intermediate steps manually

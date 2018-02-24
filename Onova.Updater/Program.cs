@@ -18,6 +18,7 @@ namespace Onova.Updater
             // Extract arguments
             var updateeProcessId = int.Parse(args[0]);
             var updateeFilePath = args[1];
+            var updateeDirPath = Path.GetDirectoryName(updateeFilePath);
             var packageContentDirPath = args[2];
             var restartUpdatee = bool.Parse(args[3]);
 
@@ -25,7 +26,7 @@ namespace Onova.Updater
             ProcessEx.WaitForExit(updateeProcessId);
 
             // Copy over the extracted package
-            DirectoryEx.Copy(packageContentDirPath, Path.GetDirectoryName(updateeFilePath));
+            DirectoryEx.Copy(packageContentDirPath, updateeDirPath);
 
             // Launch the updatee again if requested
             if (restartUpdatee)

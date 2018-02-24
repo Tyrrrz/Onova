@@ -23,26 +23,10 @@ namespace Onova.Tests
 
         public static void DeleteDummy()
         {
-            // There might be a small race condition and the files are still in use
+            Thread.Sleep(50); // wait for files to be released
 
-            const int maxRetries = 5;
-            var retry = 0;
-
-            while (retry++ < maxRetries)
-            {
-                try
-                {
-                    Directory.Delete(DummyDirPath, true);
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    if (ex is DirectoryNotFoundException)
-                        break;
-                }
-
-                Thread.Sleep(500);
-            }
+            if (Directory.Exists(DummyDirPath))
+                Directory.Delete(DummyDirPath, true);
         }
 
         private static void CreateDummy(Version version)

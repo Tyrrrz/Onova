@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -7,6 +8,11 @@ namespace Onova.Tests
     [TestFixture]
     public class DummyTests
     {
+        private static string StorageDirPath => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Onova",
+            "Onova.Tests.Dummy");
+
         [SetUp]
         public void Setup()
         {
@@ -17,6 +23,9 @@ namespace Onova.Tests
         public void Cleanup()
         {
             DummyHelper.DeleteDummy();
+
+            if (Directory.Exists(StorageDirPath))
+                Directory.Delete(StorageDirPath, true);
         }
 
         [Test]

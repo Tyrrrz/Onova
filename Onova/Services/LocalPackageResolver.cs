@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Onova.Exceptions;
 using Onova.Internal;
@@ -45,10 +46,10 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public Task<IEnumerable<Version>> GetAllVersionsAsync()
+        public Task<IReadOnlyList<Version>> GetAllVersionsAsync()
         {
             var versions = GetPackageFilePathMap().Keys;
-            return Task.FromResult(versions);
+            return Task.FromResult((IReadOnlyList<Version>) versions.ToArray());
         }
 
         /// <inheritdoc />

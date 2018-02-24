@@ -13,7 +13,7 @@ namespace Onova.Services
         /// <summary>
         /// Gets all available package versions.
         /// </summary>
-        Task<IEnumerable<Version>> GetAllVersionsAsync();
+        Task<IReadOnlyList<Version>> GetAllVersionsAsync();
 
         /// <summary>
         /// Gets a stream containing package of given version.

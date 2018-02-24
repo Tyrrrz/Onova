@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Onova.Exceptions;
@@ -75,10 +76,10 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<Version>> GetAllVersionsAsync()
+        public async Task<IReadOnlyList<Version>> GetAllVersionsAsync()
         {
             var map = await GetPackageAssetUrlMapAsync().ConfigureAwait(false);
-            return map.Keys;
+            return map.Keys.ToArray();
         }
 
         /// <inheritdoc />

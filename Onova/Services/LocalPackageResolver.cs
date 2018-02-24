@@ -9,25 +9,27 @@ namespace Onova.Services
 {
     /// <summary>
     /// Resolves packages from a local repository.
-    /// Packages in the repository are expected to be named "1.0.0.0.onv" where "1.0.0.0" is the package version.
+    /// Package file names should be the same as their versions.
     /// </summary>
     public class LocalPackageResolver : IPackageResolver
     {
         private readonly string _repositoryDirPath;
+        private readonly string _searchPattern;
 
         /// <summary>
         /// Initializes an instance of <see cref="LocalPackageResolver"/> on the given repository directory.
         /// </summary>
-        public LocalPackageResolver(string repositoryDirPath)
+        public LocalPackageResolver(string repositoryDirPath, string searchPattern = "*.onv")
         {
-            _repositoryDirPath = repositoryDirPath;
+            _repositoryDirPath = repositoryDirPath.GuardNotNull(nameof(repositoryDirPath));
+            _searchPattern = searchPattern.GuardNotNull(nameof(searchPattern));
         }
 
         private IReadOnlyDictionary<Version, string> GetPackageFiles()
         {
             var map = new Dictionary<Version, string>();
 
-            foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath, "*.onv"))
+            foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath, _searchPattern))
             {
                 var nameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
 

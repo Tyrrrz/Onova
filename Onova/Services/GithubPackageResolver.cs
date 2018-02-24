@@ -58,6 +58,11 @@ namespace Onova.Services
                 if (!Version.TryParse(versionText, out var version))
                     continue;
 
+                // Skip pre-releases
+                var isPrerelease = releaseJson["prerelease"].Value<bool>();
+                if (isPrerelease)
+                    continue;
+
                 // Find asset
                 var assetsJson = releaseJson["assets"];
                 foreach (var assetJson in assetsJson)

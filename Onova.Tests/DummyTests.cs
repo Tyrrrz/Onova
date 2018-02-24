@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -22,6 +23,8 @@ namespace Onova.Tests
         [TearDown]
         public void Cleanup()
         {
+            Thread.Sleep(50); // wait for files to be released
+
             DummyHelper.DeleteDummy();
 
             if (Directory.Exists(StorageDirPath))
@@ -31,14 +34,14 @@ namespace Onova.Tests
         [Test]
         public async Task UpdateManager_PerformUpdateIfAvailableAsync_Test()
         {
-            // Check current version
+            // Assert current version
             var oldVersion = await DummyHelper.GetDummyVersionAsync();
             Assert.That(oldVersion, Is.EqualTo(Version.Parse("1.0.0.0")));
 
-            // Update
+            // Update dummy via Onova
             await DummyHelper.UpdateDummyAsync();
 
-            // Check current version again
+            // Assert current version again
             var newVersion = await DummyHelper.GetDummyVersionAsync();
             Assert.That(newVersion, Is.EqualTo(Version.Parse("3.0.0.0")));
         }

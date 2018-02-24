@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using System.Threading;
 using System.Threading.Tasks;
 using CliWrap;
 using Mono.Cecil;
@@ -23,8 +22,6 @@ namespace Onova.Tests
 
         public static void DeleteDummy()
         {
-            Thread.Sleep(50); // wait for files to be released
-
             if (Directory.Exists(DummyDirPath))
                 Directory.Delete(DummyDirPath, true);
         }

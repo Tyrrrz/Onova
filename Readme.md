@@ -17,20 +17,20 @@ Onova is a library that provides a simple but expandable interface to perform au
 - In-place update via an external executable
 - Can be extended with custom providers
 - No launchers or additional files needed
-- Targets .NET Framework 4.5+
-- No external dependencies
+- Targets .NET Framework 4.6+
 
 ## Usage
 
 ##### Basic example
 
 ```c#
-// Set up the manager to look for ZIP packages in given directory
+// Set up the manager to look for packages in given directory and treat them as ZIPs
 var resolver = new LocalPackageResolver("c:\\test\\packages");
 var extractor = new ZipPackageExtractor();
 var manager = new UpdateManager(resolver, extractor);
 
-// Perform an update if necessary
+// Check for updates
+// If available - download, extract, exit, apply, restart
 await manager.PerformUpdateIfAvailableAsync();
 ```
 
@@ -56,6 +56,15 @@ if (result.CanUpdate)
         // Wait for the application to exit and apply package
         await manager.EnqueueApplyPackageAsync(result.LastVersion);
 }
+```
+
+##### Updating from GitHub
+
+```c#
+// Set up the manager to look for packages in release assets and treat them as ZIPs
+var resolver = new GithubPackageResolver("Tyrrrz", "LightBulb", "OnovaPackage.zip");
+var extractor = new ZipPackageExtractor();
+var manager = new UpdateManager(resolver, extractor);
 ```
 
 ## Libraries used

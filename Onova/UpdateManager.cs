@@ -17,7 +17,7 @@ namespace Onova
     /// </summary>
     public class UpdateManager
     {
-        private readonly AssemblyInfo _updatee;
+        private readonly AssemblyMetadata _updatee;
         private readonly IPackageResolver _resolver;
         private readonly IPackageExtractor _extractor;
 
@@ -26,12 +26,11 @@ namespace Onova
         /// <summary>
         /// Initializes an instance of <see cref="UpdateManager"/>.
         /// </summary>
-        public UpdateManager(AssemblyInfo updateeAssemblyInfo,
-            IPackageResolver packageResolver, IPackageExtractor packageExtractor)
+        public UpdateManager(AssemblyMetadata updatee, IPackageResolver resolver, IPackageExtractor extractor)
         {
-            _updatee = updateeAssemblyInfo.GuardNotNull(nameof(updateeAssemblyInfo));
-            _resolver = packageResolver.GuardNotNull(nameof(packageResolver));
-            _extractor = packageExtractor.GuardNotNull(nameof(packageExtractor));
+            _updatee = updatee.GuardNotNull(nameof(updatee));
+            _resolver = resolver.GuardNotNull(nameof(resolver));
+            _extractor = extractor.GuardNotNull(nameof(extractor));
 
             _storageDirPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -42,8 +41,8 @@ namespace Onova
         /// <summary>
         /// Initializes an instance of <see cref="UpdateManager"/> on the entry assembly.
         /// </summary>
-        public UpdateManager(IPackageResolver packageResolver, IPackageExtractor packageExtractor)
-            : this(new AssemblyInfo(Assembly.GetEntryAssembly()), packageResolver, packageExtractor)
+        public UpdateManager(IPackageResolver resolver, IPackageExtractor extractor)
+            : this(new AssemblyMetadata(Assembly.GetEntryAssembly()), resolver, extractor)
         {
         }
 

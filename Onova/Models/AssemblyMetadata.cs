@@ -9,7 +9,7 @@ namespace Onova.Models
     /// <summary>
     /// Contains information about an assembly.
     /// </summary>
-    public class AssemblyInfo
+    public class AssemblyMetadata
     {
         /// <summary>
         /// Assembly name.
@@ -36,9 +36,9 @@ namespace Onova.Models
         public string DirectoryPath { get; }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="AssemblyInfo"/>.
+        /// Initializes a new instance of <see cref="AssemblyMetadata"/>.
         /// </summary>
-        public AssemblyInfo(string name, Version version, string filePath, string directoryPath)
+        public AssemblyMetadata(string name, Version version, string filePath, string directoryPath)
         {
             Name = name.GuardNotNull(nameof(name));
             Version = version.GuardNotNull(nameof(version));
@@ -47,9 +47,9 @@ namespace Onova.Models
         }
 
         /// <summary>
-        /// Initializes a new instance of <see cref="AssemblyInfo"/>.
+        /// Initializes a new instance of <see cref="AssemblyMetadata"/>.
         /// </summary>
-        public AssemblyInfo(Assembly assembly)
+        public AssemblyMetadata(Assembly assembly)
         {
             assembly.GuardNotNull(nameof(assembly));
 

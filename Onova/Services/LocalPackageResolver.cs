@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Onova.Exceptions;
 using Onova.Internal;
@@ -10,7 +11,7 @@ namespace Onova.Services
 {
     /// <summary>
     /// Resolves packages from a local repository.
-    /// Package file names should be the same as their versions.
+    /// Package file names should contain their versions (e.g. "Package-v1.0.0.0.onv").
     /// </summary>
     public class LocalPackageResolver : IPackageResolver
     {
@@ -33,9 +34,10 @@ namespace Onova.Services
             foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath, _searchPattern))
             {
                 var nameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
+                var versionText = Regex.Match(nameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
 
                 // Must have parsable version as a name
-                if (!Version.TryParse(nameWithoutExt, out var version))
+                if (!Version.TryParse(versionText, out var version))
                     continue;
 
                 // Add to dictionary

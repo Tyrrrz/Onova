@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Onova.Exceptions;
@@ -51,11 +52,12 @@ namespace Onova.Services
             foreach (var releaseJson in releasesJson)
             {
                 var name = releaseJson["name"].Value<string>();
+                var versionText = Regex.Match(name, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
 
                 // Try to parse version from name
-                if (!Version.TryParse(name, out var version))
+                if (!Version.TryParse(versionText, out var version))
                     continue;
-                
+
                 // Find asset
                 var assetsJson = releaseJson["assets"];
                 foreach (var assetJson in assetsJson)

@@ -76,7 +76,7 @@ namespace Onova.Tests
             // This uses a stub repository (github.com/Tyrrrz/OnovaTestRepo)
 
             // Arrange
-            var expectedVersions = new[] {Version.Parse("1.0"), Version.Parse("2.0")};
+            var expectedVersions = new[] {Version.Parse("1.0"), Version.Parse("2.0"), Version.Parse("3.0")};
 
             // Act
             var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo", "Test.onv");
@@ -115,15 +115,15 @@ namespace Onova.Tests
         {
             // Arrange
             const string expectedContent = "Hello world";
-            var expectedEntries = new[] {"a.txt", "1\\b.txt", "1\\2\\.c.txt"};
+            var expectedEntryFilePaths = new[] {"a.txt", "1\\b.txt", "1\\2\\c.txt"};
             Directory.CreateDirectory(TempDirPath);
             var packageFilePath = Path.Combine(TempDirPath, "1.0.0.0.onv");
             using (var output = File.Create(packageFilePath))
             using (var zip = new ZipArchive(output, ZipArchiveMode.Create))
             {
-                foreach (var expectedEntry in expectedEntries)
+                foreach (var expectedEntryFilePath in expectedEntryFilePaths)
                 {
-                    using (var stream = zip.CreateEntry(expectedEntry).Open())
+                    using (var stream = zip.CreateEntry(expectedEntryFilePath).Open())
                     using (var writer = new StreamWriter(stream))
                         writer.Write(expectedContent);
                 }
@@ -135,9 +135,9 @@ namespace Onova.Tests
             await extractor.ExtractPackageAsync(packageFilePath, outputDirPath);
 
             // Assert
-            foreach (var expectedEntry in expectedEntries)
+            foreach (var expectedEntryFilePath in expectedEntryFilePaths)
             {
-                var outputEntryPath = Path.Combine(outputDirPath, expectedEntry);
+                var outputEntryPath = Path.Combine(outputDirPath, expectedEntryFilePath);
                 Assert.That(File.Exists(outputEntryPath));
                 Assert.That(File.ReadAllText(outputEntryPath), Is.EqualTo(expectedContent));
             }

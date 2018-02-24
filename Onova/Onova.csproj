@@ -20,6 +20,7 @@
 
     <ItemGroup>
         <Reference Include="System.IO.Compression" />
+        <Reference Include="System.Net.Http" />
     </ItemGroup>
 
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
@@ -28,6 +29,10 @@
 
     <ItemGroup>
         <EmbeddedResource Include="Updater.exe" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
     </ItemGroup>
 
 </Project>

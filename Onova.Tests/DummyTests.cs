@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Onova.Tests
 {
     [TestFixture]
-    public class IntegrationTests
+    public class DummyTests
     {
         [SetUp]
         public void Setup()
@@ -20,7 +20,7 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task UpdateManager_PerformUpdateAsync_Test()
+        public async Task UpdateManager_PerformUpdateIfAvailableAsync_Test()
         {
             // Check current version
             var oldVersion = await DummyHelper.GetDummyVersionAsync();

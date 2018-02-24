@@ -75,11 +75,9 @@ namespace Onova.Tests
             definition.Write(dummyTempFilePath);
 
             // Create package
-            using (var inputStream = File.OpenRead(dummyTempFilePath))
             using (var outputStream = File.Create(Path.Combine(PackagesDirPath, $"{version}.onv")))
             using (var zip = new ZipArchive(outputStream, ZipArchiveMode.Create))
-            using (var entryStream = zip.CreateEntry(DummyFileName).Open())
-                inputStream.CopyTo(entryStream);
+                zip.CreateEntryFromFile(dummyTempFilePath, DummyFileName);
 
             // Delete temp file
             File.Delete(dummyTempFilePath);

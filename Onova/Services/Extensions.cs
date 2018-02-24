@@ -26,7 +26,7 @@ namespace Onova.Services
         }
 
         /// <summary>
-        /// Send a GET request and return content as a stream.
+        /// Sends a GET request and return content as a stream.
         /// </summary>
         public static async Task<Stream> GetStreamAsync(this IHttpService httpService, string url,
             bool ensureSucess = true)

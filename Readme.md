@@ -69,6 +69,7 @@ var manager = new UpdateManager(resolver, extractor);
 
 ## Libraries used
 
+- [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 - [NUnit](https://github.com/nunit/nunit)
 - [CliWrap](https://github.com/Tyrrrz/CliWrap)
 - [Mono.Cecil](https://github.com/jbevain/cecil)

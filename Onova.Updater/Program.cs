@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Onova.Updater.Internal;
 
 namespace Onova.Updater
@@ -22,18 +23,31 @@ namespace Onova.Updater
             var packageContentDirPath = args[2];
             var restartUpdatee = bool.Parse(args[3]);
 
-            // Wait until updatee dies
-            ProcessEx.WaitForExit(updateeProcessId);
+            // Use mutex to synchronize with other updaters
+            var mutex = new Mutex(false, $"Onova-{updateeProcessId}", out var isMutexOwner);
+            try
+            {
+                // If mutex existed before - exit
+                if (!isMutexOwner)
+                    return;
 
-            // Copy over the extracted package
-            DirectoryEx.Copy(packageContentDirPath, updateeDirPath);
+                // Wait until updatee dies
+                ProcessEx.WaitForExit(updateeProcessId);
 
-            // Launch the updatee again if requested
-            if (restartUpdatee)
-                Process.Start(updateeFilePath);
+                // Copy over the extracted package
+                DirectoryEx.Copy(packageContentDirPath, updateeDirPath);
 
-            // Delete package directory
-            Directory.Delete(packageContentDirPath, true);
+                // Launch the updatee again if requested
+                if (restartUpdatee)
+                    Process.Start(updateeFilePath);
+
+                // Delete package directory
+                Directory.Delete(packageContentDirPath, true);
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
+            }
         }
     }
 }

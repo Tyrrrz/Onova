@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Onova.Exceptions;
@@ -140,6 +141,10 @@ namespace Onova
         {
             // Get current process id
             var currentProcessId = ProcessEx.GetCurrentProcessId();
+            
+            // Check if updater has already been started
+            if (Mutex.TryOpenExisting($"Onova-{currentProcessId}", out _))
+                throw new InvalidOperationException("Updater has already been launched.");
 
             // Prepare arguments
             var updaterArgs = $"{currentProcessId} " +

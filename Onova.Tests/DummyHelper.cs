@@ -81,7 +81,9 @@ namespace Onova.Tests
         public static async Task<Version> GetDummyVersionAsync()
         {
             var output = await DummyCli.ExecuteAsync("version");
-            output.ThrowIfError();
+            
+            if (output.HasError)
+                Assert.Fail($"Dummy reported an error:{Environment.NewLine}{output.StandardError}");
 
             return Version.Parse(output.StandardOutput);
         }
@@ -89,7 +91,9 @@ namespace Onova.Tests
         public static async Task UpdateDummyAsync()
         {
             var output = await DummyCli.ExecuteAsync("update");
-            output.ThrowIfError();
+
+            if (output.HasError)
+                Assert.Fail($"Dummy reported an error:{Environment.NewLine}{output.StandardError}");
         }
     }
 }

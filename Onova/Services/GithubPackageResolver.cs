@@ -12,6 +12,7 @@ namespace Onova.Services
 {
     /// <summary>
     /// Resolves packages from release assets of a GitHub repository.
+    /// Release names should contain package versions (e.g. "v1.0.0.0").
     /// </summary>
     public class GithubPackageResolver : IPackageResolver
     {
@@ -24,7 +25,7 @@ namespace Onova.Services
         /// Initializes an instance of <see cref="GithubPackageResolver"/> with a custom HTTP service.
         /// </summary>
         public GithubPackageResolver(IHttpService httpService, string repositoryOwner, string repositoryName,
-            string assetName)
+            string assetName = "Package.onv")
         {
             _httpService = httpService.GuardNotNull(nameof(httpService));
             _repositoryOwner = repositoryOwner.GuardNotNull(nameof(repositoryOwner));
@@ -35,7 +36,7 @@ namespace Onova.Services
         /// <summary>
         /// Initializes an instance of <see cref="GithubPackageResolver"/>.
         /// </summary>
-        public GithubPackageResolver(string repositoryOwner, string repositoryName, string assetName)
+        public GithubPackageResolver(string repositoryOwner, string repositoryName, string assetName = "Package.onv")
             : this(HttpService.Instance, repositoryOwner, repositoryName, assetName)
         {
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Onova.Internal;
 
@@ -10,21 +11,29 @@ namespace Onova.Models
     public class CheckForUpdatesResult
     {
         /// <summary>
-        /// Last available package version.
+        /// All available package versions.
         /// </summary>
-        [NotNull]
+        [NotNull, ItemNotNull]
+        public IReadOnlyList<Version> Versions { get; }
+
+        /// <summary>
+        /// Last available package version.
+        /// Null if there are no available package versions.
+        /// </summary>
+        [CanBeNull]
         public Version LastVersion { get; }
 
         /// <summary>
-        /// Whether an update is available.
+        /// Whether there is a package with higher version than the current version.
         /// </summary>
         public bool CanUpdate { get; }
 
         /// <summary>
         /// Initializes a new instance of <see cref="CheckForUpdatesResult"/>.
         /// </summary>
-        public CheckForUpdatesResult(Version lastVersion, bool canUpdate)
+        public CheckForUpdatesResult(IReadOnlyList<Version> versions, Version lastVersion, bool canUpdate)
         {
+            Versions = versions.GuardNotNull(nameof(versions));
             LastVersion = lastVersion.GuardNotNull(nameof(lastVersion));
             CanUpdate = canUpdate;
         }

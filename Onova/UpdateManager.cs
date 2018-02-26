@@ -62,14 +62,12 @@ namespace Onova
         [NotNull]
         public async Task<CheckForUpdatesResult> CheckForUpdatesAsync()
         {
-            // Get all available versions
+            // Get versions
             var versions = await _resolver.GetAllVersionsAsync().ConfigureAwait(false);
+            var lastVersion = versions.Max();
+            var canUpdate = lastVersion != null && _updatee.Version < lastVersion;
 
-            // Find the latest
-            var lastVersion = versions.Max() ?? _updatee.Version;
-            var canUpdate = _updatee.Version < lastVersion;
-
-            return new CheckForUpdatesResult(lastVersion, canUpdate);
+            return new CheckForUpdatesResult(versions, lastVersion, canUpdate);
         }
 
         private async Task CopyPackageToStorageAsync(Version version)

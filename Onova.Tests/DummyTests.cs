@@ -14,12 +14,6 @@ namespace Onova.Tests
             "Onova",
             "Onova.Tests.Dummy");
 
-        [SetUp]
-        public void Setup()
-        {
-            DummyHelper.SetupDummy();
-        }
-
         [TearDown]
         public void Cleanup()
         {
@@ -32,11 +26,36 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task UpdateManager_PerformUpdateIfAvailableAsync_Test()
+        public async Task UpdateManager_PerformUpdateIfAvailableAsync_HigherVersionAvailable_Test()
         {
+            // Arrange
+            DummyHelper.SetupDummy(
+                Version.Parse("1.0.0.0"),
+                Version.Parse("1.0.0.0"), Version.Parse("2.0.0.0"), Version.Parse("3.0.0.0"));
+
             // Assert current version
             var oldVersion = await DummyHelper.GetDummyVersionAsync();
             Assert.That(oldVersion, Is.EqualTo(Version.Parse("1.0.0.0")));
+
+            // Update dummy via Onova
+            await DummyHelper.UpdateDummyAsync();
+
+            // Assert current version again
+            var newVersion = await DummyHelper.GetDummyVersionAsync();
+            Assert.That(newVersion, Is.EqualTo(Version.Parse("3.0.0.0")));
+        }
+
+        [Test]
+        public async Task UpdateManager_PerformUpdateIfAvailableAsync_AlreadyHighestVersion_Test()
+        {
+            // Arrange
+            DummyHelper.SetupDummy(
+                Version.Parse("3.0.0.0"),
+                Version.Parse("1.0.0.0"), Version.Parse("2.0.0.0"), Version.Parse("3.0.0.0"));
+
+            // Assert current version
+            var oldVersion = await DummyHelper.GetDummyVersionAsync();
+            Assert.That(oldVersion, Is.EqualTo(Version.Parse("3.0.0.0")));
 
             // Update dummy via Onova
             await DummyHelper.UpdateDummyAsync();

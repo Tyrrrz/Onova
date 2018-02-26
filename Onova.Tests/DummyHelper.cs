@@ -64,18 +64,17 @@ namespace Onova.Tests
             File.Delete(dummyTempFilePath);
         }
 
-        public static void SetupDummy()
+        public static void SetupDummy(Version baseVersion, params Version[] packageVersions)
         {
-            // Delete old dummies if they exist
+            // Delete old dummy
             DeleteDummy();
 
             // Create base dummy
-            CreateDummy(Version.Parse("1.0.0.0"));
+            CreateDummy(baseVersion);
 
             // Create packages
-            CreateDummyPackage(Version.Parse("1.0.0.0"));
-            CreateDummyPackage(Version.Parse("2.0.0.0"));
-            CreateDummyPackage(Version.Parse("3.0.0.0"));
+            foreach (var version in packageVersions)
+                CreateDummyPackage(version);
         }
 
         public static async Task<Version> GetDummyVersionAsync()

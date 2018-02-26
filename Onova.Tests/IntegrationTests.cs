@@ -111,6 +111,48 @@ namespace Onova.Tests
         }
 
         [Test]
+        public async Task WebPackageResolver_GetAllVersionsAsync_Test()
+        {
+            // This uses a stub manifest from stub repository (github.com/Tyrrrz/OnovaTestRepo)
+
+            // Arrange
+            var expectedVersions = new[] { Version.Parse("1.0"), Version.Parse("2.0"), Version.Parse("3.0") };
+
+            // Act
+            const string url = "https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt";
+            var resolver = new WebPackageResolver(url);
+            var versions = await resolver.GetAllVersionsAsync();
+
+            // Assert
+            Assert.That(versions, Is.Not.Null);
+            Assert.That(versions, Is.EquivalentTo(expectedVersions));
+        }
+
+        [Test]
+        public async Task WebPackageResolver_GetPackageAsync_Test()
+        {
+            // This uses a stub manifest from stub repository (github.com/Tyrrrz/OnovaTestRepo)
+
+            // Arrange
+            const string expectedContent = "Hello world";
+
+            // Act
+            const string url = "https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt";
+            var resolver = new WebPackageResolver(url);
+            var stream = await resolver.GetPackageAsync(Version.Parse("2.0"));
+
+            // Assert
+            Assert.That(stream, Is.Not.Null);
+
+            using (stream)
+            using (var reader = new StreamReader(stream))
+            {
+                var content = await reader.ReadToEndAsync();
+                Assert.That(content, Is.EqualTo(expectedContent));
+            }
+        }
+
+        [Test]
         public async Task ZipPackageExtractor_ExtractPackageAsync_Test()
         {
             // Arrange

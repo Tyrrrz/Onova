@@ -34,9 +34,9 @@ namespace Onova.Services
             foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath, _searchPattern))
             {
                 var nameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
-                var versionText = Regex.Match(nameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
 
-                // Must have parsable version as a name
+                // Try to parse version from name
+                var versionText = Regex.Match(nameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
                 if (!Version.TryParse(versionText, out var version))
                     continue;
 

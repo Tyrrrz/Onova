@@ -19,6 +19,7 @@ Onova is a library that provides a simple but extensible interface to perform au
 - Supported resolvers:
   - `LocalPackageResolver` - file system
   - `GithubPackageResolver` - GitHub releases
+  - `WebPackageResolver` - web version manifest
 - Supported extractors:
   - `ZipPackageExtractor` - zip archives
 - Can be extended with custom providers
@@ -26,27 +27,44 @@ Onova is a library that provides a simple but extensible interface to perform au
 - No launchers or additional files needed
 - Targets .NET Framework 4.6+
 
-## Usage
+## Workflow
 
-##### How package resolving works
+### Package resolving
 
-Packages and their versions are resolved using an implementation of `IPackageResolver`. Currently there are 2 built-in implementations:
+Packages and their versions are resolved using an implementation of `IPackageResolver`. Currently there are 3 built-in implementations:
 
-- `LocalPackageResolver` looks for files in the given directory using a predefined search pattern (default is `*.onv`). Package versions are extracted from file names, e.g. file named `MyProject-v2.1.5.onv` corresponds to package version `2.1.5`.
-- `GithubPackageResolver` looks for assets with predefined name (default is `Package.onv`) in releases of the given repository. Package versions are extracted from release names, e.g. release named `v1.0` corresponds to package version `1.0`.
+#### `LocalPackageResolver` 
 
-Packages whose versions could not be extracted will not be seen by the resolver. Also, if there are multiple packages with the same version, only one of them will be available.
+This implementation looks for files in the given directory using a predefined search pattern (default is `*.onv`). Package versions are extracted from file names, e.g. file named `MyProject-v2.1.5.onv` corresponds to package version `2.1.5`.
 
-##### How package extraction works
+#### `GithubPackageResolver`
+
+This implementation looks for assets with predefined name (default is `Package.onv`) in releases of the given GitHub repository. Package versions are extracted from release names, e.g. release named `v1.0` corresponds to package version `1.0`.
+
+#### `WebPackageResolver`
+
+This implementation requests a version manifest using given URL. The manifest should contain a list of package versions and their URLs, separated by space, one line per package. E.g.:
+```
+1.0 https://my.server.com/1.0.zip
+2.0 https://my.server.com/2.0.zip
+```
+
+_Note: Packages whose versions could not be extracted will not be seen by the resolvers. Also, if there are multiple packages with the same version, only one of them will be available._
+
+### Package extraction
 
 Downloaded packages are extracted using an implementation of `IPackageExtractor`. Currently there is 1 built-in implementation:
 
-- `ZipPackageExtractor` treats packages as zip archives.
+#### `ZipPackageExtractor`
+
+This implementation treats packages as zip archives.
+
+## Usage
 
 ##### Basic usage example
 
 ```c#
-// Set up the manager to look for packages in given directory and treat them as ZIPs
+// Set up the manager to look for packages in given directory and treat them as zips
 var resolver = new LocalPackageResolver("c:\\test\\packages");
 var extractor = new ZipPackageExtractor();
 var manager = new UpdateManager(resolver, extractor);
@@ -83,7 +101,7 @@ if (result.CanUpdate)
 ##### Configuring for GitHub
 
 ```c#
-// Set up the manager to look for packages in release assets and treat them as ZIPs
+// Set up the manager to look for packages in release assets and treat them as zips
 var resolver = new GithubPackageResolver("Tyrrrz", "LightBulb", "OnovaPackage.zip");
 var extractor = new ZipPackageExtractor();
 var manager = new UpdateManager(resolver, extractor);

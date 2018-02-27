@@ -15,13 +15,21 @@ namespace Onova.Tests
             "Onova",
             "Onova.Tests.Dummy");
 
+        private static string UpdaterLogFilePath => Path.Combine(StorageDirPath, "Log.txt");
+
         [TearDown]
         public void Cleanup()
         {
             Thread.Sleep(50); // wait for files to be released
 
+            // Attach updater log
+            if (File.Exists(UpdaterLogFilePath))
+                TestContext.AddTestAttachment(UpdaterLogFilePath, "Updater log");
+
+            // Delete dummy
             DummyHelper.DeleteDummy();
 
+            // Delete storage
             if (Directory.Exists(StorageDirPath))
                 Directory.Delete(StorageDirPath, true);
         }

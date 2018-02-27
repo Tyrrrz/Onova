@@ -13,7 +13,7 @@ namespace Onova.Tests.Dummy
     {
         private static string AssemblyDirPath => AppDomain.CurrentDomain.BaseDirectory;
         private static string PackagesDirPath => Path.Combine(AssemblyDirPath, "Packages");
-        private static Version CurrentVersion => Assembly.GetExecutingAssembly().GetName().Version;
+        private static Version Version => Assembly.GetExecutingAssembly().GetName().Version;
 
         private static readonly UpdateManager UpdateManager = new UpdateManager(
             new LocalPackageResolver(PackagesDirPath),
@@ -26,7 +26,7 @@ namespace Onova.Tests.Dummy
             // Print current assembly version
             if (command == "version" || command == null)
             {
-                Console.WriteLine(CurrentVersion);
+                Console.WriteLine(Version);
             }
             // Update to latest version
             else if (command == "update")

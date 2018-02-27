@@ -34,7 +34,7 @@ namespace Onova.Models
         public CheckForUpdatesResult(IReadOnlyList<Version> versions, Version lastVersion, bool canUpdate)
         {
             Versions = versions.GuardNotNull(nameof(versions));
-            LastVersion = lastVersion.GuardNotNull(nameof(lastVersion));
+            LastVersion = lastVersion;
             CanUpdate = canUpdate;
         }
     }

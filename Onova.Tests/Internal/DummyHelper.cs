@@ -1,20 +1,22 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading.Tasks;
 using CliWrap;
 using Mono.Cecil;
 using NUnit.Framework;
 
-namespace Onova.Tests
+namespace Onova.Tests.Internal
 {
-    public static class DummyHelper
+    internal static class DummyHelper
     {
         private const string OnovaFileName = "Onova.dll";
         private const string DummyFileName = "Onova.Tests.Dummy.exe";
 
         private static string TestDirPath => TestContext.CurrentContext.TestDirectory;
-        private static string DummyDirPath => Path.Combine(TestDirPath, "Dummies");
+        private static string DummyDirPath => Path.Combine(TestDirPath, "Dummy");
         private static string DummyFilePath => Path.Combine(DummyDirPath, DummyFileName);
         private static string PackagesDirPath => Path.Combine(DummyDirPath, "Packages");
 
@@ -77,22 +79,26 @@ namespace Onova.Tests
                 CreateDummyPackage(version);
         }
 
-        public static async Task<Version> GetDummyVersionAsync()
+        private static async Task<string> ExecuteDummyCliAsync(string args)
         {
-            var output = await DummyCli.ExecuteAsync("version");
-            
+            var output = await DummyCli.ExecuteAsync(args);
+
             if (output.HasError)
                 Assert.Fail($"Dummy reported an error:{Environment.NewLine}{output.StandardError}");
 
-            return Version.Parse(output.StandardOutput);
+            return output.StandardOutput;
+        }
+
+        public static async Task<Version> GetDummyVersionAsync()
+        {
+            var stdout = await ExecuteDummyCliAsync("version");
+
+            return Version.Parse(stdout);
         }
 
         public static async Task UpdateDummyAsync()
         {
-            var output = await DummyCli.ExecuteAsync("update");
-
-            if (output.HasError)
-                Assert.Fail($"Dummy reported an error:{Environment.NewLine}{output.StandardError}");
+            await ExecuteDummyCliAsync("update");
         }
     }
 }

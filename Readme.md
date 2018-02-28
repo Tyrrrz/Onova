@@ -4,6 +4,7 @@
 [![Tests](https://img.shields.io/appveyor/tests/Tyrrrz/Onova/master.svg)](https://ci.appveyor.com/project/Tyrrrz/Onova)
 [![NuGet](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
 [![NuGet](https://img.shields.io/nuget/dt/Onova.svg)](https://nuget.org/packages/Onova)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTyrrrz%2FOnova.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FTyrrrz%2FOnova?ref=badge_shield)
 
 Onova is a library that provides a simple but extensible interface to perform auto-updates in your application. It was designed primarily for open source projects that distribute their releases using archive files instead of installers. Acquired updates are applied in place via an external process, so there are no launchers, release files or special directories.
 
@@ -114,3 +115,6 @@ var manager = new UpdateManager(resolver, extractor);
 - [NUnit](https://github.com/nunit/nunit)
 - [CliWrap](https://github.com/Tyrrrz/CliWrap)
 - [Mono.Cecil](https://github.com/jbevain/cecil)
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FTyrrrz%2FOnova.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FTyrrrz%2FOnova?ref=badge_large)

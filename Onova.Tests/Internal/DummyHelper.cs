@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Threading.Tasks;
 using CliWrap;
 using Mono.Cecil;
@@ -12,7 +10,6 @@ namespace Onova.Tests.Internal
 {
     internal static class DummyHelper
     {
-        private const string OnovaFileName = "Onova.dll";
         private const string DummyFileName = "Onova.Tests.Dummy.exe";
 
         private static string TestDirPath => TestContext.CurrentContext.TestDirectory;
@@ -34,8 +31,18 @@ namespace Onova.Tests.Internal
             Directory.CreateDirectory(DummyDirPath);
 
             // Copy files
-            File.Copy(Path.Combine(TestDirPath, DummyFileName), DummyFilePath);
-            File.Copy(Path.Combine(TestDirPath, OnovaFileName), Path.Combine(DummyDirPath, OnovaFileName));
+            foreach (var filePath in Directory.EnumerateFiles(TestDirPath))
+            {
+                var fileExt = Path.GetExtension(filePath);
+                var fileName = Path.GetFileName(filePath);
+
+                // Only exe and dll
+                if (!fileExt.Equals(".exe", StringComparison.OrdinalIgnoreCase) &&
+                    !fileExt.Equals(".dll", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                File.Copy(filePath, Path.Combine(DummyDirPath, fileName));
+            }
 
             // Change version
             var definition = AssemblyDefinition.ReadAssembly(DummyFilePath);

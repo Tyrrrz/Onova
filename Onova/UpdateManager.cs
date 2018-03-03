@@ -150,9 +150,12 @@ namespace Onova
                               $"\"{packageContentDirPath}\" " +
                               $"{restart}";
 
+            // Check if updater needs to be elevated
+            var elevated = !DirectoryEx.CheckWriteAccess(_updatee.DirectoryPath);
+
             // Launch the updater
             var updaterFilePath = Path.Combine(_storageDirPath, "Onova.exe");
-            ProcessEx.StartCli(updaterFilePath, updaterArgs);
+            ProcessEx.StartCli(updaterFilePath, updaterArgs, elevated);
 
             // Wait a bit until it starts so that it can attach to our process id
             await Task.Delay(333).ConfigureAwait(false);

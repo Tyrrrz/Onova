@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 using Onova.Updater.Internal;
 
 namespace Onova.Updater
@@ -13,7 +12,6 @@ namespace Onova.Updater
     public static class Program
     {
         private static TextWriter _log;
-        private static Mutex _mutex;
 
         private static string AssemblyDirPath => AppDomain.CurrentDomain.BaseDirectory;
         private static string LogFilePath => Path.Combine(AssemblyDirPath, "Log.txt");
@@ -50,6 +48,7 @@ namespace Onova.Updater
             // Write log
             using (_log = File.AppendText(LogFilePath))
             {
+                // Launch info
                 _log.WriteLine($"Onova Updater v{Version} started on {DateTimeOffset.Now}");
                 _log.WriteLine($"Executed with args: {string.Join(" ", args)}");
 
@@ -61,17 +60,7 @@ namespace Onova.Updater
                     var packageContentDirPath = args[2];
                     var restartUpdatee = bool.Parse(args[3]);
 
-                    // Use mutex to synchronize with other updaters
-                    _log.WriteLine("Acquiring mutex...");
-                    _mutex = new Mutex(false, $"Onova-{updateeProcessId}", out var isMutexOwner);
-
-                    // Exit if the mutex is owned by other process
-                    if (!isMutexOwner)
-                    {
-                        _log.Write("Mutex is owned by someone else. Exiting.");
-                        return;
-                    }
-
+                    // Execute update
                     Update(updateeProcessId, updateeFilePath, packageContentDirPath, restartUpdatee);
                     _log.WriteLine("Update completed successfully");
                 }
@@ -79,11 +68,9 @@ namespace Onova.Updater
                 {
                     _log.WriteLine(ex.ToString());
                 }
-                finally
-                {
-                    _mutex?.ReleaseMutex();
-                    _log.WriteLine();
-                }
+
+                // White space to separate log entries
+                _log.WriteLine();
             }
         }
     }

@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
-using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Onova.Exceptions;
@@ -23,6 +22,8 @@ namespace Onova
         private readonly IPackageExtractor _extractor;
 
         private readonly string _storageDirPath;
+
+        private bool _updaterLaunched;
 
         /// <summary>
         /// Initializes an instance of <see cref="UpdateManager"/>.
@@ -137,13 +138,12 @@ namespace Onova
 
         private async Task LaunchUpdaterAsync(string packageContentDirPath, bool restart)
         {
+            if (_updaterLaunched)
+                throw new InvalidOperationException("Updater has already been launched.");
+
             // Get current process id
             var currentProcessId = ProcessEx.GetCurrentProcessId();
             
-            // Check if updater has already been started
-            if (Mutex.TryOpenExisting($"Onova-{currentProcessId}", out _))
-                throw new InvalidOperationException("Updater has already been launched.");
-
             // Prepare arguments
             var updaterArgs = $"{currentProcessId} " +
                               $"\"{_updatee.FilePath}\" " +
@@ -156,6 +156,7 @@ namespace Onova
             // Launch the updater
             var updaterFilePath = Path.Combine(_storageDirPath, "Onova.exe");
             ProcessEx.StartCli(updaterFilePath, updaterArgs, elevated);
+            _updaterLaunched = true;
 
             // Wait a bit until it starts so that it can attach to our process id
             await Task.Delay(333).ConfigureAwait(false);

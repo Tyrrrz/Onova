@@ -15,7 +15,7 @@ namespace Onova
     /// <summary>
     /// Entry point for handling application updates.
     /// </summary>
-    public class UpdateManager
+    public class UpdateManager : IUpdateManager
     {
         private readonly AssemblyMetadata _updatee;
         private readonly IPackageResolver _resolver;
@@ -48,18 +48,14 @@ namespace Onova
         {
         }
 
-        /// <summary>
-        /// Deletes all prepared packages and temporary files.
-        /// </summary>
+        /// <inheritdoc />
         public void Cleanup()
         {
             if (Directory.Exists(_storageDirPath))
                 Directory.Delete(_storageDirPath, true);
         }
 
-        /// <summary>
-        /// Checks for updates.
-        /// </summary>
+        /// <inheritdoc />
         [NotNull]
         public async Task<CheckForUpdatesResult> CheckForUpdatesAsync()
         {
@@ -119,9 +115,7 @@ namespace Onova
                 await input.CopyToAsync(output).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Prepares a package of given version.
-        /// </summary>
+        /// <inheritdoc />
         public async Task PreparePackageAsync(Version version)
         {
             version.GuardNotNull(nameof(version));
@@ -143,28 +137,26 @@ namespace Onova
 
             // Get current process id
             var currentProcessId = ProcessEx.GetCurrentProcessId();
-            
+
             // Prepare arguments
-            var updaterArgs = $"{currentProcessId} " +
-                              $"\"{_updatee.FilePath}\" " +
-                              $"\"{packageContentDirPath}\" " +
-                              $"{restart}";
+            var args = $"{currentProcessId} " +
+                       $"\"{_updatee.FilePath}\" " +
+                       $"\"{packageContentDirPath}\" " +
+                       $"{restart}";
 
             // Check if updater needs to be elevated
             var elevated = !DirectoryEx.CheckWriteAccess(_updatee.DirectoryPath);
 
             // Launch the updater
             var updaterFilePath = Path.Combine(_storageDirPath, "Onova.exe");
-            ProcessEx.StartCli(updaterFilePath, updaterArgs, elevated);
+            ProcessEx.StartCli(updaterFilePath, args, elevated);
             _updaterLaunched = true;
 
             // Wait a bit until it starts so that it can attach to our process id
             await Task.Delay(333).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Enqueues an update to prepared package of given version, which will execute when the process exits.
-        /// </summary>
+        /// <inheritdoc />
         public async Task EnqueueApplyPackageAsync(Version version, bool restart = true)
         {
             version.GuardNotNull(nameof(version));
@@ -178,9 +170,7 @@ namespace Onova
             await LaunchUpdaterAsync(packageContentDirPath, restart).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Exits current process and applies a prepared package of given version.
-        /// </summary>
+        /// <inheritdoc />
         public async Task ApplyPackageAsync(Version version, bool restart = true)
         {
             version.GuardNotNull(nameof(version));
@@ -189,9 +179,7 @@ namespace Onova
             Environment.Exit(0);
         }
 
-        /// <summary>
-        /// Checks for updates and updates to newest version if available.
-        /// </summary>
+        /// <inheritdoc />
         public async Task PerformUpdateIfAvailableAsync(bool restart = true)
         {
             // Check for updates

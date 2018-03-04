@@ -27,16 +27,17 @@ namespace Onova.Services
             _searchPattern = searchPattern.GuardNotNull(nameof(searchPattern));
         }
 
-        private IReadOnlyDictionary<Version, string> GetPackageFilePathMap()
+        private IReadOnlyDictionary<Version, string> GetMap()
         {
             var map = new Dictionary<Version, string>();
 
             foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath, _searchPattern))
             {
-                var nameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
+                // Get name without extension
+                var fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
 
-                // Try to parse version from name
-                var versionText = Regex.Match(nameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
+                // Try to parse version
+                var versionText = Regex.Match(fileNameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
                 if (!Version.TryParse(versionText, out var version))
                     continue;
 
@@ -50,8 +51,8 @@ namespace Onova.Services
         /// <inheritdoc />
         public Task<IReadOnlyList<Version>> GetAllVersionsAsync()
         {
-            var versions = GetPackageFilePathMap().Keys;
-            return Task.FromResult((IReadOnlyList<Version>) versions.ToArray());
+            var versions = GetMap().Keys.ToArray();
+            return Task.FromResult((IReadOnlyList<Version>) versions);
         }
 
         /// <inheritdoc />
@@ -60,7 +61,7 @@ namespace Onova.Services
             version.GuardNotNull(nameof(version));
 
             // Try to get package file path
-            var filePath = GetPackageFilePathMap().GetOrDefault(version);
+            var filePath = GetMap().GetOrDefault(version);
             if (filePath != null)
                 return Task.FromResult((Stream) File.OpenRead(filePath));
 

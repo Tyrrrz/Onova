@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Onova.Internal;
 
 namespace Onova.Services
 {
@@ -38,7 +39,10 @@ namespace Onova.Services
                 if (ensureSucess)
                     response.EnsureSuccessStatusCode();
 
-                return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                var length = response.Content.Headers.ContentLength ?? -1;
+
+                return length >= 0 ? new FiniteStream(stream, length) : stream;
             }
         }
     }

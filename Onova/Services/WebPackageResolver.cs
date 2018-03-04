@@ -35,7 +35,7 @@ namespace Onova.Services
         {
         }
 
-        private async Task<IReadOnlyDictionary<Version, string>> GetPackageUrlMapAsync()
+        private async Task<IReadOnlyDictionary<Version, string>> GetMapAsync()
         {
             var map = new Dictionary<Version, string>();
 
@@ -44,6 +44,7 @@ namespace Onova.Services
 
             foreach (var line in response.Split("\n"))
             {
+                // Get package ID and URL
                 var id = line.SubstringUntil(" ").Trim();
                 var url = line.SubstringAfter(" ").Trim();
 
@@ -66,7 +67,7 @@ namespace Onova.Services
         /// <inheritdoc />
         public async Task<IReadOnlyList<Version>> GetAllVersionsAsync()
         {
-            var map = await GetPackageUrlMapAsync().ConfigureAwait(false);
+            var map = await GetMapAsync().ConfigureAwait(false);
             return map.Keys.ToArray();
         }
 
@@ -76,7 +77,7 @@ namespace Onova.Services
             version.GuardNotNull(nameof(version));
 
             // Try to get package asset URL
-            var map = await GetPackageUrlMapAsync().ConfigureAwait(false);
+            var map = await GetMapAsync().ConfigureAwait(false);
             var assetUrl = map.GetOrDefault(version);
             if (assetUrl == null)
                 throw new PackageNotFoundException(version);

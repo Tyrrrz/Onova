@@ -22,6 +22,7 @@ namespace Onova
         private readonly IPackageExtractor _extractor;
 
         private readonly string _storageDirPath;
+        private readonly string _updaterFilePath;
 
         private bool _updaterLaunched;
 
@@ -38,6 +39,8 @@ namespace Onova
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
                 _updatee.Name);
+
+            _updaterFilePath = Path.Combine(_storageDirPath, $"{_updatee.Name}.Updater.exe");
         }
 
         /// <summary>
@@ -82,7 +85,6 @@ namespace Onova
             // Get paths
             var packageFilePath = Path.Combine(_storageDirPath, $"{version}.onv");
             var packageContentDirPath = Path.Combine(_storageDirPath, $"{version}");
-            var updaterFilePath = Path.Combine(_storageDirPath, "Onova.exe");
 
             // Create storage directory
             Directory.CreateDirectory(_storageDirPath);
@@ -104,7 +106,7 @@ namespace Onova
             File.Delete(packageFilePath);
 
             // Extract updater
-            await ResourceHelper.ExtractResourceAsync("Onova.Updater.exe", updaterFilePath).ConfigureAwait(false);
+            await ResourceHelper.ExtractResourceAsync("Onova.Updater.exe", _updaterFilePath).ConfigureAwait(false);
         }
 
         private async Task LaunchUpdaterAsync(string packageContentDirPath, bool restart)
@@ -125,8 +127,7 @@ namespace Onova
             var elevated = !DirectoryHelper.CheckWriteAccess(_updatee.DirectoryPath);
 
             // Launch the updater
-            var updaterFilePath = Path.Combine(_storageDirPath, "Onova.exe");
-            ProcessHelper.StartCli(updaterFilePath, args, elevated);
+            ProcessHelper.StartCli(_updaterFilePath, args, elevated);
             _updaterLaunched = true;
 
             // Wait a bit until it starts so that it can attach to our process id

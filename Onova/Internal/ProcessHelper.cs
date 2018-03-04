@@ -10,7 +10,7 @@ namespace Onova.Internal
                 return process.Id;
         }
 
-        public static void StartCli(string filePath, string args, bool elevated)
+        public static void StartCli(string filePath, string args, bool isElevated = false)
         {
             // Start info
             var startInfo = new ProcessStartInfo
@@ -22,7 +22,7 @@ namespace Onova.Internal
             };
 
             // Elevated verb
-            if (elevated)
+            if (isElevated)
             {
                 startInfo.Verb = "runas";
                 startInfo.UseShellExecute = true;

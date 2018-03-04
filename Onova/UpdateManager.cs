@@ -106,11 +106,21 @@ namespace Onova
             File.Delete(packageFilePath);
 
             // Extract updater
-            await ResourceHelper.ExtractResourceAsync("Onova.Updater.exe", _updaterFilePath).ConfigureAwait(false);
+            await ResourceHelper.ExtractResourceAsync("Onova.Updater.exe", _updaterFilePath)
+                .ConfigureAwait(false);
         }
 
-        private async Task LaunchUpdaterAsync(string packageContentDirPath, bool restart)
+        /// <inheritdoc />
+        public async Task ApplyPackageAsync(Version version, bool restart = true)
         {
+            version.GuardNotNull(nameof(version));
+
+            // Find the package directory
+            var packageContentDirPath = Path.Combine(_storageDirPath, $"{version}");
+            if (!Directory.Exists(packageContentDirPath))
+                throw new PackageNotPreparedException(version);
+
+            // Ensure updater hasn't been launched yet
             if (_updaterLaunched)
                 throw new InvalidOperationException("Updater has already been launched.");
 
@@ -124,28 +134,14 @@ namespace Onova
                        $"{restart}";
 
             // Decide if updater needs to be elevated
-            var elevated = !DirectoryHelper.CheckWriteAccess(_updatee.DirectoryPath);
+            var isElevated = !DirectoryHelper.CheckWriteAccess(_updatee.DirectoryPath);
 
             // Launch the updater
-            ProcessHelper.StartCli(_updaterFilePath, args, elevated);
+            ProcessHelper.StartCli(_updaterFilePath, args, isElevated);
             _updaterLaunched = true;
 
             // Wait a bit until it starts so that it can attach to our process id
             await Task.Delay(333).ConfigureAwait(false);
-        }
-
-        /// <inheritdoc />
-        public async Task ApplyPackageAsync(Version version, bool restart = true)
-        {
-            version.GuardNotNull(nameof(version));
-
-            // Find the package directory
-            var packageContentDirPath = Path.Combine(_storageDirPath, $"{version}");
-            if (!Directory.Exists(packageContentDirPath))
-                throw new PackageNotPreparedException(version);
-
-            // Launch the updater
-            await LaunchUpdaterAsync(packageContentDirPath, restart).ConfigureAwait(false);
         }
     }
 }

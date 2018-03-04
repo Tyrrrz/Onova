@@ -51,6 +51,10 @@ namespace Onova
         {
         }
 
+        private string GetPackageFilePath(Version version) => Path.Combine(_storageDirPath, $"{version}.onv");
+
+        private string GetPackageContentDirPath(Version version) => Path.Combine(_storageDirPath, $"{version}");
+
         /// <inheritdoc />
         public void Cleanup()
         {
@@ -83,15 +87,15 @@ namespace Onova
                 : null;
 
             // Get paths
-            var packageFilePath = Path.Combine(_storageDirPath, $"{version}.onv");
-            var packageContentDirPath = Path.Combine(_storageDirPath, $"{version}");
+            var packageFilePath = GetPackageFilePath(version);
+            var packageContentDirPath = GetPackageContentDirPath(version);
 
             // Create storage directory
             Directory.CreateDirectory(_storageDirPath);
 
             // Download package
             await _resolver.DownloadPackageAsync(version, packageFilePath,
-                progressAggregator?.Split(0.9),
+                progressAggregator?.Split(0.9), // 0% -> 90%
                 cancellationToken).ConfigureAwait(false);
 
             // Create directory for package contents
@@ -99,7 +103,7 @@ namespace Onova
 
             // Extract package contents
             await _extractor.ExtractPackageAsync(packageFilePath, packageContentDirPath,
-                progressAggregator?.Split(0.1),
+                progressAggregator?.Split(0.1), // 90% -> 100%
                 cancellationToken).ConfigureAwait(false);
 
             // Delete package
@@ -116,7 +120,7 @@ namespace Onova
             version.GuardNotNull(nameof(version));
 
             // Find the package directory
-            var packageContentDirPath = Path.Combine(_storageDirPath, $"{version}");
+            var packageContentDirPath = GetPackageContentDirPath(version);
             if (!Directory.Exists(packageContentDirPath))
                 throw new PackageNotPreparedException(version);
 
@@ -140,7 +144,7 @@ namespace Onova
             ProcessHelper.StartCli(_updaterFilePath, args, isElevated);
             _updaterLaunched = true;
 
-            // Wait a bit until it starts so that it can attach to our process id
+            // Wait a bit until it starts so that it can attach to our process ID
             await Task.Delay(333).ConfigureAwait(false);
         }
     }

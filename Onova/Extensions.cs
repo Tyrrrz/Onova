@@ -22,11 +22,11 @@ namespace Onova
                 return;
 
             // Prepare
-            await updateManager.PreparePackageAsync(result.LastVersion, progress, cancellationToken)
+            await updateManager.PreparePackageAsync(result.LastPackageVersion, progress, cancellationToken)
                 .ConfigureAwait(false);
 
             // Apply
-            await updateManager.ApplyPackageAsync(result.LastVersion, restart).ConfigureAwait(false);
+            await updateManager.ApplyPackageAsync(result.LastPackageVersion, restart).ConfigureAwait(false);
 
             // Exit
             Environment.Exit(0);

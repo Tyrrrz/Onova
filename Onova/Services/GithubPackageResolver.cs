@@ -51,10 +51,11 @@ namespace Onova.Services
 
             foreach (var releaseJson in releasesJson)
             {
-                var name = releaseJson["name"].Value<string>();
+                // Get release name
+                var releaseName = releaseJson["name"].Value<string>();
 
-                // Try to parse version from name
-                var versionText = Regex.Match(name, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
+                // Try to parse version
+                var versionText = Regex.Match(releaseName, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
                 if (!Version.TryParse(versionText, out var version))
                     continue;
 

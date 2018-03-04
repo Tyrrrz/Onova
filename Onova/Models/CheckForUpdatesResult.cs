@@ -14,14 +14,14 @@ namespace Onova.Models
         /// All available package versions.
         /// </summary>
         [NotNull, ItemNotNull]
-        public IReadOnlyList<Version> Versions { get; }
+        public IReadOnlyList<Version> AllPackageVersions { get; }
 
         /// <summary>
         /// Last available package version.
         /// Null if there are no available package versions.
         /// </summary>
         [CanBeNull]
-        public Version LastVersion { get; }
+        public Version LastPackageVersion { get; }
 
         /// <summary>
         /// Whether there is a package with higher version than the current version.
@@ -31,10 +31,11 @@ namespace Onova.Models
         /// <summary>
         /// Initializes a new instance of <see cref="CheckForUpdatesResult"/>.
         /// </summary>
-        public CheckForUpdatesResult(IReadOnlyList<Version> versions, Version lastVersion, bool canUpdate)
+        public CheckForUpdatesResult(IReadOnlyList<Version> allPackageVersions, Version lastPackageVersion,
+            bool canUpdate)
         {
-            Versions = versions.GuardNotNull(nameof(versions));
-            LastVersion = lastVersion;
+            AllPackageVersions = allPackageVersions.GuardNotNull(nameof(allPackageVersions));
+            LastPackageVersion = lastPackageVersion;
             CanUpdate = canUpdate;
         }
     }

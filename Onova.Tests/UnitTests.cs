@@ -37,8 +37,8 @@ namespace Onova.Tests
 
             // Assert
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.Versions, Is.EquivalentTo(availableVersions));
-            Assert.That(result.LastVersion, Is.EqualTo(availableVersions.Max()));
+            Assert.That(result.AllPackageVersions, Is.EquivalentTo(availableVersions));
+            Assert.That(result.LastPackageVersion, Is.EqualTo(availableVersions.Max()));
             Assert.That(result.CanUpdate);
         }
 
@@ -68,8 +68,8 @@ namespace Onova.Tests
 
             // Assert
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.Versions, Is.EquivalentTo(availableVersions));
-            Assert.That(result.LastVersion, Is.EqualTo(availableVersions.Max()));
+            Assert.That(result.AllPackageVersions, Is.EquivalentTo(availableVersions));
+            Assert.That(result.LastPackageVersion, Is.EqualTo(availableVersions.Max()));
             Assert.That(result.CanUpdate, Is.Not.True);
         }
 
@@ -98,8 +98,8 @@ namespace Onova.Tests
 
             // Assert
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.Versions, Is.EquivalentTo(availableVersions));
-            Assert.That(result.LastVersion, Is.Null);
+            Assert.That(result.AllPackageVersions, Is.EquivalentTo(availableVersions));
+            Assert.That(result.LastPackageVersion, Is.Null);
             Assert.That(result.CanUpdate, Is.Not.True);
         }
     }

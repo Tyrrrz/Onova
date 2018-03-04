@@ -33,7 +33,6 @@
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
-      <PackageReference Include="SharpCompress" Version="0.19.2" />
     </ItemGroup>
 
 </Project>

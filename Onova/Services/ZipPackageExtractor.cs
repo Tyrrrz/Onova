@@ -23,14 +23,14 @@ namespace Onova.Services
 
             // Read the zip
             using (var stream = File.OpenRead(sourceFilePath))
-            using (var zip = new ZipArchive(stream, ZipArchiveMode.Read))
+            using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
             {
                 // For progress reporting
-                var totalBytes = zip.Entries.Sum(e => e.Length);
+                var totalBytes = archive.Entries.Sum(e => e.Length);
                 var totalBytesCopied = 0L;
 
                 // Loop through all entries
-                foreach (var entry in zip.Entries)
+                foreach (var entry in archive.Entries)
                 {
                     var entryDestFilePath = Path.Combine(destDirPath, entry.FullName);
                     var entryDestDirPath = Path.GetDirectoryName(entryDestFilePath);

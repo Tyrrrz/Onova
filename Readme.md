@@ -5,7 +5,7 @@
 [![NuGet](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
 [![NuGet](https://img.shields.io/nuget/dt/Onova.svg)](https://nuget.org/packages/Onova)
 
-Onova is a library that provides a simple but extensible interface to perform auto-updates in your application. It was designed primarily for open source projects that distribute their releases using archive files instead of installers. Acquired updates are applied in place via an external process, so there are no launchers, release files or special directories.
+Onova is a library that provides a simple but extensible interface to perform auto-updates in applications. It was designed primarily for open source projects that distribute their releases using archive files instead of installers, but can be configured to support almost any setup. Acquired updates are applied in place via an external process, so there are no launchers, release files or special directories.
 
 ## Download
 
@@ -15,16 +15,18 @@ Onova is a library that provides a simple but extensible interface to perform au
 ## Features
 
 - Minimal configuration
-- In-place update via an external executable
 - Supported resolvers:
   - `LocalPackageResolver` - file system
   - `GithubPackageResolver` - GitHub releases
   - `WebPackageResolver` - web version manifest
 - Supported extractors:
   - `ZipPackageExtractor` - zip archives
-- Can be extended with custom providers
+- Can be extended with custom resolvers and extractors
+- Progress reporting and cancellation
 - Can apply packages of any version, not necessarily latest
-- No launchers or additional files needed
+- In-place update via an external executable
+- Automatically prompts for elevated privileges if necessary
+- Fully self-contained
 - Targets .NET Framework 4.6+
 
 ## Workflow
@@ -49,7 +51,7 @@ This implementation requests a version manifest using given URL. The manifest sh
 2.0 https://my.server.com/2.0.zip
 ```
 
-_Note: Packages whose versions could not be extracted will not be seen by the resolvers. Also, if there are multiple packages with the same version, only one of them will be available._
+> **Note:** Packages whose versions could not be extracted will not be seen by the resolvers. Also, if there are multiple packages with the same version, only one of them will be available.
 
 ### Package extraction
 
@@ -69,9 +71,8 @@ var resolver = new LocalPackageResolver("c:\\test\\packages");
 var extractor = new ZipPackageExtractor();
 var manager = new UpdateManager(resolver, extractor);
 
-// Check for updates
-// If available - download, extract, exit, apply, restart
-await manager.PerformUpdateIfAvailableAsync();
+// Check for new version and perform full update if available
+await manager.CheckPerformUpdateAsync();
 ```
 
 ##### Handling intermediate steps manually
@@ -79,32 +80,19 @@ await manager.PerformUpdateIfAvailableAsync();
 ```c#
 // Check for updates
 var result = await manager.CheckForUpdatesAsync();
-
 if (result.CanUpdate)
 {
-    Console.WriteLine($"An update is available -- v{result.LastVersion}");
-
     // Prepare package so that it can be applied later
-    await manager.PreparePackageAsync(result.LastVersion);
+    // (supports progress reporting and cancellation in overloads)
+    await manager.PreparePackageAsync(result.LastPackageVersion);
 
-    Console.WriteLine("An update is prepared. Do you want to restart with the new version? (y/n)");
+    // Launch updater that will apply package and restart application
+    // (restart can be enabled/disabled in overloads)
+    await manager.ApplyPackageAsync(result.LastPackageVersion);
 
-    if (Console.ReadKey().Key == ConsoleKey.Y)
-        // Exit application, apply package and restart
-        await manager.ApplyPackageAsync(result.LastVersion);
-    else
-        // Wait for the application to exit and apply package, without restart
-        await manager.EnqueueApplyPackageAsync(result.LastVersion, false);
+    // External updater will wait until the application exits
+    Environment.Exit(0);
 }
-```
-
-##### Configuring for GitHub
-
-```c#
-// Set up the manager to look for packages in release assets and treat them as zips
-var resolver = new GithubPackageResolver("Tyrrrz", "LightBulb", "OnovaPackage.zip");
-var extractor = new ZipPackageExtractor();
-var manager = new UpdateManager(resolver, extractor);
 ```
 
 ## Libraries used

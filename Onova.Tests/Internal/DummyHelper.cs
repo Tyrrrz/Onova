@@ -37,8 +37,8 @@ namespace Onova.Tests.Internal
                 var fileName = Path.GetFileName(filePath);
 
                 // Only exe and dll
-                if (!fileExt.Equals(".exe", StringComparison.OrdinalIgnoreCase) &&
-                    !fileExt.Equals(".dll", StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(fileExt, ".exe", StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(fileExt, ".dll", StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 File.Copy(filePath, Path.Combine(DummyDirPath, fileName));

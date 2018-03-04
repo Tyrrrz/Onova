@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Onova.Services
 {
@@ -10,6 +12,8 @@ namespace Onova.Services
         /// <summary>
         /// Extracts contents of the given package to the given output directory.
         /// </summary>
-        Task ExtractPackageAsync(string packageFilePath, string outputDirPath);
+        Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
+            IProgress<double> progress = null,
+            CancellationToken cancellationToken = default(CancellationToken));
     }
 }

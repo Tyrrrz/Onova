@@ -1,5 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Onova.Internal;
 
@@ -11,28 +14,46 @@ namespace Onova.Services
     public class ZipPackageExtractor : IPackageExtractor
     {
         /// <inheritdoc />
-        public async Task ExtractPackageAsync(string packageFilePath, string outputDirPath)
+        public async Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
+            IProgress<double> progress = null,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            packageFilePath.GuardNotNull(nameof(packageFilePath));
-            outputDirPath.GuardNotNull(nameof(outputDirPath));
+            sourceFilePath.GuardNotNull(nameof(sourceFilePath));
+            destDirPath.GuardNotNull(nameof(destDirPath));
 
             // Read the zip
-            using (var stream = File.OpenRead(packageFilePath))
+            using (var stream = File.OpenRead(sourceFilePath))
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Read))
             {
+                // For progress reporting
+                var totalBytes = zip.Entries.Sum(e => e.Length);
+                var totalBytesCopied = 0L;
+
                 // Loop through all entries
                 foreach (var entry in zip.Entries)
                 {
-                    var entryOutputFilePath = Path.Combine(outputDirPath, entry.FullName);
-                    var entryOutputDirPath = Path.GetDirectoryName(entryOutputFilePath);
+                    var entryDestFilePath = Path.Combine(destDirPath, entry.FullName);
+                    var entryDestDirPath = Path.GetDirectoryName(entryDestFilePath);
 
                     // Create directory
-                    Directory.CreateDirectory(entryOutputDirPath);
+                    Directory.CreateDirectory(entryDestDirPath);
 
                     // Extract entry
-                    using (var entryStream = entry.Open())
-                    using (var entryOutputFileStream = File.Create(entryOutputFilePath))
-                        await entryStream.CopyToAsync(entryOutputFileStream).ConfigureAwait(false);
+                    using (var input = entry.Open())
+                    using (var output = File.Create(entryDestFilePath))
+                    {
+                        int bytesCopied;
+                        do
+                        {
+                            // Copy
+                            bytesCopied = await input.CopyChunkToAsync(output, cancellationToken)
+                                .ConfigureAwait(false);
+
+                            // Report progress
+                            totalBytesCopied += bytesCopied;
+                            progress?.Report(1.0 * totalBytesCopied / totalBytes);
+                        } while (bytesCopied > 0);
+                    }
                 }
             }
         }

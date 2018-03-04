@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Onova.Internal
 {
@@ -38,6 +41,37 @@ namespace Onova.Internal
             TValue defaultValue = default(TValue))
         {
             return dic.TryGetValue(key, out var result) ? result : defaultValue;
+        }
+
+        public static async Task<int> CopyChunkToAsync(this Stream source, Stream destination,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var buffer = new byte[81920];
+
+            // Read
+            var bytesCopied = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+
+            // Write
+            await destination.WriteAsync(buffer, 0, bytesCopied, cancellationToken).ConfigureAwait(false);
+
+            return bytesCopied;
+        }
+
+        public static async Task CopyToAsync(this Stream source, Stream destination,
+            IProgress<double> progress = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var totalBytesCopied = 0L;
+            int bytesCopied;
+            do
+            {
+                // Copy
+                bytesCopied = await source.CopyChunkToAsync(destination, cancellationToken)
+                    .ConfigureAwait(false);
+
+                // Report progress
+                totalBytesCopied += bytesCopied;
+                progress?.Report(1.0 * bytesCopied / totalBytesCopied);
+            } while (bytesCopied > 0);
         }
     }
 }

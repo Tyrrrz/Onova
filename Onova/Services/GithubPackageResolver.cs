@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Onova.Exceptions;
 using Onova.Internal;
 
 namespace Onova.Services
@@ -14,7 +11,7 @@ namespace Onova.Services
     /// Resolves packages from release assets of a GitHub repository.
     /// Release names should contain package versions (e.g. "v1.0.0.0").
     /// </summary>
-    public class GithubPackageResolver : IPackageResolver
+    public class GithubPackageResolver : HttpPackageResolver
     {
         private readonly IHttpService _httpService;
         private readonly string _repositoryOwner;
@@ -26,6 +23,7 @@ namespace Onova.Services
         /// </summary>
         public GithubPackageResolver(IHttpService httpService, string repositoryOwner, string repositoryName,
             string assetName = "Package.onv")
+            : base(httpService)
         {
             _httpService = httpService.GuardNotNull(nameof(httpService));
             _repositoryOwner = repositoryOwner.GuardNotNull(nameof(repositoryOwner));
@@ -41,7 +39,8 @@ namespace Onova.Services
         {
         }
 
-        private async Task<IReadOnlyDictionary<Version, string>> GetMapAsync()
+        /// <inheritdoc />
+        protected override async Task<IReadOnlyDictionary<Version, string>> GetMapAsync()
         {
             var map = new Dictionary<Version, string>();
 
@@ -81,27 +80,6 @@ namespace Onova.Services
             }
 
             return map;
-        }
-
-        /// <inheritdoc />
-        public async Task<IReadOnlyList<Version>> GetAllVersionsAsync()
-        {
-            var map = await GetMapAsync().ConfigureAwait(false);
-            return map.Keys.ToArray();
-        }
-
-        /// <inheritdoc />
-        public async Task<Stream> GetPackageAsync(Version version)
-        {
-            version.GuardNotNull(nameof(version));
-
-            // Try to get package asset URL
-            var map = await GetMapAsync().ConfigureAwait(false);
-            var assetUrl = map.GetOrDefault(version);
-            if (assetUrl == null)
-                throw new PackageNotFoundException(version);
-
-            return await _httpService.GetStreamAsync(assetUrl).ConfigureAwait(false);
         }
     }
 }

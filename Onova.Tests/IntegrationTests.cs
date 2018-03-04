@@ -19,6 +19,12 @@ namespace Onova.Tests
             "Onova",
             Assembly.GetExecutingAssembly().GetName().Name);
 
+        [SetUp]
+        public void Setup()
+        {
+            Directory.CreateDirectory(TempDirPath);
+        }
+
         [TearDown]
         public void Cleanup()
         {
@@ -29,17 +35,17 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task LocalPackageResolver_GetAllVersionsAsync_Test()
+        public async Task LocalPackageResolver_GetAllPackageVersionsAsync_Test()
         {
             // Arrange
             var expectedVersions = new[] {Version.Parse("1.0"), Version.Parse("2.0")};
-            Directory.CreateDirectory(TempDirPath);
+
             foreach (var expectedVersion in expectedVersions)
                 File.WriteAllText(Path.Combine(TempDirPath, $"{expectedVersion}.onv"), "");
 
             // Act
             var resolver = new LocalPackageResolver(TempDirPath);
-            var versions = await resolver.GetAllVersionsAsync();
+            var versions = await resolver.GetAllPackageVersionsAsync();
 
             // Assert
             Assert.That(versions, Is.Not.Null);
@@ -47,31 +53,26 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task LocalPackageResolver_GetPackageAsync_Test()
+        public async Task LocalPackageResolver_DownloadPackageAsync_Test()
         {
             // Arrange
             var version = Version.Parse("2.0");
-            const string expectedContent = "Hello world";
-            Directory.CreateDirectory(TempDirPath);
+            var expectedContent = "Hello world";
+            var destFilePath = Path.Combine(TempDirPath, $"{Guid.NewGuid()}");
+
             File.WriteAllText(Path.Combine(TempDirPath, $"{version}.onv"), expectedContent);
 
             // Act
             var resolver = new LocalPackageResolver(TempDirPath);
-            var stream = await resolver.GetPackageAsync(version);
+            await resolver.DownloadPackageAsync(version, destFilePath);
 
             // Assert
-            Assert.That(stream, Is.Not.Null);
-
-            using (stream)
-            using (var reader = new StreamReader(stream))
-            {
-                var content = await reader.ReadToEndAsync();
-                Assert.That(content, Is.EqualTo(expectedContent));
-            }
+            Assert.That(File.Exists(destFilePath));
+            Assert.That(File.ReadAllText(destFilePath), Is.EqualTo(expectedContent));
         }
 
         [Test]
-        public async Task GithubPackageResolver_GetAllVersionsAsync_Test()
+        public async Task GithubPackageResolver_GetAllPackageVersionsAsync_Test()
         {
             // This uses a stub repository (github.com/Tyrrrz/OnovaTestRepo)
 
@@ -80,7 +81,7 @@ namespace Onova.Tests
 
             // Act
             var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo", "Test.onv");
-            var versions = await resolver.GetAllVersionsAsync();
+            var versions = await resolver.GetAllPackageVersionsAsync();
 
             // Assert
             Assert.That(versions, Is.Not.Null);
@@ -88,30 +89,26 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task GithubPackageResolver_GetPackageAsync_Test()
+        public async Task GithubPackageResolver_DownloadPackageAsync_Test()
         {
             // This uses a stub repository (github.com/Tyrrrz/OnovaTestRepo)
 
             // Arrange
-            const string expectedContent = "Hello world";
+            var version = Version.Parse("2.0");
+            var expectedContent = "Hello world";
+            var destFilePath = Path.Combine(TempDirPath, $"{Guid.NewGuid()}");
 
             // Act
             var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo", "Test.onv");
-            var stream = await resolver.GetPackageAsync(Version.Parse("2.0"));
+            await resolver.DownloadPackageAsync(version, destFilePath);
 
             // Assert
-            Assert.That(stream, Is.Not.Null);
-
-            using (stream)
-            using (var reader = new StreamReader(stream))
-            {
-                var content = await reader.ReadToEndAsync();
-                Assert.That(content, Is.EqualTo(expectedContent));
-            }
+            Assert.That(File.Exists(destFilePath));
+            Assert.That(File.ReadAllText(destFilePath), Is.EqualTo(expectedContent));
         }
 
         [Test]
-        public async Task WebPackageResolver_GetAllVersionsAsync_Test()
+        public async Task WebPackageResolver_GetAllPackageVersionsAsync_Test()
         {
             // This uses a stub manifest from stub repository (github.com/Tyrrrz/OnovaTestRepo)
 
@@ -119,10 +116,9 @@ namespace Onova.Tests
             var expectedVersions = new[] {Version.Parse("1.0"), Version.Parse("2.0"), Version.Parse("3.0")};
 
             // Act
-            const string url =
-                "https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt";
+            var url = "https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt";
             var resolver = new WebPackageResolver(url);
-            var versions = await resolver.GetAllVersionsAsync();
+            var versions = await resolver.GetAllPackageVersionsAsync();
 
             // Assert
             Assert.That(versions, Is.Not.Null);
@@ -130,60 +126,55 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task WebPackageResolver_GetPackageAsync_Test()
+        public async Task WebPackageResolver_DownloadPackageAsync_Test()
         {
             // This uses a stub manifest from stub repository (github.com/Tyrrrz/OnovaTestRepo)
 
             // Arrange
-            const string expectedContent = "Hello world";
+            var version = Version.Parse("2.0");
+            var expectedContent = "Hello world";
+            var destFilePath = Path.Combine(TempDirPath, $"{Guid.NewGuid()}");
 
             // Act
-            const string url =
-                "https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt";
+            var url = "https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt";
             var resolver = new WebPackageResolver(url);
-            var stream = await resolver.GetPackageAsync(Version.Parse("2.0"));
+            await resolver.DownloadPackageAsync(version, destFilePath);
 
             // Assert
-            Assert.That(stream, Is.Not.Null);
-
-            using (stream)
-            using (var reader = new StreamReader(stream))
-            {
-                var content = await reader.ReadToEndAsync();
-                Assert.That(content, Is.EqualTo(expectedContent));
-            }
+            Assert.That(File.Exists(destFilePath));
+            Assert.That(File.ReadAllText(destFilePath), Is.EqualTo(expectedContent));
         }
 
         [Test]
         public async Task ZipPackageExtractor_ExtractPackageAsync_Test()
         {
             // Arrange
-            const string expectedContent = "Hello world";
-            var expectedEntryFilePaths = new[] {"a.txt", "1\\b.txt", "1\\2\\c.txt"};
-            Directory.CreateDirectory(TempDirPath);
+            var expectedContent = "Hello world";
+            var expectedEntryPaths = new[] {"a.txt", "1\\b.txt", "1\\2\\c.txt"};
             var packageFilePath = Path.Combine(TempDirPath, "1.0.0.0.onv");
+            var destDirPath = Path.Combine(TempDirPath, Guid.NewGuid().ToString());
+
             using (var output = File.Create(packageFilePath))
             using (var zip = new ZipArchive(output, ZipArchiveMode.Create))
             {
-                foreach (var expectedEntryFilePath in expectedEntryFilePaths)
+                foreach (var expectedEntryPath in expectedEntryPaths)
                 {
-                    using (var stream = zip.CreateEntry(expectedEntryFilePath).Open())
+                    using (var stream = zip.CreateEntry(expectedEntryPath).Open())
                     using (var writer = new StreamWriter(stream))
-                        writer.Write(expectedContent);
+                        await writer.WriteAsync(expectedContent);
                 }
             }
 
             // Act
             var extractor = new ZipPackageExtractor();
-            var outputDirPath = Path.Combine(TempDirPath, Guid.NewGuid().ToString());
-            await extractor.ExtractPackageAsync(packageFilePath, outputDirPath);
+            await extractor.ExtractPackageAsync(packageFilePath, destDirPath);
 
             // Assert
-            foreach (var expectedEntryFilePath in expectedEntryFilePaths)
+            foreach (var expectedEntryPath in expectedEntryPaths)
             {
-                var outputEntryPath = Path.Combine(outputDirPath, expectedEntryFilePath);
-                Assert.That(File.Exists(outputEntryPath));
-                Assert.That(File.ReadAllText(outputEntryPath), Is.EqualTo(expectedContent));
+                var destEntryPath = Path.Combine(destDirPath, expectedEntryPath);
+                Assert.That(File.Exists(destEntryPath));
+                Assert.That(File.ReadAllText(destEntryPath), Is.EqualTo(expectedContent));
             }
         }
     }

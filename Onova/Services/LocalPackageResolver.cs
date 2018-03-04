@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
 using Onova.Internal;
@@ -37,7 +38,8 @@ namespace Onova.Services
                 var fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
 
                 // Try to parse version
-                var versionText = Regex.Match(fileNameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
+                var versionText = Regex.Match(fileNameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1]
+                    .Value;
                 if (!Version.TryParse(versionText, out var version))
                     continue;
 
@@ -49,23 +51,29 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public Task<IReadOnlyList<Version>> GetAllVersionsAsync()
+        public Task<IReadOnlyList<Version>> GetAllPackageVersionsAsync()
         {
             var versions = GetMap().Keys.ToArray();
             return Task.FromResult((IReadOnlyList<Version>) versions);
         }
 
         /// <inheritdoc />
-        public Task<Stream> GetPackageAsync(Version version)
+        public async Task DownloadPackageAsync(Version version, string destFilePath,
+            IProgress<double> progress = null,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             version.GuardNotNull(nameof(version));
+            destFilePath.GuardNotNull(nameof(destFilePath));
 
             // Try to get package file path
-            var filePath = GetMap().GetOrDefault(version);
-            if (filePath != null)
-                return Task.FromResult((Stream) File.OpenRead(filePath));
+            var sourceFilePath = GetMap().GetOrDefault(version);
+            if (sourceFilePath == null)
+                throw new PackageNotFoundException(version);
 
-            throw new PackageNotFoundException(version);
+            // Copy file
+            using (var input = File.OpenRead(sourceFilePath))
+            using (var output = File.Create(destFilePath))
+                await input.CopyToAsync(output, progress, cancellationToken).ConfigureAwait(false);
         }
     }
 }

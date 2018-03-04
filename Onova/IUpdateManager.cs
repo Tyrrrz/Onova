@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Onova.Models;
 
@@ -22,21 +23,13 @@ namespace Onova
         /// <summary>
         /// Prepares a package of given version.
         /// </summary>
-        Task PreparePackageAsync(Version version);
+        Task PreparePackageAsync(Version version,
+            IProgress<double> progress = null,
+            CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Enqueues an update to prepared package of given version, which will execute when the process exits.
         /// </summary>
-        Task EnqueueApplyPackageAsync(Version version, bool restart = true);
-
-        /// <summary>
-        /// Exits current process and applies a prepared package of given version.
-        /// </summary>
         Task ApplyPackageAsync(Version version, bool restart = true);
-
-        /// <summary>
-        /// Checks for updates and updates to newest version if available.
-        /// </summary>
-        Task PerformUpdateIfAvailableAsync(bool restart = true);
     }
 }

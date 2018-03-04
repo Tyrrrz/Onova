@@ -19,8 +19,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Reference Include="System.IO.Compression" />
         <Reference Include="System.Net.Http" />
+        <Reference Include="System.IO.Compression" />
     </ItemGroup>
 
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
@@ -33,6 +33,7 @@
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+      <PackageReference Include="SharpCompress" Version="0.19.2" />
     </ItemGroup>
 
 </Project>

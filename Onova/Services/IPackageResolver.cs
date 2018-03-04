@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Onova.Services
@@ -13,11 +13,13 @@ namespace Onova.Services
         /// <summary>
         /// Gets all available package versions.
         /// </summary>
-        Task<IReadOnlyList<Version>> GetAllVersionsAsync();
+        Task<IReadOnlyList<Version>> GetAllPackageVersionsAsync();
 
         /// <summary>
-        /// Gets a stream containing package of given version.
+        /// Downloads a package of given version.
         /// </summary>
-        Task<Stream> GetPackageAsync(Version version);
+        Task DownloadPackageAsync(Version version, string destFilePath,
+            IProgress<double> progress = null,
+            CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -60,8 +60,8 @@ namespace Onova.Services
                     continue;
 
                 // Skip pre-releases
-                var isPrerelease = releaseJson["prerelease"].Value<bool>();
-                if (isPrerelease)
+                var isPreRelease = releaseJson["prerelease"].Value<bool>();
+                if (isPreRelease)
                     continue;
 
                 // Find asset

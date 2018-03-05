@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,6 +36,11 @@ namespace Onova.Internal
         public static string[] Split(this string input, params string[] separators)
         {
             return input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static int AddRange<T>(this HashSet<T> hashSet, IEnumerable<T> sequence)
+        {
+            return sequence.Count(hashSet.Add);
         }
 
         public static TValue GetOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dic, TKey key,

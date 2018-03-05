@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -138,6 +139,59 @@ namespace Onova.Tests
             // Act
             var url = "https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt";
             var resolver = new WebPackageResolver(url);
+            await resolver.DownloadPackageAsync(version, destFilePath);
+
+            // Assert
+            Assert.That(File.Exists(destFilePath));
+            Assert.That(File.ReadAllText(destFilePath), Is.EqualTo(expectedContent));
+        }
+
+        [Test]
+        public async Task AggregatePackageResolver_GetAllPackageVersionsAsync_Test()
+        {
+            // Arrange
+            var expectedVersions = new[] {Version.Parse("1.0"), Version.Parse("2.0"), Version.Parse("3.0")};
+
+            var repository1DirPath = Path.Combine(TempDirPath, "1");
+            Directory.CreateDirectory(repository1DirPath);
+            foreach (var expectedVersion in expectedVersions.Take(expectedVersions.Length / 2))
+                File.WriteAllText(Path.Combine(repository1DirPath, $"{expectedVersion}.onv"), "");
+
+            var repository2DirPath = Path.Combine(TempDirPath, "2");
+            Directory.CreateDirectory(repository2DirPath);
+            foreach (var expectedVersion in expectedVersions.Skip(expectedVersions.Length / 2))
+                File.WriteAllText(Path.Combine(repository2DirPath, $"{expectedVersion}.onv"), "");
+
+            // Act
+            var resolver = new AggregatePackageResolver(
+                new LocalPackageResolver(repository1DirPath),
+                new LocalPackageResolver(repository2DirPath));
+            var versions = await resolver.GetAllPackageVersionsAsync();
+
+            // Assert
+            Assert.That(versions, Is.Not.Null);
+            Assert.That(versions, Is.EquivalentTo(expectedVersions));
+        }
+
+        [Test]
+        public async Task AggregatePackageResolver_DownloadPackageAsync_Test()
+        {
+            // Arrange
+            var version = Version.Parse("2.0");
+            var expectedContent = "Hello world";
+            var destFilePath = Path.Combine(TempDirPath, $"{Guid.NewGuid()}");
+
+            var repository1DirPath = Path.Combine(TempDirPath, "1");
+            Directory.CreateDirectory(repository1DirPath);
+
+            var repository2DirPath = Path.Combine(TempDirPath, "2");
+            Directory.CreateDirectory(repository2DirPath);
+            File.WriteAllText(Path.Combine(repository2DirPath, $"{version}.onv"), expectedContent);
+
+            // Act
+            var resolver = new AggregatePackageResolver(
+                new LocalPackageResolver(repository1DirPath),
+                new LocalPackageResolver(repository2DirPath));
             await resolver.DownloadPackageAsync(version, destFilePath);
 
             // Assert

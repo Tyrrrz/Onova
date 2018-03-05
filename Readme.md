@@ -19,6 +19,7 @@ Onova is a library that provides a simple but extensible interface to perform au
   - `LocalPackageResolver` - file system
   - `GithubPackageResolver` - GitHub releases
   - `WebPackageResolver` - web version manifest
+  - `AggregatePackageResolver` - aggregates multiple resolvers
 - Supported extractors:
   - `ZipPackageExtractor` - zip archives
 - Can be extended with custom resolvers and extractors
@@ -33,7 +34,7 @@ Onova is a library that provides a simple but extensible interface to perform au
 
 ### Package resolving
 
-Packages and their versions are resolved using an implementation of `IPackageResolver`. Currently there are 3 built-in implementations:
+Packages and their versions are resolved using an implementation of `IPackageResolver`. Currently there are 4 built-in implementations:
 
 #### `LocalPackageResolver` 
 
@@ -43,6 +44,8 @@ This implementation looks for files in the given directory using a predefined se
 
 This implementation looks for assets with predefined name (default is `Package.onv`) in releases of the given GitHub repository. Package versions are extracted from release names, e.g. release named `v1.0` corresponds to package version `1.0`.
 
+Since .NET assemblies do not support semantic versions, pre-release packages are ignored.
+
 #### `WebPackageResolver`
 
 This implementation requests a version manifest using given URL. The manifest should contain a list of package versions and their URLs, separated by space, one line per package. E.g.:
@@ -51,7 +54,9 @@ This implementation requests a version manifest using given URL. The manifest sh
 2.0 https://my.server.com/2.0.zip
 ```
 
-> **Note:** Packages whose versions could not be extracted will not be seen by the resolvers. Also, if there are multiple packages with the same version, only one of them will be available.
+#### `AggregatePackageResolver`
+
+This implementation provides aggregation over multiple other `IPackageResolver` instances. It allows resolving and downloading packages from more than one source.
 
 ### Package extraction
 

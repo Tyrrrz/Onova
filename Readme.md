@@ -5,7 +5,7 @@
 [![NuGet](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
 [![NuGet](https://img.shields.io/nuget/dt/Onova.svg)](https://nuget.org/packages/Onova)
 
-Onova is a library that provides a framework for performing auto-updates in applications. It was designed primarily for projects that distribute their releases using archive files instead of installers, but can be configured to support almost any setup. Acquired updates are applied in place via an external process, so there are no launchers, release files or special directories.
+Onova is a library that provides a framework for performing auto-updates in applications. It was designed primarily for projects that distribute their releases using archive files instead of installers, but can be configured to support almost any setup. Acquired updates are applied in place using an external executable, so there are no launchers, release files or special directories.
 
 ## Download
 
@@ -24,8 +24,8 @@ Onova is a library that provides a framework for performing auto-updates in appl
   - `ZipPackageExtractor` - zip archives
 - Can be extended with custom resolvers and extractors
 - Progress reporting and cancellation
-- Can apply packages of any version, not necessarily latest
-- In-place update via an external executable
+- Can apply updates to any version, not necessarily latest
+- In-place update using an external executable
 - Automatically prompts for elevated privileges if necessary
 - Fully self-contained
 - Targets .NET Framework 4.6+

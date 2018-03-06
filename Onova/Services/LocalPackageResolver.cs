@@ -51,7 +51,7 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public Task<IReadOnlyList<Version>> GetAllPackageVersionsAsync()
+        public Task<IReadOnlyList<Version>> GetPackageVersionsAsync()
         {
             var versions = GetMap().Keys.ToArray();
             return Task.FromResult((IReadOnlyList<Version>) versions);

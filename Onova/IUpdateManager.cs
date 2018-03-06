@@ -11,7 +11,7 @@ namespace Onova
     public interface IUpdateManager
     {
         /// <summary>
-        /// Deletes all prepared packages and temporary files.
+        /// Deletes all prepared updates and temporary files.
         /// </summary>
         void Cleanup();
 
@@ -21,15 +21,15 @@ namespace Onova
         Task<CheckForUpdatesResult> CheckForUpdatesAsync();
 
         /// <summary>
-        /// Prepares a package of given version.
+        /// Prepares an update to given version.
         /// </summary>
-        Task PreparePackageAsync(Version version,
+        Task PrepareUpdateAsync(Version version,
             IProgress<double> progress = null,
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Enqueues an update to prepared package of given version, which will execute when the process exits.
+        /// Launches an external executable that will apply an update to given version, once this application exits.
         /// </summary>
-        Task ApplyPackageAsync(Version version, bool restart = true);
+        Task LaunchUpdaterAsync(Version version, bool restart = true);
     }
 }

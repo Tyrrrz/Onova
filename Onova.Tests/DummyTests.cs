@@ -35,7 +35,7 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task UpdateManager_PerformUpdateIfAvailableAsync_Test()
+        public async Task UpdateManager_CheckPerformUpdateAsync_Test()
         {
             // Arrange
             DummyHelper.SetupDummy(

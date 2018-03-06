@@ -10,8 +10,7 @@ namespace Onova
     public static class Extensions
     {
         /// <summary>
-        /// Checks for updates, prepares latest package and exits application to apply it.
-        /// Returns early if there are no updates available.
+        /// Checks for new version and performs an update if available.
         /// </summary>
         public static async Task CheckPerformUpdateAsync(this IUpdateManager updateManager, bool restart = true,
             IProgress<double> progress = null, CancellationToken cancellationToken = default(CancellationToken))
@@ -22,11 +21,11 @@ namespace Onova
                 return;
 
             // Prepare
-            await updateManager.PreparePackageAsync(result.LastPackageVersion, progress, cancellationToken)
+            await updateManager.PrepareUpdateAsync(result.LastVersion, progress, cancellationToken)
                 .ConfigureAwait(false);
 
             // Apply
-            await updateManager.ApplyPackageAsync(result.LastPackageVersion, restart).ConfigureAwait(false);
+            await updateManager.LaunchUpdaterAsync(result.LastVersion, restart).ConfigureAwait(false);
 
             // Exit
             Environment.Exit(0);

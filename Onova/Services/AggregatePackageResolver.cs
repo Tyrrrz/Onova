@@ -32,14 +32,14 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<Version>> GetAllPackageVersionsAsync()
+        public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync()
         {
             var aggregateVersions = new HashSet<Version>();
 
             // Get unique package versions provided by all resolvers
             foreach (var resolver in _resolvers)
             {
-                var versions = await resolver.GetAllPackageVersionsAsync().ConfigureAwait(false);
+                var versions = await resolver.GetPackageVersionsAsync().ConfigureAwait(false);
                 aggregateVersions.AddRange(versions);
             }
 
@@ -51,7 +51,7 @@ namespace Onova.Services
             // Try to find the first resolver that has this package version
             foreach (var resolver in _resolvers)
             {
-                var versions = await resolver.GetAllPackageVersionsAsync().ConfigureAwait(false);
+                var versions = await resolver.GetPackageVersionsAsync().ConfigureAwait(false);
                 if (versions.Contains(version))
                     return resolver;
             }
@@ -61,9 +61,13 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public async Task DownloadPackageAsync(Version version, string destFilePath, IProgress<double> progress = null,
+        public async Task DownloadPackageAsync(Version version, string destFilePath,
+            IProgress<double> progress = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            version.GuardNotNull(nameof(version));
+            destFilePath.GuardNotNull(nameof(destFilePath));
+
             // Find a resolver that has this package version
             var resolver = await GetResolverForPackageAsync(version).ConfigureAwait(false);
             if (resolver == null)

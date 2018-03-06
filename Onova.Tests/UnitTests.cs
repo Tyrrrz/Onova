@@ -20,7 +20,7 @@ namespace Onova.Tests
             var resolverMock = new Mock<IPackageResolver>();
             var availableVersions = new[]
                 {Version.Parse("1.0.0.0"), Version.Parse("2.0.0.0"), Version.Parse("3.0.0.0")};
-            resolverMock.Setup(m => m.GetAllPackageVersionsAsync()).ReturnsAsync(availableVersions);
+            resolverMock.Setup(m => m.GetPackageVersionsAsync()).ReturnsAsync(availableVersions);
 
             // Extractor mock
             var extractorMock = new Mock<IPackageExtractor>();
@@ -37,8 +37,8 @@ namespace Onova.Tests
 
             // Assert
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.AllPackageVersions, Is.EquivalentTo(availableVersions));
-            Assert.That(result.LastPackageVersion, Is.EqualTo(availableVersions.Max()));
+            Assert.That(result.Versions, Is.EquivalentTo(availableVersions));
+            Assert.That(result.LastVersion, Is.EqualTo(availableVersions.Max()));
             Assert.That(result.CanUpdate);
         }
 
@@ -51,7 +51,7 @@ namespace Onova.Tests
             var resolverMock = new Mock<IPackageResolver>();
             var availableVersions = new[]
                 {Version.Parse("1.0.0.0"), Version.Parse("2.0.0.0"), Version.Parse("3.0.0.0")};
-            resolverMock.Setup(m => m.GetAllPackageVersionsAsync()).ReturnsAsync(availableVersions);
+            resolverMock.Setup(m => m.GetPackageVersionsAsync()).ReturnsAsync(availableVersions);
 
             // Extractor mock
             var extractorMock = new Mock<IPackageExtractor>();
@@ -68,8 +68,8 @@ namespace Onova.Tests
 
             // Assert
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.AllPackageVersions, Is.EquivalentTo(availableVersions));
-            Assert.That(result.LastPackageVersion, Is.EqualTo(availableVersions.Max()));
+            Assert.That(result.Versions, Is.EquivalentTo(availableVersions));
+            Assert.That(result.LastVersion, Is.EqualTo(availableVersions.Max()));
             Assert.That(result.CanUpdate, Is.Not.True);
         }
 
@@ -81,7 +81,7 @@ namespace Onova.Tests
             // Resolver mock
             var resolverMock = new Mock<IPackageResolver>();
             var availableVersions = Array.Empty<Version>();
-            resolverMock.Setup(m => m.GetAllPackageVersionsAsync()).ReturnsAsync(availableVersions);
+            resolverMock.Setup(m => m.GetPackageVersionsAsync()).ReturnsAsync(availableVersions);
 
             // Extractor mock
             var extractorMock = new Mock<IPackageExtractor>();
@@ -98,8 +98,8 @@ namespace Onova.Tests
 
             // Assert
             Assert.That(result, Is.Not.Null);
-            Assert.That(result.AllPackageVersions, Is.EquivalentTo(availableVersions));
-            Assert.That(result.LastPackageVersion, Is.Null);
+            Assert.That(result.Versions, Is.EquivalentTo(availableVersions));
+            Assert.That(result.LastVersion, Is.Null);
             Assert.That(result.CanUpdate, Is.Not.True);
         }
     }

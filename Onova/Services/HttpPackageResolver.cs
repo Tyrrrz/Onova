@@ -31,7 +31,7 @@ namespace Onova.Services
         protected abstract Task<IReadOnlyDictionary<Version, string>> GetMapAsync();
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<Version>> GetAllPackageVersionsAsync()
+        public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync()
         {
             var versions = await GetMapAsync().ConfigureAwait(false);
             return versions.Keys.ToArray();

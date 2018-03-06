@@ -5,7 +5,7 @@
 [![NuGet](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
 [![NuGet](https://img.shields.io/nuget/dt/Onova.svg)](https://nuget.org/packages/Onova)
 
-Onova is a library that provides a simple but extensible interface to perform auto-updates in applications. It was designed primarily for open source projects that distribute their releases using archive files instead of installers, but can be configured to support almost any setup. Acquired updates are applied in place via an external process, so there are no launchers, release files or special directories.
+Onova is a library that provides a framework for performing auto-updates in applications. It was designed primarily for projects that distribute their releases using archive files instead of installers, but can be configured to support almost any setup. Acquired updates are applied in place via an external process, so there are no launchers, release files or special directories.
 
 ## Download
 
@@ -14,7 +14,7 @@ Onova is a library that provides a simple but extensible interface to perform au
 
 ## Features
 
-- Minimal configuration
+- Minimal required configuration
 - Supported resolvers:
   - `LocalPackageResolver` - file system
   - `GithubPackageResolver` - GitHub releases
@@ -71,7 +71,7 @@ This implementation treats packages as zip archives.
 ##### Basic usage example
 
 ```c#
-// Set up the manager to look for packages in given directory and treat them as zips
+// Configure to look for packages in given directory and treat them as zips
 var resolver = new LocalPackageResolver("c:\\test\\packages");
 var extractor = new ZipPackageExtractor();
 var manager = new UpdateManager(resolver, extractor);
@@ -87,13 +87,13 @@ await manager.CheckPerformUpdateAsync();
 var result = await manager.CheckForUpdatesAsync();
 if (result.CanUpdate)
 {
-    // Prepare package so that it can be applied later
-    // (supports progress reporting and cancellation in overloads)
-    await manager.PreparePackageAsync(result.LastPackageVersion);
+    // Prepare an update so it can be applied later
+    // (supports optional progress reporting and cancellation)
+    await manager.PrepareUpdateAsync(result.LastVersion);
 
-    // Launch updater that will apply package and restart application
-    // (restart can be enabled/disabled in overloads)
-    await manager.ApplyPackageAsync(result.LastPackageVersion);
+    // Launch an executable that will apply the update
+    // (can optionally restart application on completion)
+    await manager.LaunchUpdaterAsync(result.LastVersion);
 
     // External updater will wait until the application exits
     Environment.Exit(0);

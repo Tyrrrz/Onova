@@ -3,9 +3,9 @@
 namespace Onova.Exceptions
 {
     /// <summary>
-    /// Thrown when a package of specific version was not prepared.
+    /// Thrown when an update was not prepared.
     /// </summary>
-    public class PackageNotPreparedException : Exception
+    public class UpdateNotPreparedException : Exception
     {
         /// <summary>
         /// Package version.
@@ -16,12 +16,12 @@ namespace Onova.Exceptions
         public override string Message { get; }
 
         /// <summary>
-        /// Initializes an instance of <see cref="PackageNotPreparedException"/>.
+        /// Initializes an instance of <see cref="UpdateNotPreparedException"/>.
         /// </summary>
-        public PackageNotPreparedException(Version version)
+        public UpdateNotPreparedException(Version version)
         {
             Version = version;
-            Message = $"Package with version [{version}] has not been prepared.";
+            Message = $"Update to version [{version}] not prepared.";
         }
     }
 }

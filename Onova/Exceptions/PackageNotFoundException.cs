@@ -3,7 +3,7 @@
 namespace Onova.Exceptions
 {
     /// <summary>
-    /// Thrown when a package of specific version was not found by resolver.
+    /// Thrown when a package was not found by resolver.
     /// </summary>
     public class PackageNotFoundException : Exception
     {
@@ -21,7 +21,7 @@ namespace Onova.Exceptions
         public PackageNotFoundException(Version version)
         {
             Version = version;
-            Message = $"Package with version [{version}] not found.";
+            Message = $"Package of version [{version}] not found.";
         }
     }
 }

@@ -17,6 +17,8 @@ namespace Onova
     /// </summary>
     public class UpdateManager : IUpdateManager
     {
+        private const string UpdaterResourceName = "Onova.Updater.exe";
+
         private readonly AssemblyMetadata _updatee;
         private readonly IPackageResolver _resolver;
         private readonly IPackageExtractor _extractor;
@@ -67,7 +69,7 @@ namespace Onova
         public async Task<CheckForUpdatesResult> CheckForUpdatesAsync()
         {
             // Get versions
-            var versions = await _resolver.GetAllPackageVersionsAsync().ConfigureAwait(false);
+            var versions = await _resolver.GetPackageVersionsAsync().ConfigureAwait(false);
             var lastVersion = versions.Max();
             var canUpdate = lastVersion != null && _updatee.Version < lastVersion;
 
@@ -75,7 +77,7 @@ namespace Onova
         }
 
         /// <inheritdoc />
-        public async Task PreparePackageAsync(Version version,
+        public async Task PrepareUpdateAsync(Version version,
             IProgress<double> progress = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -110,19 +112,19 @@ namespace Onova
             File.Delete(packageFilePath);
 
             // Extract updater
-            await ResourceHelper.ExtractResourceAsync("Onova.Updater.exe", _updaterFilePath)
+            await ResourceHelper.ExtractResourceAsync(UpdaterResourceName, _updaterFilePath)
                 .ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task ApplyPackageAsync(Version version, bool restart = true)
+        public async Task LaunchUpdaterAsync(Version version, bool restart = true)
         {
             version.GuardNotNull(nameof(version));
 
             // Find the package directory
             var packageContentDirPath = GetPackageContentDirPath(version);
             if (!Directory.Exists(packageContentDirPath))
-                throw new PackageNotPreparedException(version);
+                throw new UpdateNotPreparedException(version);
 
             // Ensure updater hasn't been launched yet
             if (_updaterLaunched)

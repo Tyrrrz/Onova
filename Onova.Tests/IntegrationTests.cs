@@ -81,7 +81,7 @@ namespace Onova.Tests
             var expectedVersions = new[] {Version.Parse("1.0"), Version.Parse("2.0"), Version.Parse("3.0")};
 
             // Act
-            var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo", "Test.onv");
+            var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo");
             var versions = await resolver.GetPackageVersionsAsync();
 
             // Assert
@@ -100,7 +100,7 @@ namespace Onova.Tests
             var destFilePath = Path.Combine(TempDirPath, $"{Guid.NewGuid()}");
 
             // Act
-            var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo", "Test.onv");
+            var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo");
             await resolver.DownloadPackageAsync(version, destFilePath);
 
             // Assert

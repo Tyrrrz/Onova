@@ -17,22 +17,22 @@ namespace Onova.Services
     public class LocalPackageResolver : IPackageResolver
     {
         private readonly string _repositoryDirPath;
-        private readonly string _searchPattern;
+        private readonly string _fileNamePattern;
 
         /// <summary>
         /// Initializes an instance of <see cref="LocalPackageResolver"/> on the given repository directory.
         /// </summary>
-        public LocalPackageResolver(string repositoryDirPath, string searchPattern = "*.onv")
+        public LocalPackageResolver(string repositoryDirPath, string fileNamePattern = "*.onv")
         {
             _repositoryDirPath = repositoryDirPath.GuardNotNull(nameof(repositoryDirPath));
-            _searchPattern = searchPattern.GuardNotNull(nameof(searchPattern));
+            _fileNamePattern = fileNamePattern.GuardNotNull(nameof(fileNamePattern));
         }
 
         private IReadOnlyDictionary<Version, string> GetMap()
         {
             var map = new Dictionary<Version, string>();
 
-            foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath, _searchPattern))
+            foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath, _fileNamePattern))
             {
                 // Get name without extension
                 var fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath);

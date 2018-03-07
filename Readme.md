@@ -38,11 +38,11 @@ Packages and their versions are resolved using an implementation of `IPackageRes
 
 #### `LocalPackageResolver` 
 
-This implementation looks for files in the given directory using a predefined search pattern (default is `*.onv`). Package versions are extracted from file names, e.g. file named `MyProject-v2.1.5.onv` corresponds to package version `2.1.5`.
+This implementation looks for files in the given directory using a predefined file name pattern (default is `*.onv`). Package versions are extracted from file names, e.g. file named `MyProject-v2.1.5.onv` corresponds to package version `2.1.5`.
 
 #### `GithubPackageResolver`
 
-This implementation looks for assets with predefined name (default is `Package.onv`) in releases of the given GitHub repository. Package versions are extracted from release names, e.g. release named `v1.0` corresponds to package version `1.0`.
+This implementation looks for assets in releases of given GitHub repository using predefined name pattern (default is `*.onv`). Package versions are extracted from release names, e.g. release named `v1.0` corresponds to package version `1.0`.
 
 Since .NET assemblies do not support semantic versions, pre-release packages are ignored.
 

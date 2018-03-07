@@ -16,26 +16,26 @@ namespace Onova.Services
         private readonly IHttpService _httpService;
         private readonly string _repositoryOwner;
         private readonly string _repositoryName;
-        private readonly string _assetName;
+        private readonly string _assetNamePattern;
 
         /// <summary>
         /// Initializes an instance of <see cref="GithubPackageResolver"/> with a custom HTTP service.
         /// </summary>
         public GithubPackageResolver(IHttpService httpService, string repositoryOwner, string repositoryName,
-            string assetName = "Package.onv")
+            string assetNamePattern = "*.onv")
             : base(httpService)
         {
             _httpService = httpService.GuardNotNull(nameof(httpService));
             _repositoryOwner = repositoryOwner.GuardNotNull(nameof(repositoryOwner));
             _repositoryName = repositoryName.GuardNotNull(nameof(repositoryName));
-            _assetName = assetName.GuardNotNull(nameof(assetName));
+            _assetNamePattern = assetNamePattern.GuardNotNull(nameof(assetNamePattern));
         }
 
         /// <summary>
         /// Initializes an instance of <see cref="GithubPackageResolver"/>.
         /// </summary>
-        public GithubPackageResolver(string repositoryOwner, string repositoryName, string assetName = "Package.onv")
-            : this(HttpService.Instance, repositoryOwner, repositoryName, assetName)
+        public GithubPackageResolver(string repositoryOwner, string repositoryName, string assetNamePattern = "*.onv")
+            : this(HttpService.Instance, repositoryOwner, repositoryName, assetNamePattern)
         {
         }
 
@@ -72,7 +72,7 @@ namespace Onova.Services
                     var assetUrl = assetJson["browser_download_url"].Value<string>();
 
                     // See if name matches
-                    if (!string.Equals(assetName, _assetName, StringComparison.OrdinalIgnoreCase))
+                    if (!WildcardPatternHelper.IsMatch(assetName, _assetNamePattern))
                         continue;
 
                     // Add to dictionary

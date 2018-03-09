@@ -86,26 +86,18 @@ namespace Onova.Tests.Internal
                 CreateDummyPackage(version);
         }
 
-        private static async Task<string> ExecuteDummyCliAsync(string args)
-        {
-            var output = await DummyCli.ExecuteAsync(args);
-
-            if (output.HasError)
-                Assert.Fail($"Dummy reported an error:{Environment.NewLine}{output.StandardError}");
-
-            return output.StandardOutput;
-        }
-
         public static async Task<Version> GetDummyVersionAsync()
         {
-            var stdout = await ExecuteDummyCliAsync("version");
+            var output = await DummyCli.ExecuteAsync("version");
+            output.ThrowIfError();
 
-            return Version.Parse(stdout);
+            return Version.Parse(output.StandardOutput);
         }
 
         public static async Task UpdateDummyAsync()
         {
-            await ExecuteDummyCliAsync("update");
+            var output = await DummyCli.ExecuteAsync("update");
+            output.ThrowIfError();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Onova.Services
     public class ZipPackageExtractor : IPackageExtractor
     {
         /// <inheritdoc />
-        public async Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
+        public async Task ExtractAsync(string sourceFilePath, string destDirPath,
             IProgress<double> progress = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {

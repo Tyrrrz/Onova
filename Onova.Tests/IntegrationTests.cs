@@ -36,7 +36,7 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task LocalPackageResolver_GetPackageVersionsAsync_Test()
+        public async Task LocalPackageResolver_GetVersionsAsync_Test()
         {
             // Arrange
             var expectedVersions = new[] {Version.Parse("1.0"), Version.Parse("2.0")};
@@ -46,7 +46,7 @@ namespace Onova.Tests
 
             // Act
             var resolver = new LocalPackageResolver(TempDirPath);
-            var versions = await resolver.GetPackageVersionsAsync();
+            var versions = await resolver.GetVersionsAsync();
 
             // Assert
             Assert.That(versions, Is.Not.Null);
@@ -54,7 +54,7 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task LocalPackageResolver_DownloadPackageAsync_Test()
+        public async Task LocalPackageResolver_DownloadAsync_Test()
         {
             // Arrange
             var version = Version.Parse("2.0");
@@ -65,7 +65,7 @@ namespace Onova.Tests
 
             // Act
             var resolver = new LocalPackageResolver(TempDirPath);
-            await resolver.DownloadPackageAsync(version, destFilePath);
+            await resolver.DownloadAsync(version, destFilePath);
 
             // Assert
             Assert.That(File.Exists(destFilePath));
@@ -73,7 +73,7 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task GithubPackageResolver_GetPackageVersionsAsync_Test()
+        public async Task GithubPackageResolver_GetVersionsAsync_Test()
         {
             // This uses a stub repository (github.com/Tyrrrz/OnovaTestRepo)
 
@@ -82,7 +82,7 @@ namespace Onova.Tests
 
             // Act
             var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo");
-            var versions = await resolver.GetPackageVersionsAsync();
+            var versions = await resolver.GetVersionsAsync();
 
             // Assert
             Assert.That(versions, Is.Not.Null);
@@ -90,7 +90,7 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task GithubPackageResolver_DownloadPackageAsync_Test()
+        public async Task GithubPackageResolver_DownloadAsync_Test()
         {
             // This uses a stub repository (github.com/Tyrrrz/OnovaTestRepo)
 
@@ -101,7 +101,7 @@ namespace Onova.Tests
 
             // Act
             var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo");
-            await resolver.DownloadPackageAsync(version, destFilePath);
+            await resolver.DownloadAsync(version, destFilePath);
 
             // Assert
             Assert.That(File.Exists(destFilePath));
@@ -109,7 +109,7 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task WebPackageResolver_GetPackageVersionsAsync_Test()
+        public async Task WebPackageResolver_GetVersionsAsync_Test()
         {
             // This uses a stub manifest from stub repository (github.com/Tyrrrz/OnovaTestRepo)
 
@@ -119,7 +119,7 @@ namespace Onova.Tests
             // Act
             var url = "https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt";
             var resolver = new WebPackageResolver(url);
-            var versions = await resolver.GetPackageVersionsAsync();
+            var versions = await resolver.GetVersionsAsync();
 
             // Assert
             Assert.That(versions, Is.Not.Null);
@@ -127,7 +127,7 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task WebPackageResolver_DownloadPackageAsync_Test()
+        public async Task WebPackageResolver_DownloadAsync_Test()
         {
             // This uses a stub manifest from stub repository (github.com/Tyrrrz/OnovaTestRepo)
 
@@ -139,7 +139,7 @@ namespace Onova.Tests
             // Act
             var url = "https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt";
             var resolver = new WebPackageResolver(url);
-            await resolver.DownloadPackageAsync(version, destFilePath);
+            await resolver.DownloadAsync(version, destFilePath);
 
             // Assert
             Assert.That(File.Exists(destFilePath));
@@ -147,7 +147,7 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task AggregatePackageResolver_GetPackageVersionsAsync_Test()
+        public async Task AggregatePackageResolver_GetVersionsAsync_Test()
         {
             // Arrange
             var expectedVersions = new[] {Version.Parse("1.0"), Version.Parse("2.0"), Version.Parse("3.0")};
@@ -166,7 +166,7 @@ namespace Onova.Tests
             var resolver = new AggregatePackageResolver(
                 new LocalPackageResolver(repository1DirPath),
                 new LocalPackageResolver(repository2DirPath));
-            var versions = await resolver.GetPackageVersionsAsync();
+            var versions = await resolver.GetVersionsAsync();
 
             // Assert
             Assert.That(versions, Is.Not.Null);
@@ -174,7 +174,7 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task AggregatePackageResolver_DownloadPackageAsync_Test()
+        public async Task AggregatePackageResolver_DownloadAsync_Test()
         {
             // Arrange
             var version = Version.Parse("2.0");
@@ -192,7 +192,7 @@ namespace Onova.Tests
             var resolver = new AggregatePackageResolver(
                 new LocalPackageResolver(repository1DirPath),
                 new LocalPackageResolver(repository2DirPath));
-            await resolver.DownloadPackageAsync(version, destFilePath);
+            await resolver.DownloadAsync(version, destFilePath);
 
             // Assert
             Assert.That(File.Exists(destFilePath));
@@ -221,7 +221,7 @@ namespace Onova.Tests
 
             // Act
             var extractor = new ZipPackageExtractor();
-            await extractor.ExtractPackageAsync(packageFilePath, destDirPath);
+            await extractor.ExtractAsync(packageFilePath, destDirPath);
 
             // Assert
             foreach (var expectedEntryPath in expectedEntryPaths)

@@ -22,7 +22,7 @@ namespace Onova.Internal
             }
         }
 
-        public static void ResetDirectory(string dirPath)
+        public static void Reset(string dirPath)
         {
             if (Directory.Exists(dirPath))
                 Directory.Delete(dirPath, true);

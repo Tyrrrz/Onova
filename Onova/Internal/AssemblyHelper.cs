@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Onova.Internal
 {
-    internal static class ResourceHelper
+    internal static class AssemblyHelper
     {
-        public static async Task ExtractResourceAsync(string resourceName, string destFilePath)
+        public static async Task CopyResourceAsync(string resourceName, string destFilePath)
         {
             var input = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
             if (input == null)

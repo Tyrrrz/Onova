@@ -72,7 +72,7 @@ namespace Onova.Services
                     var assetUrl = assetJson["browser_download_url"].Value<string>();
 
                     // See if name matches
-                    if (!WildcardPatternHelper.IsMatch(assetName, _assetNamePattern))
+                    if (!WildcardPattern.IsMatch(assetName, _assetNamePattern))
                         continue;
 
                     // Add to dictionary

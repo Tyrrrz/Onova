@@ -2,7 +2,7 @@
 
 namespace Onova.Internal
 {
-    internal static class WildcardPatternHelper
+    internal static class WildcardPattern
     {
         public static bool IsMatch(string input, string pattern)
         {

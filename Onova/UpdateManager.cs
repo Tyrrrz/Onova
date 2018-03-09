@@ -69,7 +69,7 @@ namespace Onova
         public async Task<CheckForUpdatesResult> CheckForUpdatesAsync()
         {
             // Get versions
-            var versions = await _resolver.GetPackageVersionsAsync().ConfigureAwait(false);
+            var versions = await _resolver.GetVersionsAsync().ConfigureAwait(false);
             var lastVersion = versions.Max();
             var canUpdate = lastVersion != null && _updatee.Version < lastVersion;
 
@@ -96,15 +96,15 @@ namespace Onova
             Directory.CreateDirectory(_storageDirPath);
 
             // Download package
-            await _resolver.DownloadPackageAsync(version, packageFilePath,
+            await _resolver.DownloadAsync(version, packageFilePath,
                 progressAggregator?.Split(0.9), // 0% -> 90%
                 cancellationToken).ConfigureAwait(false);
 
             // Create directory for package contents
-            DirectoryHelper.ResetDirectory(packageContentDirPath);
+            DirectoryHelper.Reset(packageContentDirPath);
 
             // Extract package contents
-            await _extractor.ExtractPackageAsync(packageFilePath, packageContentDirPath,
+            await _extractor.ExtractAsync(packageFilePath, packageContentDirPath,
                 progressAggregator?.Split(0.1), // 90% -> 100%
                 cancellationToken).ConfigureAwait(false);
 
@@ -112,7 +112,7 @@ namespace Onova
             File.Delete(packageFilePath);
 
             // Extract updater
-            await ResourceHelper.ExtractResourceAsync(UpdaterResourceName, _updaterFilePath)
+            await AssemblyHelper.CopyResourceAsync(UpdaterResourceName, _updaterFilePath)
                 .ConfigureAwait(false);
         }
 

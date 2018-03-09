@@ -51,14 +51,14 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public Task<IReadOnlyList<Version>> GetPackageVersionsAsync()
+        public Task<IReadOnlyList<Version>> GetVersionsAsync()
         {
             var versions = GetMap().Keys.ToArray();
             return Task.FromResult((IReadOnlyList<Version>) versions);
         }
 
         /// <inheritdoc />
-        public async Task DownloadPackageAsync(Version version, string destFilePath,
+        public async Task DownloadAsync(Version version, string destFilePath,
             IProgress<double> progress = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {

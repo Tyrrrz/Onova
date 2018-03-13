@@ -28,7 +28,7 @@ namespace Onova.Services
             _fileNamePattern = fileNamePattern.GuardNotNull(nameof(fileNamePattern));
         }
 
-        private IReadOnlyDictionary<Version, string> GetMap()
+        private IReadOnlyDictionary<Version, string> GetPackageVersionFilePathMap()
         {
             var map = new Dictionary<Version, string>();
 
@@ -53,7 +53,7 @@ namespace Onova.Services
         /// <inheritdoc />
         public Task<IReadOnlyList<Version>> GetVersionsAsync()
         {
-            var versions = GetMap().Keys.ToArray();
+            var versions = GetPackageVersionFilePathMap().Keys.ToArray();
             return Task.FromResult((IReadOnlyList<Version>) versions);
         }
 
@@ -65,8 +65,11 @@ namespace Onova.Services
             version.GuardNotNull(nameof(version));
             destFilePath.GuardNotNull(nameof(destFilePath));
 
+            // Get map
+            var map = GetPackageVersionFilePathMap();
+
             // Try to get package file path
-            var sourceFilePath = GetMap().GetOrDefault(version);
+            var sourceFilePath = map.GetOrDefault(version);
             if (sourceFilePath == null)
                 throw new PackageNotFoundException(version);
 

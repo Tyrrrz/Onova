@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
@@ -45,16 +44,15 @@ namespace Onova.Services
 
             foreach (var line in response.Split("\n"))
             {
-                // Get package ID and URL
-                var id = line.SubstringUntil(" ").Trim();
+                // Get package version and URL
+                var versionText = line.SubstringUntil(" ").Trim();
                 var url = line.SubstringAfter(" ").Trim();
 
                 // If either is not set - skip
-                if (id.IsBlank() || url.IsBlank())
+                if (versionText.IsBlank() || url.IsBlank())
                     continue;
 
                 // Try to parse version
-                var versionText = Regex.Match(id, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
                 if (!Version.TryParse(versionText, out var version))
                     continue;
 

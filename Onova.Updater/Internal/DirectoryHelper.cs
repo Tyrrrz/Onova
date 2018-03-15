@@ -19,7 +19,7 @@ namespace Onova.Updater.Internal
             }
 
             // Get all files in source directory
-            var sourceFilePaths = Directory.EnumerateFiles(sourceDirPath, "*.*", SearchOption.TopDirectoryOnly);
+            var sourceFilePaths = Directory.EnumerateFiles(sourceDirPath, "*", SearchOption.TopDirectoryOnly);
 
             // Copy them
             foreach (var sourceFilePath in sourceFilePaths)

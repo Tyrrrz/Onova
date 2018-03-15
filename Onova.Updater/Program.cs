@@ -66,7 +66,7 @@ namespace Onova.Updater
                 }
                 catch (Exception ex)
                 {
-                    _log.WriteLine(ex.ToString());
+                    _log.WriteLine(ex);
                 }
 
                 // White space to separate log entries

@@ -38,13 +38,13 @@ Packages and their versions are resolved using an implementation of `IPackageRes
 
 #### `LocalPackageResolver` 
 
-This implementation looks for files in the given directory using a predefined file name pattern (default is `*.onv`). Package versions are extracted from file names, e.g. file named `MyProject-v2.1.5.onv` corresponds to package version `2.1.5`.
+This implementation looks for files in the given directory using a predefined name pattern. Package versions are extracted from file names, e.g. file named `MyProject-v2.1.5.zip` corresponds to package version `2.1.5`.
 
 #### `GithubPackageResolver`
 
-This implementation looks for assets in releases of given GitHub repository using predefined name pattern (default is `*.onv`). Package versions are extracted from release names, e.g. release named `v1.0` corresponds to package version `1.0`.
+This implementation looks for assets in releases of given GitHub repository using a predefined name pattern. Package versions are extracted from release names, e.g. release named `v1.0` corresponds to package version `1.0`.
 
-Since .NET assemblies do not support semantic versions, pre-release packages are ignored.
+Since .NET assemblies do not support semantic versions, pre-releases are ignored.
 
 #### `WebPackageResolver`
 
@@ -72,9 +72,9 @@ This implementation treats packages as zip archives.
 
 ```c#
 // Configure to look for packages in given directory and treat them as zips
-var resolver = new LocalPackageResolver("c:\\test\\packages");
-var extractor = new ZipPackageExtractor();
-var manager = new UpdateManager(resolver, extractor);
+var manager = new UpdateManager(
+    new LocalPackageResolver("c:\\test\\packages", "*.zip"),
+    new ZipPackageExtractor());
 
 // Check for new version and perform full update if available
 await manager.CheckPerformUpdateAsync();

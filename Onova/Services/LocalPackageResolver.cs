@@ -22,7 +22,7 @@ namespace Onova.Services
         /// <summary>
         /// Initializes an instance of <see cref="LocalPackageResolver"/> on the given repository directory.
         /// </summary>
-        public LocalPackageResolver(string repositoryDirPath, string fileNamePattern = "*.onv")
+        public LocalPackageResolver(string repositoryDirPath, string fileNamePattern)
         {
             _repositoryDirPath = repositoryDirPath.GuardNotNull(nameof(repositoryDirPath));
             _fileNamePattern = fileNamePattern.GuardNotNull(nameof(fileNamePattern));

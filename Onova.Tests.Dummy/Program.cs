@@ -16,7 +16,7 @@ namespace Onova.Tests.Dummy
         private static Version Version => Assembly.GetExecutingAssembly().GetName().Version;
 
         private static readonly UpdateManager UpdateManager = new UpdateManager(
-            new LocalPackageResolver(PackagesDirPath),
+            new LocalPackageResolver(PackagesDirPath, "*.onv"),
             new ZipPackageExtractor());
 
         public static async Task MainAsync(string[] args)

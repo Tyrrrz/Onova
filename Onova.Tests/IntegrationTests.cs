@@ -45,7 +45,7 @@ namespace Onova.Tests
                 File.WriteAllText(Path.Combine(TempDirPath, $"{expectedVersion}.onv"), "");
 
             // Act
-            var resolver = new LocalPackageResolver(TempDirPath);
+            var resolver = new LocalPackageResolver(TempDirPath, "*.onv");
             var versions = await resolver.GetVersionsAsync();
 
             // Assert
@@ -64,7 +64,7 @@ namespace Onova.Tests
             File.WriteAllText(Path.Combine(TempDirPath, $"{version}.onv"), expectedContent);
 
             // Act
-            var resolver = new LocalPackageResolver(TempDirPath);
+            var resolver = new LocalPackageResolver(TempDirPath, "*.onv");
             await resolver.DownloadAsync(version, destFilePath);
 
             // Assert
@@ -81,7 +81,7 @@ namespace Onova.Tests
             var expectedVersions = new[] {Version.Parse("1.0"), Version.Parse("2.0"), Version.Parse("3.0")};
 
             // Act
-            var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo");
+            var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo", "*.onv");
             var versions = await resolver.GetVersionsAsync();
 
             // Assert
@@ -100,7 +100,7 @@ namespace Onova.Tests
             var destFilePath = Path.Combine(TempDirPath, $"{Guid.NewGuid()}");
 
             // Act
-            var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo");
+            var resolver = new GithubPackageResolver("Tyrrrz", "OnovaTestRepo", "*.onv");
             await resolver.DownloadAsync(version, destFilePath);
 
             // Assert
@@ -164,8 +164,8 @@ namespace Onova.Tests
 
             // Act
             var resolver = new AggregatePackageResolver(
-                new LocalPackageResolver(repository1DirPath),
-                new LocalPackageResolver(repository2DirPath));
+                new LocalPackageResolver(repository1DirPath, "*.onv"),
+                new LocalPackageResolver(repository2DirPath, "*.onv"));
             var versions = await resolver.GetVersionsAsync();
 
             // Assert
@@ -190,8 +190,8 @@ namespace Onova.Tests
 
             // Act
             var resolver = new AggregatePackageResolver(
-                new LocalPackageResolver(repository1DirPath),
-                new LocalPackageResolver(repository2DirPath));
+                new LocalPackageResolver(repository1DirPath, "*.onv"),
+                new LocalPackageResolver(repository2DirPath, "*.onv"));
             await resolver.DownloadAsync(version, destFilePath);
 
             // Assert

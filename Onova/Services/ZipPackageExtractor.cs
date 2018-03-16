@@ -13,6 +13,16 @@ namespace Onova.Services
     /// </summary>
     public class ZipPackageExtractor : IPackageExtractor
     {
+        private readonly string _entryNamePattern;
+
+        /// <summary>
+        /// Initializes an instance of <see cref="ZipPackageExtractor"/>.
+        /// </summary>
+        public ZipPackageExtractor(string entryNamePattern = "*")
+        {
+            _entryNamePattern = entryNamePattern.GuardNotNull(nameof(entryNamePattern));
+        }
+
         /// <inheritdoc />
         public async Task ExtractAsync(string sourceFilePath, string destDirPath,
             IProgress<double> progress = null,
@@ -32,6 +42,11 @@ namespace Onova.Services
                 // Loop through all entries
                 foreach (var entry in archive.Entries)
                 {
+                    // Check if entry name matches pattern
+                    if (!WildcardPattern.IsMatch('\\' + entry.FullName, _entryNamePattern))
+                        continue;
+
+                    // Get destination paths
                     var entryDestFilePath = Path.Combine(destDirPath, entry.FullName);
                     var entryDestDirPath = Path.GetDirectoryName(entryDestFilePath);
 

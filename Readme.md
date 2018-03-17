@@ -19,6 +19,7 @@ Onova is a library that provides a framework for performing auto-updates in appl
   - `LocalPackageResolver` - file system
   - `GithubPackageResolver` - GitHub releases
   - `WebPackageResolver` - web version manifest
+  - `NugetPackageResolver` - NuGet feed
   - `AggregatePackageResolver` - aggregates multiple resolvers
 - Supported extractors:
   - `ZipPackageExtractor` - zip archives
@@ -34,7 +35,7 @@ Onova is a library that provides a framework for performing auto-updates in appl
 
 ### Package resolving
 
-Packages and their versions are resolved using an implementation of `IPackageResolver`. Currently there are 4 built-in implementations:
+Packages and their versions are resolved using an implementation of `IPackageResolver`. Currently there are 5 built-in implementations:
 
 #### `LocalPackageResolver` 
 
@@ -54,6 +55,12 @@ This implementation requests a version manifest using given URL. The manifest sh
 2.0 https://my.server.com/2.0.zip
 ```
 
+#### `NugetPackageResolver`
+
+This implementation resolves packages from the given NuGet feed.
+
+Since .NET assemblies do not support semantic versions, pre-releases are ignored.
+
 #### `AggregatePackageResolver`
 
 This implementation provides aggregation over multiple other `IPackageResolver` instances. It allows resolving and downloading packages from more than one source.
@@ -64,7 +71,7 @@ Downloaded packages are extracted using an implementation of `IPackageExtractor`
 
 #### `ZipPackageExtractor`
 
-This implementation treats packages as zip archives.
+This implementation treats packages as zip archives. An optional parameter allows filtered extraction of files using a pattern.
 
 ## Usage
 

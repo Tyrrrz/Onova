@@ -9,10 +9,20 @@ using Onova.Internal;
 namespace Onova.Services
 {
     /// <summary>
-    /// Extracts packages as zip archives.
+    /// Extracts packages as zip archives with NuGet structure.
     /// </summary>
-    public class ZipPackageExtractor : IPackageExtractor
+    public class NugetPackageExtractor : IPackageExtractor
     {
+        private readonly string _rootDirPath;
+
+        /// <summary>
+        /// Initializes an instance of <see cref="NugetPackageExtractor"/>.
+        /// </summary>
+        public NugetPackageExtractor(string rootDirPath)
+        {
+            _rootDirPath = rootDirPath.GuardNotNull(nameof(rootDirPath));
+        }
+
         /// <inheritdoc />
         public async Task ExtractAsync(string sourceFilePath, string destDirPath,
             IProgress<double> progress = null,
@@ -24,15 +34,23 @@ namespace Onova.Services
             // Read the zip
             using (var archive = ZipFile.OpenRead(sourceFilePath))
             {
+                // Get entries in the content directory
+                var entries = archive.Entries
+                    .Where(e => e.FullName.StartsWith(_rootDirPath, StringComparison.OrdinalIgnoreCase))
+                    .ToArray();
+
                 // For progress reporting
-                var totalBytes = archive.Entries.Sum(e => e.Length);
+                var totalBytes = entries.Sum(e => e.Length);
                 var totalBytesCopied = 0L;
 
-                // Loop through all entries
-                foreach (var entry in archive.Entries)
+                // Loop through entries
+                foreach (var entry in entries)
                 {
+                    // Get relative entry path
+                    var relativeEntryPath = entry.FullName.Substring(_rootDirPath.Length).TrimStart('/', '\\');
+
                     // Get destination paths
-                    var entryDestFilePath = Path.Combine(destDirPath, entry.FullName);
+                    var entryDestFilePath = Path.Combine(destDirPath, relativeEntryPath);
                     var entryDestDirPath = Path.GetDirectoryName(entryDestFilePath);
 
                     // Create directory

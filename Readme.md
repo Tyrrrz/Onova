@@ -23,6 +23,7 @@ Onova is a library that provides a framework for performing auto-updates in appl
   - `AggregatePackageResolver` - aggregates multiple resolvers
 - Supported extractors:
   - `ZipPackageExtractor` - zip archives
+  - `NugetPackageExtractor` - NuGet packages
 - Can be extended with custom resolvers and extractors
 - Progress reporting and cancellation
 - Can apply updates to any version, not necessarily latest
@@ -39,17 +40,17 @@ Packages and their versions are resolved using an implementation of `IPackageRes
 
 #### `LocalPackageResolver` 
 
-This implementation looks for files in the given directory using a predefined name pattern. Package versions are extracted from file names, e.g. file named `MyProject-v2.1.5.zip` corresponds to package version `2.1.5`.
+This implementation looks for files in the specified directory using a predefined pattern. Package versions are extracted from file names, e.g. file named `MyProject-v2.1.5.zip` corresponds to package version `2.1.5`.
 
 #### `GithubPackageResolver`
 
-This implementation looks for assets in releases of given GitHub repository using a predefined name pattern. Package versions are extracted from release names, e.g. release named `v1.0` corresponds to package version `1.0`.
+This implementation looks for assets in releases of specified GitHub repository using a predefined pattern. Package versions are extracted from release names, e.g. release named `v1.0` corresponds to package version `1.0`.
 
 Since .NET assemblies do not support semantic versions, pre-releases are ignored.
 
 #### `WebPackageResolver`
 
-This implementation requests a version manifest using given URL. The manifest should contain a list of package versions and their URLs, separated by space, one line per package. E.g.:
+This implementation requests a version manifest using specified URL. The manifest should contain a list of package versions and their URLs, separated by space, one line per package. E.g.:
 ```
 1.0 https://my.server.com/1.0.zip
 2.0 https://my.server.com/2.0.zip
@@ -57,7 +58,7 @@ This implementation requests a version manifest using given URL. The manifest sh
 
 #### `NugetPackageResolver`
 
-This implementation resolves packages from the given NuGet feed.
+This implementation resolves packages from the specified NuGet feed.
 
 Since .NET assemblies do not support semantic versions, pre-releases are ignored.
 
@@ -67,18 +68,22 @@ This implementation provides aggregation over multiple other `IPackageResolver` 
 
 ### Package extraction
 
-Downloaded packages are extracted using an implementation of `IPackageExtractor`. Currently there is 1 built-in implementation:
+Downloaded packages are extracted using an implementation of `IPackageExtractor`. Currently there are 2 built-in implementations:
 
 #### `ZipPackageExtractor`
 
-This implementation treats packages as zip archives. An optional parameter allows filtered extraction of entries using a pattern.
+This implementation treats packages as zip archives.
+
+#### `NugetPackageExtractor`
+
+This implementation treats packages as zip archives with NuGet structure. Files are extracted from the specified root directory.
 
 ## Usage
 
 ##### Basic usage example
 
 ```c#
-// Configure to look for packages in given directory and treat them as zips
+// Configure to look for packages in specified directory and treat them as zips
 var manager = new UpdateManager(
     new LocalPackageResolver("c:\\test\\packages", "*.zip"),
     new ZipPackageExtractor());

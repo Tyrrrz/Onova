@@ -182,8 +182,7 @@ namespace Onova.Tests
             // Assert
             Assert.That(File.Exists(destFilePath));
 
-            using (var input = File.OpenRead(destFilePath))
-            using (var zip = new ZipArchive(input, ZipArchiveMode.Read))
+            using (var zip = ZipFile.OpenRead(destFilePath))
             {
                 var content = zip.GetEntry("Files/Content.txt").ReadAllText();
                 Assert.That(content, Is.EqualTo(expectedContent));
@@ -253,7 +252,7 @@ namespace Onova.Tests
         {
             // Arrange
             var expectedContent = "Hello world";
-            var expectedEntryPaths = new[]
+            var entryPaths = new[]
             {
                 "a.txt",
                 "1/b.txt",
@@ -261,11 +260,10 @@ namespace Onova.Tests
             };
 
             var packageFilePath = Path.Combine(TempDirPath, "Package.zip");
-            using (var output = File.Create(packageFilePath))
-            using (var zip = new ZipArchive(output, ZipArchiveMode.Create))
+            using (var zip = ZipFile.Open(packageFilePath, ZipArchiveMode.Create))
             {
-                foreach (var expectedEntryPath in expectedEntryPaths)
-                    zip.CreateEntry(expectedEntryPath).WriteAllText(expectedContent);
+                foreach (var entryPath in entryPaths)
+                    zip.CreateEntry(entryPath).WriteAllText(expectedContent);
             }
 
             // Act
@@ -274,9 +272,43 @@ namespace Onova.Tests
             await extractor.ExtractAsync(packageFilePath, destDirPath);
 
             // Assert
-            foreach (var expectedEntryPath in expectedEntryPaths)
+            foreach (var entryPath in entryPaths)
             {
-                var destEntryPath = Path.Combine(destDirPath, expectedEntryPath);
+                var destEntryPath = Path.Combine(destDirPath, entryPath);
+                Assert.That(File.Exists(destEntryPath));
+                Assert.That(File.ReadAllText(destEntryPath), Is.EqualTo(expectedContent));
+            }
+        }
+
+        [Test]
+        public async Task NugetPackageExtractor_ExtractPackageAsync_Test()
+        {
+            // Arrange
+            var expectedContent = "Hello world";
+            var rootDirPath = "Files";
+            var relativeEntryPaths = new[]
+            {
+                "a.txt",
+                "1/b.txt",
+                "1/2/c.txt"
+            };
+
+            var packageFilePath = Path.Combine(TempDirPath, "Package.nupkg");
+            using (var zip = ZipFile.Open(packageFilePath, ZipArchiveMode.Create))
+            {
+                foreach (var entryPath in relativeEntryPaths)
+                    zip.CreateEntry($"{rootDirPath}/{entryPath}").WriteAllText(expectedContent);
+            }
+
+            // Act
+            var extractor = new NugetPackageExtractor(rootDirPath);
+            var destDirPath = Path.Combine(TempDirPath, "Output");
+            await extractor.ExtractAsync(packageFilePath, destDirPath);
+
+            // Assert
+            foreach (var entryPath in relativeEntryPaths)
+            {
+                var destEntryPath = Path.Combine(destDirPath, entryPath);
                 Assert.That(File.Exists(destEntryPath));
                 Assert.That(File.ReadAllText(destEntryPath), Is.EqualTo(expectedContent));
             }

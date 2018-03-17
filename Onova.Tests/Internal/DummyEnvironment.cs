@@ -68,8 +68,7 @@ namespace Onova.Tests.Internal
             SetAssemblyVersion(dummyTempFilePath, version);
 
             // Create package
-            using (var output = File.Create(Path.Combine(PackagesDirPath, $"{version}.onv")))
-            using (var zip = new ZipArchive(output, ZipArchiveMode.Create))
+            using (var zip = ZipFile.Open(Path.Combine(PackagesDirPath, $"{version}.onv"), ZipArchiveMode.Create))
                 zip.CreateEntryFromFile(dummyTempFilePath, DummyFileName);
 
             // Delete temp file

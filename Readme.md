@@ -71,7 +71,7 @@ Downloaded packages are extracted using an implementation of `IPackageExtractor`
 
 #### `ZipPackageExtractor`
 
-This implementation treats packages as zip archives. An optional parameter allows filtered extraction of files using a pattern.
+This implementation treats packages as zip archives. An optional parameter allows filtered extraction of entries using a pattern.
 
 ## Usage
 

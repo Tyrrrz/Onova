@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Onova.Updater.Internal
 {
-    internal static class ProcessHelper
+    internal static class ProcessEx
     {
         public static void WaitForExit(int processId)
         {

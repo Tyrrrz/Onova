@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace Onova.Tests.Internal
 {
-    internal static class DummyHelper
+    internal static class DummyEnvironment
     {
         private const string DummyFileName = "Onova.Tests.Dummy.exe";
 
@@ -19,15 +19,22 @@ namespace Onova.Tests.Internal
 
         private static readonly Cli DummyCli = new Cli(DummyFilePath);
 
-        public static void DeleteDummy()
+        public static void Delete()
         {
             if (Directory.Exists(DummyDirPath))
                 Directory.Delete(DummyDirPath, true);
         }
 
-        private static void CreateDummy(Version version)
+        private static void SetAssemblyVersion(string filePath, Version version)
         {
-            // Create dummies directory
+            var definition = AssemblyDefinition.ReadAssembly(filePath);
+            definition.Name.Version = version;
+            definition.Write(filePath);
+        }
+
+        private static void CreateBase(Version version)
+        {
+            // Create dummy directory
             Directory.CreateDirectory(DummyDirPath);
 
             // Copy files
@@ -44,49 +51,45 @@ namespace Onova.Tests.Internal
                 File.Copy(filePath, Path.Combine(DummyDirPath, fileName));
             }
 
-            // Change version
-            var definition = AssemblyDefinition.ReadAssembly(DummyFilePath);
-            definition.Name.Version = version;
-            definition.Write(DummyFilePath);
+            // Change base dummy version
+            SetAssemblyVersion(DummyFilePath, version);
         }
 
-        private static void CreateDummyPackage(Version version)
+        private static void CreatePackage(Version version)
         {
-            // Create packages directory
+            // Create package directory
             Directory.CreateDirectory(PackagesDirPath);
 
             // Temporarily copy the dummy
-            var dummyTempFilePath = Path.Combine(DummyDirPath, $"{DummyFileName}.{version}.exe");
+            var dummyTempFilePath = Path.Combine(DummyDirPath, $"{DummyFileName}.{version}");
             File.Copy(DummyFilePath, dummyTempFilePath);
 
-            // Change version
-            var definition = AssemblyDefinition.ReadAssembly(dummyTempFilePath);
-            definition.Name.Version = version;
-            definition.Write(dummyTempFilePath);
+            // Change dummy version
+            SetAssemblyVersion(dummyTempFilePath, version);
 
             // Create package
-            using (var outputStream = File.Create(Path.Combine(PackagesDirPath, $"{version}.onv")))
-            using (var zip = new ZipArchive(outputStream, ZipArchiveMode.Create))
+            using (var output = File.Create(Path.Combine(PackagesDirPath, $"{version}.onv")))
+            using (var zip = new ZipArchive(output, ZipArchiveMode.Create))
                 zip.CreateEntryFromFile(dummyTempFilePath, DummyFileName);
 
             // Delete temp file
             File.Delete(dummyTempFilePath);
         }
 
-        public static void SetupDummy(Version baseVersion, params Version[] packageVersions)
+        public static void Setup(Version baseVersion, params Version[] packageVersions)
         {
-            // Delete old dummy
-            DeleteDummy();
+            // Delete
+            Delete();
 
-            // Create base dummy
-            CreateDummy(baseVersion);
+            // Create base
+            CreateBase(baseVersion);
 
             // Create packages
-            foreach (var version in packageVersions)
-                CreateDummyPackage(version);
+            foreach (var packageVersion in packageVersions)
+                CreatePackage(packageVersion);
         }
 
-        public static async Task<Version> GetDummyVersionAsync()
+        public static async Task<Version> GetCurrentVersionAsync()
         {
             var output = await DummyCli.ExecuteAsync("version");
             output.ThrowIfError();
@@ -94,7 +97,7 @@ namespace Onova.Tests.Internal
             return Version.Parse(output.StandardOutput);
         }
 
-        public static async Task UpdateDummyAsync()
+        public static async Task CheckPerformUpdateAsync()
         {
             var output = await DummyCli.ExecuteAsync("update");
             output.ThrowIfError();

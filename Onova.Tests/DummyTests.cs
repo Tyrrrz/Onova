@@ -20,14 +20,15 @@ namespace Onova.Tests
         [TearDown]
         public void Cleanup()
         {
-            Thread.Sleep(50); // wait for files to be released
+            // Wait for files to be released
+            Thread.Sleep(50);
 
             // Attach updater log
             if (File.Exists(UpdaterLogFilePath))
                 TestContext.AddTestAttachment(UpdaterLogFilePath, "Updater log");
 
             // Delete dummy
-            DummyHelper.DeleteDummy();
+            DummyEnvironment.Delete();
 
             // Delete storage
             if (Directory.Exists(StorageDirPath))
@@ -38,19 +39,19 @@ namespace Onova.Tests
         public async Task UpdateManager_CheckPerformUpdateAsync_Test()
         {
             // Arrange
-            DummyHelper.SetupDummy(
+            DummyEnvironment.Setup(
                 Version.Parse("1.0.0.0"),
                 Version.Parse("1.0.0.0"), Version.Parse("2.0.0.0"), Version.Parse("3.0.0.0"));
 
             // Assert current version
-            var oldVersion = await DummyHelper.GetDummyVersionAsync();
+            var oldVersion = await DummyEnvironment.GetCurrentVersionAsync();
             Assert.That(oldVersion, Is.EqualTo(Version.Parse("1.0.0.0")));
 
             // Update dummy via Onova
-            await DummyHelper.UpdateDummyAsync();
+            await DummyEnvironment.CheckPerformUpdateAsync();
 
             // Assert current version again
-            var newVersion = await DummyHelper.GetDummyVersionAsync();
+            var newVersion = await DummyEnvironment.GetCurrentVersionAsync();
             Assert.That(newVersion, Is.EqualTo(Version.Parse("3.0.0.0")));
         }
     }

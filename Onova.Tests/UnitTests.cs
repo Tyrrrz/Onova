@@ -19,7 +19,11 @@ namespace Onova.Tests
             // Resolver mock
             var resolverMock = new Mock<IPackageResolver>();
             var availableVersions = new[]
-                {Version.Parse("1.0.0.0"), Version.Parse("2.0.0.0"), Version.Parse("3.0.0.0")};
+            {
+                Version.Parse("1.0"),
+                Version.Parse("2.0"),
+                Version.Parse("3.0")
+            };
             resolverMock.Setup(m => m.GetVersionsAsync()).ReturnsAsync(availableVersions);
 
             // Extractor mock
@@ -50,7 +54,11 @@ namespace Onova.Tests
             // Resolver mock
             var resolverMock = new Mock<IPackageResolver>();
             var availableVersions = new[]
-                {Version.Parse("1.0.0.0"), Version.Parse("2.0.0.0"), Version.Parse("3.0.0.0")};
+            {
+                Version.Parse("1.0"),
+                Version.Parse("2.0"),
+                Version.Parse("3.0")
+            };
             resolverMock.Setup(m => m.GetVersionsAsync()).ReturnsAsync(availableVersions);
 
             // Extractor mock
@@ -87,7 +95,7 @@ namespace Onova.Tests
             var extractorMock = new Mock<IPackageExtractor>();
 
             // Updatee mock
-            var version = Version.Parse("1.0.0.0");
+            var version = Version.Parse("1.0");
             var updatee = new AssemblyMetadata("", version, "", "");
 
             // Update manager

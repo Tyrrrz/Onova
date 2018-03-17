@@ -101,7 +101,7 @@ namespace Onova
                 cancellationToken).ConfigureAwait(false);
 
             // Create directory for package contents
-            DirectoryHelper.Reset(packageContentDirPath);
+            DirectoryEx.Reset(packageContentDirPath);
 
             // Extract package contents
             await _extractor.ExtractAsync(packageFilePath, packageContentDirPath,
@@ -112,7 +112,7 @@ namespace Onova
             File.Delete(packageFilePath);
 
             // Extract updater
-            await AssemblyHelper.CopyResourceAsync(UpdaterResourceName, _updaterFilePath)
+            await Assembly.GetExecutingAssembly().CopyResourceAsync(UpdaterResourceName, _updaterFilePath)
                 .ConfigureAwait(false);
         }
 
@@ -131,7 +131,7 @@ namespace Onova
                 throw new InvalidOperationException("Updater has already been launched.");
 
             // Get current process ID
-            var currentProcessId = ProcessHelper.GetCurrentProcessId();
+            var currentProcessId = ProcessEx.GetCurrentProcessId();
 
             // Prepare arguments
             var args = $"{currentProcessId} " +
@@ -140,10 +140,10 @@ namespace Onova
                        $"{restart}";
 
             // Decide if updater needs to be elevated
-            var isElevated = !DirectoryHelper.CheckWriteAccess(_updatee.DirectoryPath);
+            var isElevated = !DirectoryEx.CheckWriteAccess(_updatee.DirectoryPath);
 
             // Launch the updater
-            ProcessHelper.StartCli(_updaterFilePath, args, isElevated);
+            ProcessEx.StartCli(_updaterFilePath, args, isElevated);
             _updaterLaunched = true;
 
             // Wait a bit until it starts so that it can attach to our process ID

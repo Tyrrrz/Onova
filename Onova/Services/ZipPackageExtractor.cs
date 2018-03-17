@@ -43,7 +43,7 @@ namespace Onova.Services
                 foreach (var entry in archive.Entries)
                 {
                     // Check if entry name matches pattern
-                    if (!WildcardPattern.IsMatch('\\' + entry.FullName, _entryNamePattern))
+                    if (!WildcardPattern.IsMatch($"\\{entry.FullName}", _entryNamePattern))
                         continue;
 
                     // Get destination paths

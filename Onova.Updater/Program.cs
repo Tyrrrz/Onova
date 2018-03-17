@@ -25,11 +25,11 @@ namespace Onova.Updater
 
             // Wait until updatee dies
             _log.WriteLine("Waiting for updatee to exit...");
-            ProcessHelper.WaitForExit(updateeProcessId);
+            ProcessEx.WaitForExit(updateeProcessId);
 
             // Copy over the extracted package
             _log.WriteLine("Copying package contents...");
-            DirectoryHelper.Copy(packageContentDirPath, updateeDirPath);
+            DirectoryEx.Copy(packageContentDirPath, updateeDirPath);
 
             // Launch the updatee again if requested
             if (restartUpdatee)

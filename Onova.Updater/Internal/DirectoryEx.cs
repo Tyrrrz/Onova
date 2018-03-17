@@ -2,7 +2,7 @@
 
 namespace Onova.Updater.Internal
 {
-    internal static class DirectoryHelper
+    internal static class DirectoryEx
     {
         public static void Copy(string sourceDirPath, string destDirPath, bool overwrite = true)
         {

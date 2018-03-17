@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -78,6 +80,16 @@ namespace Onova.Internal
                 totalBytesCopied += bytesCopied;
                 progress?.Report(1.0 * bytesCopied / totalBytesCopied);
             } while (bytesCopied > 0);
+        }
+
+        public static async Task CopyResourceAsync(this Assembly assembly, string resourceName, string destFilePath)
+        {
+            var input = assembly.GetManifestResourceStream(resourceName);
+            if (input == null)
+                throw new MissingManifestResourceException($"Could not find resource [{resourceName}].");
+
+            using (var output = File.Create(destFilePath))
+                await input.CopyToAsync(output).ConfigureAwait(false);
         }
     }
 }

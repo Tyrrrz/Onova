@@ -2,7 +2,7 @@
 
 namespace Onova.Internal
 {
-    internal static class ProcessHelper
+    internal static class ProcessEx
     {
         public static int GetCurrentProcessId()
         {

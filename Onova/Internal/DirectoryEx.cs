@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Onova.Internal
 {
-    internal static class DirectoryHelper
+    internal static class DirectoryEx
     {
         public static bool CheckWriteAccess(string dirPath)
         {

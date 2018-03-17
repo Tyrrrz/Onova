@@ -146,6 +146,51 @@ namespace Onova.Tests
         }
 
         [Test]
+        public async Task NugetPackageResolver_GetVersionsAsync_Test()
+        {
+            // Arrange
+            var expectedVersions = new[]
+            {
+                Version.Parse("1.0.0"),
+                Version.Parse("2.0.0"),
+                Version.Parse("3.0.0")
+            };
+
+            // Act
+            var url = "https://www.myget.org/F/tyrrrz-test/api/v3/index.json";
+            var resolver = new NugetPackageResolver(url, "OnovaTest");
+            var versions = await resolver.GetVersionsAsync();
+
+            // Assert
+            Assert.That(versions, Is.Not.Null);
+            Assert.That(versions, Is.EquivalentTo(expectedVersions));
+        }
+
+        [Test]
+        public async Task NugetPackageResolver_DownloadAsync_Test()
+        {
+            // Arrange
+            var version = Version.Parse("2.0.0");
+            var expectedContent = "Hello world";
+
+            // Act
+            var url = "https://www.myget.org/F/tyrrrz-test/api/v3/index.json";
+            var resolver = new NugetPackageResolver(url, "OnovaTest");
+            var destFilePath = Path.Combine(TempDirPath, "Output.onv");
+            await resolver.DownloadAsync(version, destFilePath);
+
+            // Assert
+            Assert.That(File.Exists(destFilePath));
+
+            using (var input = File.OpenRead(destFilePath))
+            using (var zip = new ZipArchive(input, ZipArchiveMode.Read))
+            {
+                var content = zip.GetEntry("Files/Content.txt").ReadAllText();
+                Assert.That(content, Is.EqualTo(expectedContent));
+            }
+        }
+
+        [Test]
         public async Task AggregatePackageResolver_GetVersionsAsync_Test()
         {
             // Arrange
@@ -211,8 +256,8 @@ namespace Onova.Tests
             var expectedEntryPaths = new[]
             {
                 "a.txt",
-                "1\\b.txt",
-                "1\\2\\c.txt"
+                "1/b.txt",
+                "1/2/c.txt"
             };
 
             var packageFilePath = Path.Combine(TempDirPath, "Package.zip");
@@ -220,7 +265,7 @@ namespace Onova.Tests
             using (var zip = new ZipArchive(output, ZipArchiveMode.Create))
             {
                 foreach (var expectedEntryPath in expectedEntryPaths)
-                    zip.CreateTextEntry(expectedEntryPath, expectedContent);
+                    zip.CreateEntry(expectedEntryPath).WriteAllText(expectedContent);
             }
 
             // Act

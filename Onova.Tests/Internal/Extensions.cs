@@ -5,15 +5,18 @@ namespace Onova.Tests.Internal
 {
     internal static class Extensions
     {
-        public static ZipArchiveEntry CreateTextEntry(this ZipArchive archive, string entryName, string content)
+        public static void WriteAllText(this ZipArchiveEntry entry, string contents)
         {
-            var entry = archive.CreateEntry(entryName);
-
             using (var output = entry.Open())
             using (var writer = new StreamWriter(output))
-                writer.Write(content);
+                writer.Write(contents);
+        }
 
-            return entry;
+        public static string ReadAllText(this ZipArchiveEntry entry)
+        {
+            using (var output = entry.Open())
+            using (var reader = new StreamReader(output))
+                return reader.ReadToEnd();
         }
     }
 }

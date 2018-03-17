@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Onova.Internal;
 
 namespace Onova
 {
@@ -15,6 +16,8 @@ namespace Onova
         public static async Task CheckPerformUpdateAsync(this IUpdateManager updateManager, bool restart = true,
             IProgress<double> progress = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            updateManager.GuardNotNull(nameof(updateManager));
+
             // Check
             var result = await updateManager.CheckForUpdatesAsync().ConfigureAwait(false);
             if (!result.CanUpdate)

@@ -11,7 +11,7 @@ namespace Onova.Services
 {
     /// <summary>
     /// Resolves packages using a manifest served by a web server.
-    /// Manifest files consists of package versions and URLs, separated by space, one line per version.
+    /// Manifest consists of package versions and URLs, separated by space, one line per version.
     /// </summary>
     public class WebPackageResolver : IPackageResolver
     {

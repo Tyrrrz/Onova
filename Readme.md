@@ -24,11 +24,11 @@ Onova is a library that provides a framework for performing auto-updates in appl
 - Supported extractors:
   - `ZipPackageExtractor` - zip archives
   - `NugetPackageExtractor` - NuGet packages
-- Can be extended with custom resolvers and extractors
+- Extendable with custom resolvers and extractors
 - Progress reporting and cancellation
-- Can apply updates to any version, not necessarily latest
-- In-place update using an external executable
-- Automatically prompts for elevated privileges if necessary
+- Update to any available version, not necessarily latest
+- Overwrite files in-place using an external executable
+- Automatically prompt for elevated privileges if necessary
 - Fully self-contained
 - Targets .NET Framework 4.6+
 
@@ -72,11 +72,11 @@ Downloaded packages are extracted using an implementation of `IPackageExtractor`
 
 #### `ZipPackageExtractor`
 
-This implementation treats packages as zip archives.
+This implementation extracts files from zip-archived packages.
 
 #### `NugetPackageExtractor`
 
-This implementation treats packages as zip archives with NuGet structure. Files are extracted from the specified root directory.
+This implementation extracts files from NuGet packages, from the specified root directory.
 
 ## Usage
 

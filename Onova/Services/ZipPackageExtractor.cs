@@ -9,7 +9,7 @@ using Onova.Internal;
 namespace Onova.Services
 {
     /// <summary>
-    /// Extracts packages as zip archives.
+    /// Extracts files from zip-archived packages.
     /// </summary>
     public class ZipPackageExtractor : IPackageExtractor
     {

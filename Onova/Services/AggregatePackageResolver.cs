@@ -9,7 +9,7 @@ using Onova.Internal;
 namespace Onova.Services
 {
     /// <summary>
-    /// Resolves packages using multiple package resolvers.
+    /// Resolves packages using multiple other package resolvers.
     /// </summary>
     public class AggregatePackageResolver : IPackageResolver
     {

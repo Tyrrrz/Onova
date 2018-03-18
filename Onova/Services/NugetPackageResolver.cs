@@ -13,7 +13,7 @@ using Onova.Internal;
 namespace Onova.Services
 {
     /// <summary>
-    /// Resolves packages from a NuGet package repository.
+    /// Resolves packages from a NuGet feed.
     /// </summary>
     public class NugetPackageResolver : IPackageResolver
     {
@@ -48,16 +48,17 @@ namespace Onova.Services
             var resourcesJson = JToken.Parse(response)["resources"];
 
             // Get URL of the required resource
+            var expectedResourceType = "PackageBaseAddress/3.0.0";
             foreach (var resourceJson in resourcesJson)
             {
                 // Check resource type
                 var resourceType = resourceJson["@type"].Value<string>();
-                if (resourceType == "PackageBaseAddress/3.0.0")
+                if (resourceType == expectedResourceType)
                     return resourceJson["@id"].Value<string>();
             }
 
             // Resource not found
-            throw new InvalidOperationException("PackageBaseAddress/3.0.0 resource not found in service index.");
+            throw new InvalidOperationException($"[{expectedResourceType}] resource not found in service index.");
         }
 
         /// <inheritdoc />

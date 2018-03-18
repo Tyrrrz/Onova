@@ -13,7 +13,7 @@ namespace Onova.Services
 {
     /// <summary>
     /// Resolves packages from release assets of a GitHub repository.
-    /// Release names should contain package versions (e.g. "v1.0.0.0").
+    /// Release names should contain package versions (e.g. "v1.8.3").
     /// </summary>
     public class GithubPackageResolver : IPackageResolver
     {

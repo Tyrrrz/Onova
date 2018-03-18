@@ -40,8 +40,8 @@ namespace Onova.Tests.Internal
             // Copy files
             foreach (var filePath in Directory.EnumerateFiles(TestDirPath))
             {
-                var fileExt = Path.GetExtension(filePath);
                 var fileName = Path.GetFileName(filePath);
+                var fileExt = Path.GetExtension(filePath);
 
                 // Only exe and dll
                 if (!string.Equals(fileExt, ".exe", StringComparison.OrdinalIgnoreCase) &&

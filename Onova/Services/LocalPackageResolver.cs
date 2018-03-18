@@ -32,10 +32,14 @@ namespace Onova.Services
         {
             var map = new Dictionary<Version, string>();
 
-            foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath, _fileNamePattern))
+            foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath))
             {
-                // Get name without extension
+                var fileName = Path.GetFileName(filePath);
                 var fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
+
+                // See if name matches
+                if (!WildcardPattern.IsMatch(fileName, _fileNamePattern))
+                    continue;
 
                 // Try to parse version
                 var versionText = Regex.Match(fileNameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1]

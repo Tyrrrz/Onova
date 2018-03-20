@@ -15,12 +15,16 @@ namespace Onova.Tests.Internal
         private static string TestDirPath => TestContext.CurrentContext.TestDirectory;
         private static string DummyDirPath => Path.Combine(TestDirPath, "Dummy");
         private static string DummyFilePath => Path.Combine(DummyDirPath, DummyFileName);
-        private static string PackagesDirPath => Path.Combine(DummyDirPath, "Packages");
+        private static string DummyPackagesDirPath => Path.Combine(DummyDirPath, "Packages");
 
-        private static readonly Cli DummyCli = new Cli(DummyFilePath);
+        private static readonly ICli DummyCli = new Cli(DummyFilePath);
 
         public static void Delete()
         {
+            // Cancel any running CLI instances
+            DummyCli.CancelAll();
+
+            // Delete directory
             if (Directory.Exists(DummyDirPath))
                 Directory.Delete(DummyDirPath, true);
         }
@@ -58,7 +62,7 @@ namespace Onova.Tests.Internal
         private static void CreatePackage(Version version)
         {
             // Create package directory
-            Directory.CreateDirectory(PackagesDirPath);
+            Directory.CreateDirectory(DummyPackagesDirPath);
 
             // Temporarily copy the dummy
             var dummyTempFilePath = Path.Combine(DummyDirPath, $"{DummyFileName}.{version}");
@@ -68,7 +72,7 @@ namespace Onova.Tests.Internal
             SetAssemblyVersion(dummyTempFilePath, version);
 
             // Create package
-            using (var zip = ZipFile.Open(Path.Combine(PackagesDirPath, $"{version}.onv"), ZipArchiveMode.Create))
+            using (var zip = ZipFile.Open(Path.Combine(DummyPackagesDirPath, $"{version}.onv"), ZipArchiveMode.Create))
                 zip.CreateEntryFromFile(dummyTempFilePath, DummyFileName);
 
             // Delete temp file

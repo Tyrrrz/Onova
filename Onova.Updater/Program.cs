@@ -17,6 +17,19 @@ namespace Onova.Updater
         private static string LogFilePath => Path.Combine(AssemblyDirPath, "Log.txt");
         private static Version Version => Assembly.GetExecutingAssembly().GetName().Version;
 
+        private static void WriteLog(string value = null)
+        {
+            if (value.IsNotBlank())
+            {
+                var date = DateTimeOffset.Now;
+                _log.WriteLine($"{date}: {value}");
+            }
+            else
+            {
+                _log.WriteLine();
+            }
+        }
+
         private static void Update(int updateeProcessId, string updateeFilePath,
             string packageContentDirPath, bool restartUpdatee)
         {
@@ -24,22 +37,22 @@ namespace Onova.Updater
             var updateeDirPath = Path.GetDirectoryName(updateeFilePath);
 
             // Wait until updatee dies
-            _log.WriteLine("Waiting for updatee to exit...");
+            WriteLog("Waiting for updatee to exit...");
             ProcessEx.WaitForExit(updateeProcessId);
 
             // Copy over the extracted package
-            _log.WriteLine("Copying package contents...");
+            WriteLog("Copying package contents...");
             DirectoryEx.Copy(packageContentDirPath, updateeDirPath);
 
             // Launch the updatee again if requested
             if (restartUpdatee)
             {
-                _log.WriteLine("Restarting updatee...");
+                WriteLog("Restarting updatee...");
                 Process.Start(updateeFilePath);
             }
 
             // Delete package directory
-            _log.WriteLine("Deleting package contents...");
+            WriteLog("Deleting package contents...");
             Directory.Delete(packageContentDirPath, true);
         }
 
@@ -49,8 +62,7 @@ namespace Onova.Updater
             using (_log = File.AppendText(LogFilePath))
             {
                 // Launch info
-                _log.WriteLine($"Onova Updater v{Version} started on {DateTimeOffset.Now}");
-                _log.WriteLine($"Executed with args: {string.Join(" ", args)}");
+                WriteLog($"Onova Updater v{Version} started with args: {string.Join(" ", args)}");
 
                 try
                 {
@@ -62,15 +74,15 @@ namespace Onova.Updater
 
                     // Execute update
                     Update(updateeProcessId, updateeFilePath, packageContentDirPath, restartUpdatee);
-                    _log.WriteLine("Update completed successfully");
+                    WriteLog("Update completed successfully.");
                 }
                 catch (Exception ex)
                 {
-                    _log.WriteLine(ex);
+                    WriteLog(ex.ToString());
                 }
 
                 // White space to separate log entries
-                _log.WriteLine();
+                WriteLog();
             }
         }
     }

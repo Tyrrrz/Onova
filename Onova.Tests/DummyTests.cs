@@ -12,8 +12,7 @@ namespace Onova.Tests
     {
         private static string StorageDirPath => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Onova",
-            "Onova.Tests.Dummy");
+            "Onova", "Onova.Tests.Dummy");
 
         private static string UpdaterLogFilePath => Path.Combine(StorageDirPath, "Log.txt");
 
@@ -27,7 +26,7 @@ namespace Onova.Tests
             if (File.Exists(UpdaterLogFilePath))
                 TestContext.AddTestAttachment(UpdaterLogFilePath, "Updater log");
 
-            // Delete dummy
+            // Delete dummy environment
             DummyEnvironment.Delete();
 
             // Delete storage

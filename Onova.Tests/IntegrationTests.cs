@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Onova.Models;
 using Onova.Services;
 using Onova.Tests.Internal;
 
@@ -12,20 +13,73 @@ namespace Onova.Tests
     [TestFixture]
     public class IntegrationTests
     {
+        private const string LocalUpdateeName = "Onova.Tests.IntegrationTests";
+
         private static string TestDirPath => TestContext.CurrentContext.TestDirectory;
         private static string TempDirPath => Path.Combine(TestDirPath, "Temp");
+
+        private static string StorageDirPath => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Onova", LocalUpdateeName);
 
         [SetUp]
         public void Setup()
         {
-            Directory.CreateDirectory(TempDirPath);
+            // Create temp directory
+            DirectoryEx.Reset(TempDirPath);
         }
 
         [TearDown]
         public void Cleanup()
         {
+            // Delete temp directory
             if (Directory.Exists(TempDirPath))
                 Directory.Delete(TempDirPath, true);
+
+            // Delete storage
+            if (Directory.Exists(StorageDirPath))
+                Directory.Delete(StorageDirPath, true);
+        }
+
+        [Test]
+        public async Task UpdateManager_GetPreparedUpdates_Test()
+        {
+            // Arrange
+            var expectedVersions = new[]
+            {
+                Version.Parse("1.0"),
+                Version.Parse("2.0"),
+                Version.Parse("3.0")
+            };
+
+            // Package file
+            foreach (var expectedVersion in expectedVersions)
+            {
+                var packageFilePath = Path.Combine(TempDirPath, $"{expectedVersion}.onv");
+                using (var zip = ZipFile.Open(packageFilePath, ZipArchiveMode.Create))
+                    zip.CreateEntry("Test.txt").WriteAllText("Hello world");
+            }
+
+            // Update manager
+            var updateeVersion = Version.Parse("1.0");
+            var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "", "");
+            var resolver = new LocalPackageResolver(TempDirPath, "*.onv");
+            var extractor = new ZipPackageExtractor();
+            var manager = new UpdateManager(updatee, resolver, extractor);
+
+            // Act
+            var initalPreparedUpdates = manager.GetPreparedUpdates();
+
+            foreach (var expectedVersion in expectedVersions)
+                await manager.PrepareUpdateAsync(expectedVersion);
+
+            var preparedUpdates = manager.GetPreparedUpdates();
+
+            // Assert
+            Assert.That(initalPreparedUpdates, Is.Not.Null);
+            Assert.That(initalPreparedUpdates, Is.Empty);
+            Assert.That(preparedUpdates, Is.Not.Null);
+            Assert.That(preparedUpdates, Is.EquivalentTo(expectedVersions));
         }
 
         [Test]

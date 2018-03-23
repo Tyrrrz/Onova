@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -39,8 +40,7 @@ namespace Onova
 
             _storageDirPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova",
-                _updatee.Name);
+                "Onova", _updatee.Name);
 
             _updaterFilePath = Path.Combine(_storageDirPath, $"{_updatee.Name}.Updater.exe");
         }
@@ -62,6 +62,38 @@ namespace Onova
         {
             if (Directory.Exists(_storageDirPath))
                 Directory.Delete(_storageDirPath, true);
+        }
+
+        /// <inheritdoc />
+        [NotNull, ItemNotNull]
+        public IReadOnlyList<Version> GetPreparedUpdates()
+        {
+            // Check if storage directory exists
+            if (!Directory.Exists(_storageDirPath))
+                return Array.Empty<Version>();
+
+            // Enumerate directories in storage directory
+            var versions = new HashSet<Version>();
+
+            foreach (var dirPath in Directory.EnumerateDirectories(_storageDirPath))
+            {
+                var dirName = Path.GetFileName(dirPath);
+
+                // Try to parse version
+                if (!Version.TryParse(dirName, out var version))
+                    continue;
+
+                // Make sure the package file no longer exists
+                // (if it exists along with unpacked directory, it could mean it wasn't unpacked properly)
+                var packageFilePath = GetPackageFilePath(version);
+                if (File.Exists(packageFilePath))
+                    continue;
+
+                // Add to list
+                versions.Add(version);
+            }
+
+            return versions.ToArray();
         }
 
         /// <inheritdoc />

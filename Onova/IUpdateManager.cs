@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Models;
@@ -14,6 +15,11 @@ namespace Onova
         /// Deletes all prepared updates and temporary files.
         /// </summary>
         void Cleanup();
+
+        /// <summary>
+        /// Gets the list of prepared updates.
+        /// </summary>
+        IReadOnlyList<Version> GetPreparedUpdates();
 
         /// <summary>
         /// Checks for updates.

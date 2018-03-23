@@ -11,6 +11,8 @@ namespace Onova.Tests
     [TestFixture]
     public class UnitTests
     {
+        private const string LocalUpdateeName = "Onova.Tests.UnitTests";
+
         [Test]
         public async Task UpdateManager_CheckForUpdatesAsync_HigherVersionAvailable_Test()
         {
@@ -30,14 +32,14 @@ namespace Onova.Tests
             var extractorMock = new Mock<IPackageExtractor>();
 
             // Updatee mock
-            var version = availableVersions.Min();
-            var updatee = new AssemblyMetadata("", version, "", "");
+            var updateeVersion = availableVersions.Min();
+            var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "", "");
 
             // Update manager
-            var updateManager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object);
+            var manager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object);
 
             // Act
-            var result = await updateManager.CheckForUpdatesAsync();
+            var result = await manager.CheckForUpdatesAsync();
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -65,14 +67,14 @@ namespace Onova.Tests
             var extractorMock = new Mock<IPackageExtractor>();
 
             // Updatee mock
-            var version = availableVersions.Max();
-            var updatee = new AssemblyMetadata("", version, "", "");
+            var updateeVersion = availableVersions.Max();
+            var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "", "");
 
             // Update manager
-            var updateManager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object);
+            var manager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object);
 
             // Act
-            var result = await updateManager.CheckForUpdatesAsync();
+            var result = await manager.CheckForUpdatesAsync();
 
             // Assert
             Assert.That(result, Is.Not.Null);
@@ -95,14 +97,14 @@ namespace Onova.Tests
             var extractorMock = new Mock<IPackageExtractor>();
 
             // Updatee mock
-            var version = Version.Parse("1.0");
-            var updatee = new AssemblyMetadata("", version, "", "");
+            var updateeVersion = Version.Parse("1.0");
+            var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "", "");
 
             // Update manager
-            var updateManager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object);
+            var manager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object);
 
             // Act
-            var result = await updateManager.CheckForUpdatesAsync();
+            var result = await manager.CheckForUpdatesAsync();
 
             // Assert
             Assert.That(result, Is.Not.Null);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
@@ -15,15 +16,15 @@ namespace Onova.Services
     /// </summary>
     public class WebPackageResolver : IPackageResolver
     {
-        private readonly IHttpService _httpService;
+        private readonly HttpClient _httpClient;
         private readonly string _manifestUrl;
 
         /// <summary>
-        /// Initializes an instance of <see cref="WebPackageResolver"/> with a custom HTTP service.
+        /// Initializes an instance of <see cref="WebPackageResolver"/>.
         /// </summary>
-        public WebPackageResolver(IHttpService httpService, string manifestUrl)
+        public WebPackageResolver(HttpClient httpClient, string manifestUrl)
         {
-            _httpService = httpService.GuardNotNull(nameof(httpService));
+            _httpClient = httpClient.GuardNotNull(nameof(httpClient));
             _manifestUrl = manifestUrl.GuardNotNull(nameof(manifestUrl));
         }
 
@@ -31,7 +32,7 @@ namespace Onova.Services
         /// Initializes an instance of <see cref="WebPackageResolver"/>.
         /// </summary>
         public WebPackageResolver(string manifestUrl)
-            : this(HttpService.Instance, manifestUrl)
+            : this(HttpClientEx.GetSingleton(), manifestUrl)
         {
         }
 
@@ -40,7 +41,7 @@ namespace Onova.Services
             var map = new Dictionary<Version, string>();
 
             // Get manifest
-            var response = await _httpService.GetStringAsync(_manifestUrl).ConfigureAwait(false);
+            var response = await _httpClient.GetStringAsync(_manifestUrl).ConfigureAwait(false);
 
             foreach (var line in response.Split("\n"))
             {
@@ -87,7 +88,7 @@ namespace Onova.Services
                 throw new PackageNotFoundException(version);
 
             // Download
-            using (var input = await _httpService.GetStreamAsync(packageUrl).ConfigureAwait(false))
+            using (var input = await _httpClient.GetFiniteStreamAsync(packageUrl).ConfigureAwait(false))
             using (var output = File.Create(destFilePath))
                 await input.CopyToAsync(output, progress, cancellationToken).ConfigureAwait(false);
         }

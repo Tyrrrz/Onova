@@ -17,18 +17,18 @@ namespace Onova.Services
     /// </summary>
     public class NugetPackageResolver : IPackageResolver
     {
-        private readonly IHttpService _httpService;
+        private readonly HttpClient _httpClient;
         private readonly string _serviceIndexUrl;
         private readonly string _packageId;
 
         private string PackageIdNormalized => _packageId.ToLowerInvariant();
 
         /// <summary>
-        /// Initializes an instance of <see cref="NugetPackageResolver"/> with a custom HTTP service.
+        /// Initializes an instance of <see cref="NugetPackageResolver"/>.
         /// </summary>
-        public NugetPackageResolver(IHttpService httpService, string serviceIndexUrl, string packageId)
+        public NugetPackageResolver(HttpClient httpClient, string serviceIndexUrl, string packageId)
         {
-            _httpService = httpService.GuardNotNull(nameof(httpService));
+            _httpClient = httpClient.GuardNotNull(nameof(httpClient));
             _serviceIndexUrl = serviceIndexUrl.GuardNotNull(nameof(serviceIndexUrl));
             _packageId = packageId.GuardNotNull(nameof(packageId));
         }
@@ -37,14 +37,14 @@ namespace Onova.Services
         /// Initializes an instance of <see cref="NugetPackageResolver"/>.
         /// </summary>
         public NugetPackageResolver(string serviceIndexUrl, string packageId)
-            : this(HttpService.Instance, serviceIndexUrl, packageId)
+            : this(HttpClientEx.GetSingleton(), serviceIndexUrl, packageId)
         {
         }
 
         private async Task<string> GetPackageBaseAddressResourceUrlAsync()
         {
             // Get all available resources
-            var response = await _httpService.GetStringAsync(_serviceIndexUrl).ConfigureAwait(false);
+            var response = await _httpClient.GetStringAsync(_serviceIndexUrl).ConfigureAwait(false);
             var resourcesJson = JToken.Parse(response)["resources"];
 
             // Get URL of the required resource
@@ -69,7 +69,7 @@ namespace Onova.Services
 
             // Get versions
             var request = $"{resourceUrl}/{PackageIdNormalized}/index.json";
-            var response = await _httpService.GetStringAsync(request).ConfigureAwait(false);
+            var response = await _httpClient.GetStringAsync(request).ConfigureAwait(false);
             var versionsJson = JToken.Parse(response)["versions"];
             var versions = new HashSet<Version>();
 
@@ -102,8 +102,7 @@ namespace Onova.Services
             var packageUrl = $"{resourceUrl}/{PackageIdNormalized}/{version}/{PackageIdNormalized}.{version}.nupkg";
 
             // Download
-            using (var request = new HttpRequestMessage(HttpMethod.Get, packageUrl))
-            using (var response = await _httpService.PerformRequestAsync(request).ConfigureAwait(false))
+            using (var response = await _httpClient.GetAsync(packageUrl, cancellationToken).ConfigureAwait(false))
             {
                 // If status code is 404 then this version doesn't exist
                 if (response.StatusCode == HttpStatusCode.NotFound)
@@ -113,7 +112,7 @@ namespace Onova.Services
                 response.EnsureSuccessStatusCode();
 
                 // Copy content to file
-                using (var input = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                using (var input = await response.Content.ReadAsFiniteStreamAsync().ConfigureAwait(false))
                 using (var output = File.Create(destFilePath))
                     await input.CopyToAsync(output, progress, cancellationToken).ConfigureAwait(false);
             }

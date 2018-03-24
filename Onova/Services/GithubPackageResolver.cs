@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,18 +18,18 @@ namespace Onova.Services
     /// </summary>
     public class GithubPackageResolver : IPackageResolver
     {
-        private readonly IHttpService _httpService;
+        private readonly HttpClient _httpClient;
         private readonly string _repositoryOwner;
         private readonly string _repositoryName;
         private readonly string _assetNamePattern;
 
         /// <summary>
-        /// Initializes an instance of <see cref="GithubPackageResolver"/> with a custom HTTP service.
+        /// Initializes an instance of <see cref="GithubPackageResolver"/>.
         /// </summary>
-        public GithubPackageResolver(IHttpService httpService, string repositoryOwner, string repositoryName,
+        public GithubPackageResolver(HttpClient httpClient, string repositoryOwner, string repositoryName,
             string assetNamePattern)
         {
-            _httpService = httpService.GuardNotNull(nameof(httpService));
+            _httpClient = httpClient.GuardNotNull(nameof(httpClient));
             _repositoryOwner = repositoryOwner.GuardNotNull(nameof(repositoryOwner));
             _repositoryName = repositoryName.GuardNotNull(nameof(repositoryName));
             _assetNamePattern = assetNamePattern.GuardNotNull(nameof(assetNamePattern));
@@ -38,7 +39,7 @@ namespace Onova.Services
         /// Initializes an instance of <see cref="GithubPackageResolver"/>.
         /// </summary>
         public GithubPackageResolver(string repositoryOwner, string repositoryName, string assetNamePattern)
-            : this(HttpService.Instance, repositoryOwner, repositoryName, assetNamePattern)
+            : this(HttpClientEx.GetSingleton(), repositoryOwner, repositoryName, assetNamePattern)
         {
         }
 
@@ -48,7 +49,7 @@ namespace Onova.Services
 
             // Get releases
             var request = $"https://api.github.com/repos/{_repositoryOwner}/{_repositoryName}/releases";
-            var response = await _httpService.GetStringAsync(request).ConfigureAwait(false);
+            var response = await _httpClient.GetStringAsync(request).ConfigureAwait(false);
             var releasesJson = JToken.Parse(response);
 
             foreach (var releaseJson in releasesJson)
@@ -109,7 +110,7 @@ namespace Onova.Services
                 throw new PackageNotFoundException(version);
 
             // Download
-            using (var input = await _httpService.GetStreamAsync(packageUrl).ConfigureAwait(false))
+            using (var input = await _httpClient.GetFiniteStreamAsync(packageUrl).ConfigureAwait(false))
             using (var output = File.Create(destFilePath))
                 await input.CopyToAsync(output, progress, cancellationToken).ConfigureAwait(false);
         }

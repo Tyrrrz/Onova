@@ -24,7 +24,10 @@ namespace Onova.Tests
 
             // Attach updater log
             if (File.Exists(UpdaterLogFilePath))
-                TestContext.AddTestAttachment(UpdaterLogFilePath, "Updater log");
+            {
+                var log = File.ReadAllText(UpdaterLogFilePath);
+                TestContext.Out.WriteLine($"Updater log:{Environment.NewLine}{log}");
+            }
 
             // Delete dummy environment
             DummyEnvironment.Delete();

@@ -73,12 +73,11 @@ namespace Onova.Internal
             do
             {
                 // Copy
-                bytesCopied = await source.CopyChunkToAsync(destination, cancellationToken)
-                    .ConfigureAwait(false);
+                bytesCopied = await source.CopyChunkToAsync(destination, cancellationToken).ConfigureAwait(false);
 
                 // Report progress
                 totalBytesCopied += bytesCopied;
-                progress?.Report(1.0 * bytesCopied / totalBytesCopied);
+                progress?.Report(1.0 * totalBytesCopied / source.Length);
             } while (bytesCopied > 0);
         }
 

@@ -74,8 +74,7 @@ namespace Onova.Services
                 throw new PackageNotFoundException(version);
 
             // Download package
-            await resolver.DownloadAsync(version, destFilePath, progress, cancellationToken)
-                .ConfigureAwait(false);
+            await resolver.DownloadAsync(version, destFilePath, progress, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -13,22 +13,21 @@ namespace Onova
         /// <summary>
         /// Checks for new version and performs an update if available.
         /// </summary>
-        public static async Task CheckPerformUpdateAsync(this IUpdateManager updateManager, bool restart = true,
+        public static async Task CheckPerformUpdateAsync(this IUpdateManager manager, bool restart = true,
             IProgress<double> progress = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            updateManager.GuardNotNull(nameof(updateManager));
+            manager.GuardNotNull(nameof(manager));
 
             // Check
-            var result = await updateManager.CheckForUpdatesAsync().ConfigureAwait(false);
+            var result = await manager.CheckForUpdatesAsync().ConfigureAwait(false);
             if (!result.CanUpdate)
                 return;
 
             // Prepare
-            await updateManager.PrepareUpdateAsync(result.LastVersion, progress, cancellationToken)
-                .ConfigureAwait(false);
+            await manager.PrepareUpdateAsync(result.LastVersion, progress, cancellationToken).ConfigureAwait(false);
 
             // Apply
-            await updateManager.LaunchUpdaterAsync(result.LastVersion, restart).ConfigureAwait(false);
+            await manager.LaunchUpdaterAsync(result.LastVersion, restart).ConfigureAwait(false);
 
             // Exit
             Environment.Exit(0);

@@ -1,9 +1,10 @@
 ﻿using System;
+using Onova.Internal;
 
 namespace Onova.Exceptions
 {
     /// <summary>
-    /// Thrown when a package was not found by resolver.
+    /// Thrown when a package of given version was not found by a resolver.
     /// </summary>
     public class PackageNotFoundException : Exception
     {
@@ -13,15 +14,14 @@ namespace Onova.Exceptions
         public Version Version { get; }
 
         /// <inheritdoc />
-        public override string Message { get; }
+        public override string Message => $"Package version [{Version}] was not found.";
 
         /// <summary>
         /// Initializes an instance of <see cref="PackageNotFoundException"/>.
         /// </summary>
         public PackageNotFoundException(Version version)
         {
-            Version = version;
-            Message = $"Package of version [{version}] not found.";
+            Version = version.GuardNotNull(nameof(version));
         }
     }
 }

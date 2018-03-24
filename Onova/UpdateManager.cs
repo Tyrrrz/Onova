@@ -116,11 +116,9 @@ namespace Onova
             version.GuardNotNull(nameof(version));
 
             // Set up progress aggregator
-            var progressAggregator = progress != null
-                ? new ProgressAggregator(progress)
-                : null;
+            var progressAggregator = progress != null ? new ProgressAggregator(progress) : null;
 
-            // Get paths
+            // Get package file path and content directory path
             var packageFilePath = GetPackageFilePath(version);
             var packageContentDirPath = GetPackageContentDirPath(version);
 
@@ -153,14 +151,14 @@ namespace Onova
         {
             version.GuardNotNull(nameof(version));
 
-            // Find the package directory
+            // Get package content directory
             var packageContentDirPath = GetPackageContentDirPath(version);
             if (!Directory.Exists(packageContentDirPath))
                 throw new UpdateNotPreparedException(version);
 
             // Ensure updater hasn't been launched yet
             if (_updaterLaunched)
-                throw new InvalidOperationException("Updater has already been launched.");
+                throw new UpdaterAlreadyLaunchedException();
 
             // Get current process ID
             var currentProcessId = ProcessEx.GetCurrentProcessId();

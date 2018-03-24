@@ -32,6 +32,11 @@ namespace Onova.Services
         {
             var map = new Dictionary<Version, string>();
 
+            // Check if repository directory exists
+            if (!Directory.Exists(_repositoryDirPath))
+                return map;
+
+            // Enumerate files in repository directory
             foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath))
             {
                 var fileName = Path.GetFileName(filePath);

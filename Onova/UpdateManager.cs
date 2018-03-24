@@ -72,9 +72,9 @@ namespace Onova
             if (!Directory.Exists(_storageDirPath))
                 return Array.Empty<Version>();
 
-            // Enumerate directories in storage directory
             var versions = new HashSet<Version>();
 
+            // Enumerate directories in storage directory
             foreach (var dirPath in Directory.EnumerateDirectories(_storageDirPath))
             {
                 var dirName = Path.GetFileName(dirPath);

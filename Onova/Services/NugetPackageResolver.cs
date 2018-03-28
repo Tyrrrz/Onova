@@ -102,7 +102,9 @@ namespace Onova.Services
             var packageUrl = $"{resourceUrl}/{PackageIdNormalized}/{version}/{PackageIdNormalized}.{version}.nupkg";
 
             // Download
-            using (var response = await _httpClient.GetAsync(packageUrl, cancellationToken).ConfigureAwait(false))
+            using (var response = await _httpClient
+                .GetAsync(packageUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
+                .ConfigureAwait(false))
             {
                 // If status code is 404 then this version doesn't exist
                 if (response.StatusCode == HttpStatusCode.NotFound)

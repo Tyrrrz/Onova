@@ -31,7 +31,8 @@ namespace Onova.Tests.Dummy
             // Update to latest version
             else if (command == "update")
             {
-                await UpdateManager.CheckPerformUpdateAsync(false);
+                var progressHandler = new Progress<double>(p => Console.WriteLine($"Progress: {p:P0}"));
+                await UpdateManager.CheckPerformUpdateAsync(false, progressHandler);
             }
         }
 

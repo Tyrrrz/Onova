@@ -1,3 +1,13 @@
+### v2.1 (31-Mar-2018)
+
+- Improved logging in `Onova.Updater`.
+- Fixed some issues with progress not being reported properly or at all.
+- Removed `IHttpService`, `HttpService` in favor of using unwrapped `HttpClient`.
+- Added default file name pattern to `LocalPackageResolver` which matches all files.
+- `LocalPackageResolver` no longer throws an exception if the repository directory doesn't exist.
+- `LaunchUpdater` is now a synchronous method.
+- Added `IsUpdatePrepared` method that can be used to check if an upate to certain version has already been prepared.
+
 ### v2.0 (18-Mar-2018)
 
 - Added `NugetPackageResolver` which resolves packages from a NuGet feed.

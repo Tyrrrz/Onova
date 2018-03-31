@@ -27,7 +27,7 @@ namespace Onova
             await manager.PrepareUpdateAsync(result.LastVersion, progress, cancellationToken).ConfigureAwait(false);
 
             // Apply
-            await manager.LaunchUpdaterAsync(result.LastVersion, restart).ConfigureAwait(false);
+            manager.LaunchUpdater(result.LastVersion, restart);
 
             // Exit
             Environment.Exit(0);

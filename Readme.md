@@ -105,7 +105,7 @@ if (result.CanUpdate)
 
     // Launch an executable that will apply the update
     // (can optionally restart application on completion)
-    await manager.LaunchUpdaterAsync(result.LastVersion);
+    manager.LaunchUpdater(result.LastVersion);
 
     // External updater will wait until the application exits
     Environment.Exit(0);

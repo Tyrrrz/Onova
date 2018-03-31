@@ -147,7 +147,7 @@ namespace Onova
         }
 
         /// <inheritdoc />
-        public async Task LaunchUpdaterAsync(Version version, bool restart = true)
+        public void LaunchUpdater(Version version, bool restart = true)
         {
             version.GuardNotNull(nameof(version));
 
@@ -175,9 +175,6 @@ namespace Onova
             // Launch the updater
             ProcessEx.StartCli(_updaterFilePath, args, isElevated);
             _updaterLaunched = true;
-
-            // Wait a bit until it starts so that it can attach to our process ID
-            await Task.Delay(333).ConfigureAwait(false);
         }
     }
 }

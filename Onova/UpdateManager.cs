@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -65,38 +64,6 @@ namespace Onova
         }
 
         /// <inheritdoc />
-        [NotNull, ItemNotNull]
-        public IReadOnlyList<Version> GetPreparedUpdates()
-        {
-            // Check if storage directory exists
-            if (!Directory.Exists(_storageDirPath))
-                return Array.Empty<Version>();
-
-            var versions = new HashSet<Version>();
-
-            // Enumerate directories in storage directory
-            foreach (var dirPath in Directory.EnumerateDirectories(_storageDirPath))
-            {
-                var dirName = Path.GetFileName(dirPath);
-
-                // Try to parse version
-                if (!Version.TryParse(dirName, out var version))
-                    continue;
-
-                // Make sure the package file no longer exists
-                // (if it exists along with unpacked directory, it could mean it wasn't unpacked properly)
-                var packageFilePath = GetPackageFilePath(version);
-                if (File.Exists(packageFilePath))
-                    continue;
-
-                // Add to list
-                versions.Add(version);
-            }
-
-            return versions.ToArray();
-        }
-
-        /// <inheritdoc />
         [NotNull]
         public async Task<CheckForUpdatesResult> CheckForUpdatesAsync()
         {
@@ -106,6 +73,23 @@ namespace Onova
             var canUpdate = lastVersion != null && _updatee.Version < lastVersion;
 
             return new CheckForUpdatesResult(versions, lastVersion, canUpdate);
+        }
+
+        /// <inheritdoc />
+        public bool IsUpdatePrepared(Version version)
+        {
+            version.GuardNotNull(nameof(version));
+
+            // Get package file path and content directory path
+            var packageFilePath = GetPackageFilePath(version);
+            var packageContentDirPath = GetPackageContentDirPath(version);
+
+            // Package content directory should exist
+            // Package file should have been deleted after extraction
+            // Updater file should exist
+            return !File.Exists(packageFilePath) &&
+                   Directory.Exists(packageContentDirPath) &&
+                   File.Exists(_updaterFilePath);
         }
 
         /// <inheritdoc />
@@ -151,9 +135,8 @@ namespace Onova
         {
             version.GuardNotNull(nameof(version));
 
-            // Get package content directory
-            var packageContentDirPath = GetPackageContentDirPath(version);
-            if (!Directory.Exists(packageContentDirPath))
+            // Ensure update has been prepared
+            if (!IsUpdatePrepared(version))
                 throw new UpdateNotPreparedException(version);
 
             // Ensure updater hasn't been launched yet
@@ -162,6 +145,9 @@ namespace Onova
 
             // Get current process ID
             var currentProcessId = ProcessEx.GetCurrentProcessId();
+
+            // Get package content directory path
+            var packageContentDirPath = GetPackageContentDirPath(version);
 
             // Prepare arguments
             var args = $"{currentProcessId} " +

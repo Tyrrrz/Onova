@@ -42,10 +42,10 @@ namespace Onova.Tests
         }
 
         [Test]
-        public async Task UpdateManager_GetPreparedUpdates_Test()
+        public async Task UpdateManager_IsUpdatePrepared_Test()
         {
             // Arrange
-            var expectedVersions = new[]
+            var versions = new[]
             {
                 Version.Parse("1.0"),
                 Version.Parse("2.0"),
@@ -53,9 +53,9 @@ namespace Onova.Tests
             };
 
             // Package file
-            foreach (var expectedVersion in expectedVersions)
+            foreach (var version in versions)
             {
-                var packageFilePath = Path.Combine(TempDirPath, $"{expectedVersion}.onv");
+                var packageFilePath = Path.Combine(TempDirPath, $"{version}.onv");
                 using (var zip = ZipFile.Open(packageFilePath, ZipArchiveMode.Create))
                     zip.CreateEntry("Test.txt").WriteAllText("Hello world");
             }
@@ -68,18 +68,12 @@ namespace Onova.Tests
             var manager = new UpdateManager(updatee, resolver, extractor);
 
             // Act
-            var initalPreparedUpdates = manager.GetPreparedUpdates();
-
-            foreach (var expectedVersion in expectedVersions)
-                await manager.PrepareUpdateAsync(expectedVersion);
-
-            var preparedUpdates = manager.GetPreparedUpdates();
+            foreach (var version in versions)
+                await manager.PrepareUpdateAsync(version);
 
             // Assert
-            Assert.That(initalPreparedUpdates, Is.Not.Null);
-            Assert.That(initalPreparedUpdates, Is.Empty);
-            Assert.That(preparedUpdates, Is.Not.Null);
-            Assert.That(preparedUpdates, Is.EquivalentTo(expectedVersions));
+            foreach (var version in versions)
+                Assert.That(manager.IsUpdatePrepared(version));
         }
 
         [Test]

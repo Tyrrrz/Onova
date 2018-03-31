@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Models;
@@ -17,14 +16,14 @@ namespace Onova
         void Cleanup();
 
         /// <summary>
-        /// Gets the list of prepared updates.
-        /// </summary>
-        IReadOnlyList<Version> GetPreparedUpdates();
-
-        /// <summary>
         /// Checks for updates.
         /// </summary>
         Task<CheckForUpdatesResult> CheckForUpdatesAsync();
+
+        /// <summary>
+        /// Checks whether an update to given version has been prepared.
+        /// </summary>
+        bool IsUpdatePrepared(Version version);
 
         /// <summary>
         /// Prepares an update to given version.

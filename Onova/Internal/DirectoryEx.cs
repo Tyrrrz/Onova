@@ -7,7 +7,7 @@ namespace Onova.Internal
     {
         public static bool CheckWriteAccess(string dirPath)
         {
-            var testFilePath = Path.Combine(dirPath, Guid.NewGuid().ToString());
+            var testFilePath = Path.Combine(dirPath, $"{Guid.NewGuid()}");
 
             try
             {

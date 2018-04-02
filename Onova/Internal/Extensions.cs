@@ -81,7 +81,8 @@ namespace Onova.Internal
             } while (bytesCopied > 0);
         }
 
-        public static async Task CopyResourceAsync(this Assembly assembly, string resourceName, string destFilePath)
+        public static async Task ExtractManifestResourceAsync(this Assembly assembly, string resourceName,
+            string destFilePath)
         {
             var input = assembly.GetManifestResourceStream(resourceName);
             if (input == null)

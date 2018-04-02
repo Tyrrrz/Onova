@@ -126,7 +126,7 @@ namespace Onova
             File.Delete(packageFilePath);
 
             // Extract updater
-            await Assembly.GetExecutingAssembly().CopyResourceAsync(UpdaterResourceName, _updaterFilePath)
+            await Assembly.GetExecutingAssembly().ExtractManifestResourceAsync(UpdaterResourceName, _updaterFilePath)
                 .ConfigureAwait(false);
         }
 

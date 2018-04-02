@@ -19,6 +19,7 @@ namespace Onova.Services
     public class GithubPackageResolver : IPackageResolver
     {
         private readonly HttpClient _httpClient;
+        private readonly string _apiBaseAddress;
         private readonly string _repositoryOwner;
         private readonly string _repositoryName;
         private readonly string _assetNamePattern;
@@ -26,13 +27,32 @@ namespace Onova.Services
         /// <summary>
         /// Initializes an instance of <see cref="GithubPackageResolver"/>.
         /// </summary>
-        public GithubPackageResolver(HttpClient httpClient, string repositoryOwner, string repositoryName,
-            string assetNamePattern)
+        public GithubPackageResolver(HttpClient httpClient, string apiBaseAddress, string repositoryOwner,
+            string repositoryName, string assetNamePattern)
         {
             _httpClient = httpClient.GuardNotNull(nameof(httpClient));
+            _apiBaseAddress = apiBaseAddress.GuardNotNull(nameof(apiBaseAddress));
             _repositoryOwner = repositoryOwner.GuardNotNull(nameof(repositoryOwner));
             _repositoryName = repositoryName.GuardNotNull(nameof(repositoryName));
             _assetNamePattern = assetNamePattern.GuardNotNull(nameof(assetNamePattern));
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="GithubPackageResolver"/>.
+        /// </summary>
+        public GithubPackageResolver(HttpClient httpClient, string repositoryOwner, string repositoryName,
+            string assetNamePattern)
+            : this(httpClient, "https://api.github.com", repositoryOwner, repositoryName, assetNamePattern)
+        {
+        }
+
+        /// <summary>
+        /// Initializes an instance of <see cref="GithubPackageResolver"/>.
+        /// </summary>
+        public GithubPackageResolver(string apiBaseAddress, string repositoryOwner, string repositoryName,
+            string assetNamePattern)
+            : this(HttpClientEx.GetSingleton(), apiBaseAddress, repositoryOwner, repositoryName, assetNamePattern)
+        {
         }
 
         /// <summary>
@@ -48,7 +68,7 @@ namespace Onova.Services
             var map = new Dictionary<Version, string>();
 
             // Get releases
-            var request = $"https://api.github.com/repos/{_repositoryOwner}/{_repositoryName}/releases";
+            var request = $"{_apiBaseAddress}/repos/{_repositoryOwner}/{_repositoryName}/releases";
             var response = await _httpClient.GetStringAsync(request).ConfigureAwait(false);
             var releasesJson = JToken.Parse(response);
 

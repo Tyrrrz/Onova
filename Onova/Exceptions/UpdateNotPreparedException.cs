@@ -13,13 +13,11 @@ namespace Onova.Exceptions
         /// </summary>
         public Version Version { get; }
 
-        /// <inheritdoc />
-        public override string Message => $"Update to version [{Version}] needs to be prepared first.";
-
         /// <summary>
         /// Initializes an instance of <see cref="UpdateNotPreparedException"/>.
         /// </summary>
         public UpdateNotPreparedException(Version version)
+            : base($"Update to version [{version}] needs to be prepared first.")
         {
             Version = version.GuardNotNull(nameof(version));
         }

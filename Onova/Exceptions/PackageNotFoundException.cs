@@ -13,13 +13,11 @@ namespace Onova.Exceptions
         /// </summary>
         public Version Version { get; }
 
-        /// <inheritdoc />
-        public override string Message => $"Package version [{Version}] was not found.";
-
         /// <summary>
         /// Initializes an instance of <see cref="PackageNotFoundException"/>.
         /// </summary>
         public PackageNotFoundException(Version version)
+            : base($"Package version [{version}] was not found.")
         {
             Version = version.GuardNotNull(nameof(version));
         }

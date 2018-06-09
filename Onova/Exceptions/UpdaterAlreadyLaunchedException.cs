@@ -7,7 +7,12 @@ namespace Onova.Exceptions
     /// </summary>
     public class UpdaterAlreadyLaunchedException : Exception
     {
-        /// <inheritdoc />
-        public override string Message => "Updater has already been launched.";
+        /// <summary>
+        /// Initializes an instance of <see cref="UpdaterAlreadyLaunchedException"/>.
+        /// </summary>
+        public UpdaterAlreadyLaunchedException()
+            : base("Updater has already been launched.")
+        {
+        }
     }
 }

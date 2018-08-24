@@ -57,11 +57,20 @@ namespace Onova.Services
                 if (!Version.TryParse(versionText, out var version))
                     continue;
 
+                if (url.StartsWith("./"))
+                    url = url.Replace("./", GetUrlDirectory(_manifestUrl));
+
                 // Add to dictionary
                 map[version] = url;
             }
 
             return map;
+        }
+
+        private static string GetUrlDirectory(string url)
+        {
+            int lastSlash = url.LastIndexOf('/');
+            return url.Substring(0, lastSlash + 1);
         }
 
         /// <inheritdoc />

@@ -58,7 +58,7 @@ namespace Onova.Services
                     continue;
 
                 if (url.StartsWith("./"))
-                    url = url.Replace("./", GetUrlDirectory(_manifestUrl));
+                    url = new Uri(new Uri(_manifestUrl), url).ToString();
 
                 // Add to dictionary
                 map[version] = url;
@@ -66,13 +66,7 @@ namespace Onova.Services
 
             return map;
         }
-
-        private static string GetUrlDirectory(string url)
-        {
-            int lastSlash = url.LastIndexOf('/');
-            return url.Substring(0, lastSlash + 1);
-        }
-
+        
         /// <inheritdoc />
         public async Task<IReadOnlyList<Version>> GetVersionsAsync()
         {

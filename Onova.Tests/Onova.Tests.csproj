@@ -11,10 +11,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CliWrap" Version="1.8.4" />
-        <PackageReference Include="Mono.Cecil" Version="0.9.6.4" />
-        <PackageReference Include="Moq" Version="4.8.2" />
-        <PackageReference Include="NUnit" Version="3.9.0" />
+        <PackageReference Include="CliWrap" Version="2.0.0" />
+        <PackageReference Include="Mono.Cecil" Version="0.10.0" />
+        <PackageReference Include="Moq" Version="4.10.0" />
+        <PackageReference Include="NUnit" Version="3.10.1" />
     </ItemGroup>
 
     <ItemGroup>

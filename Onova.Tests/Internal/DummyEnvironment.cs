@@ -17,13 +17,8 @@ namespace Onova.Tests.Internal
         private static string DummyFilePath => Path.Combine(DummyDirPath, DummyFileName);
         private static string DummyPackagesDirPath => Path.Combine(DummyDirPath, "Packages");
 
-        private static readonly ICli DummyCli = new Cli(DummyFilePath);
-
         public static void Delete()
         {
-            // Cancel any running CLI instances
-            DummyCli.CancelAll();
-
             // Delete directory
             if (Directory.Exists(DummyDirPath))
                 Directory.Delete(DummyDirPath, true);
@@ -31,9 +26,13 @@ namespace Onova.Tests.Internal
 
         private static void SetAssemblyVersion(string filePath, Version version)
         {
-            var definition = AssemblyDefinition.ReadAssembly(filePath);
-            definition.Name.Version = version;
-            definition.Write(filePath);
+            using (var assemblyStream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite))
+            using (var assemblyDefinition = AssemblyDefinition.ReadAssembly(assemblyStream))
+            {
+                // Change assembly version
+                assemblyDefinition.Name.Version = version;
+                assemblyDefinition.Write(assemblyStream);
+            }
         }
 
         private static void CreateBase(Version version)
@@ -94,16 +93,14 @@ namespace Onova.Tests.Internal
 
         public static async Task<Version> GetCurrentVersionAsync()
         {
-            var output = await DummyCli.ExecuteAsync("version");
-            output.ThrowIfError();
+            var result = await new Cli(DummyFilePath).SetArguments("version").ExecuteAsync();
 
-            return Version.Parse(output.StandardOutput);
+            return Version.Parse(result.StandardOutput);
         }
 
         public static async Task CheckPerformUpdateAsync()
         {
-            var output = await DummyCli.ExecuteAsync("update");
-            output.ThrowIfError();
+            await new Cli(DummyFilePath).SetArguments("update").ExecuteAsync();
         }
     }
 }

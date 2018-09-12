@@ -57,8 +57,8 @@ namespace Onova.Services
                 if (!Version.TryParse(versionText, out var version))
                     continue;
 
-                if (url.StartsWith("./"))
-                    url = new Uri(new Uri(_manifestUrl), url).ToString();
+                // Convert to Uri and back to account for relative paths, etc
+                url = new Uri(new Uri(_manifestUrl), url).ToString();
 
                 // Add to dictionary
                 map[version] = url;

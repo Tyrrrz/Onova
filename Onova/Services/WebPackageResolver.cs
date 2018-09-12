@@ -66,7 +66,7 @@ namespace Onova.Services
 
             return map;
         }
-        
+
         /// <inheritdoc />
         public async Task<IReadOnlyList<Version>> GetVersionsAsync()
         {

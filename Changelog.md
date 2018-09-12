@@ -1,3 +1,9 @@
+### v2.2 (12-Sep-2018)
+
+- Added support for relative package URLs in manifest for `WebPackageResolver`.
+- Added configurable API base address in `GithubPackageResolver` which can be useful for on-premise hosted instances.
+- Fixed exception messages not appearing in Visual Studio.
+
 ### v2.1 (31-Mar-2018)
 
 - Improved logging in `Onova.Updater`.

@@ -9,7 +9,7 @@ Onova is a library that provides a framework for performing auto-updates in appl
 
 ## Download
 
-- Using NuGet: `Install-Package Onova`
+- [NuGet](https://nuget.org/packages/Onova): `Install-Package Onova`
 - [Continuous integration](https://ci.appveyor.com/project/Tyrrrz/Onova)
 
 ## Features

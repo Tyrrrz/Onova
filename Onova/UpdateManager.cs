@@ -99,8 +99,8 @@ namespace Onova
         {
             version.GuardNotNull(nameof(version));
 
-            // Set up progress aggregator
-            var progressAggregator = progress != null ? new ProgressAggregator(progress) : null;
+            // Set up progress mixer
+            var progressMixer = progress != null ? new ProgressMixer(progress) : null;
 
             // Get package file path and content directory path
             var packageFilePath = GetPackageFilePath(version);
@@ -111,7 +111,7 @@ namespace Onova
 
             // Download package
             await _resolver.DownloadAsync(version, packageFilePath,
-                progressAggregator?.Split(0.9), // 0% -> 90%
+                progressMixer?.Split(0.9), // 0% -> 90%
                 cancellationToken).ConfigureAwait(false);
 
             // Create directory for package contents
@@ -119,7 +119,7 @@ namespace Onova
 
             // Extract package contents
             await _extractor.ExtractAsync(packageFilePath, packageContentDirPath,
-                progressAggregator?.Split(0.1), // 90% -> 100%
+                progressMixer?.Split(0.1), // 90% -> 100%
                 cancellationToken).ConfigureAwait(false);
 
             // Delete package

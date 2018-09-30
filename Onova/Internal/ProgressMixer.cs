@@ -4,14 +4,14 @@ using System.Linq;
 
 namespace Onova.Internal
 {
-    internal class ProgressAggregator
+    internal class ProgressMixer
     {
         private readonly IProgress<double> _output;
         private readonly Dictionary<int, double> _splitTotals;
 
         private int _splitCount;
 
-        public ProgressAggregator(IProgress<double> output)
+        public ProgressMixer(IProgress<double> output)
         {
             _output = output;
             _splitTotals = new Dictionary<int, double>();

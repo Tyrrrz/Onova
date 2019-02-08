@@ -80,7 +80,7 @@ This implementation extracts files from NuGet packages, from the specified root 
 
 ## Usage
 
-##### Basic usage example
+### Basic usage example
 
 ```c#
 // Configure to look for packages in specified directory and treat them as zips
@@ -92,7 +92,7 @@ var manager = new UpdateManager(
 await manager.CheckPerformUpdateAsync();
 ```
 
-##### Handling intermediate steps manually
+### Handling intermediate steps manually
 
 ```c#
 // Check for updates

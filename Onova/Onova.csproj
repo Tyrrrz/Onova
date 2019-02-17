@@ -1,39 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net46</TargetFramework>
-        <Version>2.2</Version>
-        <Company>Tyrrrz</Company>
-        <Authors>$(Company)</Authors>
-        <Copyright>Copyright (C) 2018 Alexey Golub</Copyright>
-        <Description>Compact and extensible auto-update library</Description>
-        <PackageTags>auto update</PackageTags>
-        <PackageProjectUrl>https://github.com/Tyrrrz/Onova</PackageProjectUrl>
-        <PackageReleaseNotes>https://github.com/Tyrrrz/Onova/blob/master/Changelog.md</PackageReleaseNotes>
-        <PackageLicenseUrl>https://github.com/Tyrrrz/Onova/blob/master/License.txt</PackageLicenseUrl>
-        <PackageIconUrl>https://raw.githubusercontent.com/Tyrrrz/Onova/master/favicon.png</PackageIconUrl>
-        <RepositoryUrl>https://github.com/Tyrrrz/Onova</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net46</TargetFramework>
+    <Version>2.2</Version>
+    <Company>Tyrrrz</Company>
+    <Authors>$(Company)</Authors>
+    <Copyright>Copyright (C) Alexey Golub</Copyright>
+    <Description>Compact and extensible auto-update library</Description>
+    <PackageTags>auto update</PackageTags>
+    <PackageProjectUrl>https://github.com/Tyrrrz/Onova</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/Tyrrrz/Onova/blob/master/Changelog.md</PackageReleaseNotes>
+    <PackageLicenseUrl>https://github.com/Tyrrrz/Onova/blob/master/License.txt</PackageLicenseUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/Tyrrrz/Onova/master/favicon.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Tyrrrz/Onova</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <Reference Include="System.Net.Http" />
-        <Reference Include="System.IO.Compression" />
-    </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.IO.Compression" />
+  </ItemGroup>
 
-    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-        <Copy SourceFiles="$(SolutionDir)Onova.Updater\$(OutDir)Onova.Updater.exe" DestinationFiles="$(ProjectDir)Updater.exe" />
-    </Target>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Copy SourceFiles="$(SolutionDir)Onova.Updater\$(OutDir)Onova.Updater.exe" DestinationFiles="$(ProjectDir)Updater.exe" />
+  </Target>
 
-    <ItemGroup>
-        <EmbeddedResource Include="Updater.exe" />
-    </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Updater.exe" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  </ItemGroup>
 
 </Project>

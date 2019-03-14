@@ -1,3 +1,8 @@
+### v2.3 (14-Mar-2019)
+
+- Added caching support to `GithubPackageResolver` using `If-None-Match` header.
+- Fixed an issue where an internal stream didn't implement `ReadAsync` correctly.
+
 ### v2.2 (12-Sep-2018)
 
 - Added support for relative package URLs in manifest for `WebPackageResolver`.

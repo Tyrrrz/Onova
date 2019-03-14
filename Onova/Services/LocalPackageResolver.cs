@@ -39,16 +39,14 @@ namespace Onova.Services
             // Enumerate files in repository directory
             foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath))
             {
-                var fileName = Path.GetFileName(filePath);
-                var fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
-
                 // See if name matches
+                var fileName = Path.GetFileName(filePath);
                 if (!WildcardPattern.IsMatch(fileName, _fileNamePattern))
                     continue;
 
                 // Try to parse version
-                var versionText = Regex.Match(fileNameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1]
-                    .Value;
+                var fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath) ?? "";
+                var versionText = Regex.Match(fileNameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
                 if (!Version.TryParse(versionText, out var version))
                     continue;
 

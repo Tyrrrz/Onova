@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +25,9 @@ namespace Onova.Services
         private readonly string _repositoryOwner;
         private readonly string _repositoryName;
         private readonly string _assetNamePattern;
+
+        private string _cachedPackageVersionUrlMapEtag;
+        private IReadOnlyDictionary<Version, string> _cachedPackageVersionUrlMap;
 
         /// <summary>
         /// Initializes an instance of <see cref="GithubPackageResolver"/>.
@@ -63,14 +68,9 @@ namespace Onova.Services
         {
         }
 
-        private async Task<IReadOnlyDictionary<Version, string>> GetPackageVersionUrlMapAsync()
+        private IReadOnlyDictionary<Version, string> ParsePackageVersionUrlMap(JToken releasesJson)
         {
             var map = new Dictionary<Version, string>();
-
-            // Get releases
-            var request = $"{_apiBaseAddress}/repos/{_repositoryOwner}/{_repositoryName}/releases";
-            var response = await _httpClient.GetStringAsync(request).ConfigureAwait(false);
-            var releasesJson = JToken.Parse(response);
 
             foreach (var releaseJson in releasesJson)
             {
@@ -104,6 +104,41 @@ namespace Onova.Services
             }
 
             return map;
+        }
+
+        private async Task<IReadOnlyDictionary<Version, string>> GetPackageVersionUrlMapAsync()
+        {
+            // Get releases
+            var url = $"{_apiBaseAddress}/repos/{_repositoryOwner}/{_repositoryName}/releases";
+            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+            {
+                // Set If-None-Match header if ETag is available
+                if (_cachedPackageVersionUrlMapEtag.IsNotBlank())
+                    request.Headers.IfNoneMatch.Add(new EntityTagHeaderValue(_cachedPackageVersionUrlMapEtag));
+
+                using (var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead)
+                    .ConfigureAwait(false))
+                {
+                    // If not modified - return cached
+                    if (response.StatusCode == HttpStatusCode.NotModified)
+                        return _cachedPackageVersionUrlMap;
+
+                    // Ensure success status code otherwise
+                    response.EnsureSuccessStatusCode();
+
+                    // Parse response
+                    var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var releasesJson = JToken.Parse(responseContent);
+                    var map = ParsePackageVersionUrlMap(releasesJson);
+
+                    // Cache result
+                    _cachedPackageVersionUrlMapEtag = response.Headers.ETag.Tag;
+                    _cachedPackageVersionUrlMap = map;
+
+                    // Return result
+                    return map;
+                }
+            }
         }
 
         /// <inheritdoc />

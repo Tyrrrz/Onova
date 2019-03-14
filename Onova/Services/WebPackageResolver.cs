@@ -36,6 +36,14 @@ namespace Onova.Services
         {
         }
 
+        private string ExpandRelativeUrl(string url)
+        {
+            var manifestUri = new Uri(_manifestUrl);
+            var uri = new Uri(manifestUri, url);
+
+            return uri.ToString();
+        }
+
         private async Task<IReadOnlyDictionary<Version, string>> GetPackageVersionUrlMapAsync()
         {
             var map = new Dictionary<Version, string>();
@@ -57,8 +65,8 @@ namespace Onova.Services
                 if (!Version.TryParse(versionText, out var version))
                     continue;
 
-                // Convert to Uri and back to account for relative paths, etc
-                url = new Uri(new Uri(_manifestUrl), url).ToString();
+                // Expand URL if it's relative
+                url = ExpandRelativeUrl(url);
 
                 // Add to dictionary
                 map[version] = url;

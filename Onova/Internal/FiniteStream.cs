@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Onova.Internal
 {
@@ -34,7 +36,13 @@ namespace Onova.Internal
 
         public override int Read(byte[] buffer, int offset, int count) => _stream.Read(buffer, offset, count);
 
+        public override Task<int> ReadAsync(byte[] buffer, int offset, int count,
+            CancellationToken cancellationToken) => _stream.ReadAsync(buffer, offset, count, cancellationToken);
+
         public override void Write(byte[] buffer, int offset, int count) => _stream.Write(buffer, offset, count);
+
+        public override Task WriteAsync(byte[] buffer, int offset, int count,
+            CancellationToken cancellationToken) => _stream.WriteAsync(buffer, offset, count, cancellationToken);
 
         protected override void Dispose(bool disposing)
         {

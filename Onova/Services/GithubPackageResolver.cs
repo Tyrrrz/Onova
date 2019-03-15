@@ -26,7 +26,7 @@ namespace Onova.Services
         private readonly string _repositoryName;
         private readonly string _assetNamePattern;
 
-        private string _cachedPackageVersionUrlMapEtag;
+        private EntityTagHeaderValue _cachedPackageVersionUrlMapEtag;
         private IReadOnlyDictionary<Version, string> _cachedPackageVersionUrlMap;
 
         /// <summary>
@@ -113,8 +113,8 @@ namespace Onova.Services
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
                 // Set If-None-Match header if ETag is available
-                if (_cachedPackageVersionUrlMapEtag.IsNotBlank())
-                    request.Headers.IfNoneMatch.Add(new EntityTagHeaderValue(_cachedPackageVersionUrlMapEtag));
+                if (_cachedPackageVersionUrlMapEtag != null)
+                    request.Headers.IfNoneMatch.Add(_cachedPackageVersionUrlMapEtag);
 
                 using (var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead)
                     .ConfigureAwait(false))
@@ -132,7 +132,7 @@ namespace Onova.Services
                     var map = ParsePackageVersionUrlMap(releasesJson);
 
                     // Cache result
-                    _cachedPackageVersionUrlMapEtag = response.Headers.ETag.Tag;
+                    _cachedPackageVersionUrlMapEtag = response.Headers.ETag;
                     _cachedPackageVersionUrlMap = map;
 
                     // Return result

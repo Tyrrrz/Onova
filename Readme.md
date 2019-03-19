@@ -5,7 +5,7 @@
 [![NuGet](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
 [![NuGet](https://img.shields.io/nuget/dt/Onova.svg)](https://nuget.org/packages/Onova)
 
-Onova is a library that provides a framework for performing auto-updates in applications. It was designed primarily for projects that distribute their releases using archive files instead of installers, but can be configured to support almost any setup. Acquired updates are applied in place using an external executable, so there are no launchers, release files or special directories.
+Onova is a lightweight auto-update framework for desktop applications. It was primarily designed for updating portable applications that are distributed using archive files, but can be extended for other use cases. Updates downloaded by Onova are installed using an embedded external executable, by overwriting files when the application exits. The library requires minimal configuration, doesn't impose any changes to the CI/CD process, and doesn't affect the application's life cycle.
 
 ## Download
 
@@ -30,7 +30,7 @@ Onova is a library that provides a framework for performing auto-updates in appl
 - Overwrite files in-place using an external executable
 - Automatically prompt for elevated privileges if necessary
 - Fully self-contained
-- Targets .NET Framework 4.6+
+- Targets .NET Framework 4.6+ and .NET Standard 2.0 (Windows only)
 
 ## Workflow
 
@@ -50,7 +50,7 @@ Since .NET assemblies do not support semantic versions, pre-releases are ignored
 
 #### `WebPackageResolver`
 
-This implementation requests a version manifest using specified URL. The manifest should contain a list of package versions and their URLs, separated by space, one line per package. E.g.:
+This implementation requests a version manifest using the specified URL. The server is expected to respond with a plain-text list of package versions and their URLs, separated by space, one line per package. E.g.:
 ```
 1.0 https://my.server.com/1.0.zip
 2.0 https://my.server.com/2.0.zip
@@ -88,7 +88,7 @@ var manager = new UpdateManager(
     new LocalPackageResolver("c:\\test\\packages", "*.zip"),
     new ZipPackageExtractor());
 
-// Check for new version and perform full update if available
+// Check for new version and, if available, perform full update and restart
 await manager.CheckPerformUpdateAsync();
 ```
 
@@ -99,15 +99,15 @@ await manager.CheckPerformUpdateAsync();
 var result = await manager.CheckForUpdatesAsync();
 if (result.CanUpdate)
 {
-    // Prepare an update so it can be applied later
-    // (supports optional progress reporting and cancellation)
+    // Prepare an update by downloading and extracting the package
+    // (supports progress reporting and cancellation)
     await manager.PrepareUpdateAsync(result.LastVersion);
 
     // Launch an executable that will apply the update
-    // (can optionally restart application on completion)
+    // (can be instructed to restart the application afterwards)
     manager.LaunchUpdater(result.LastVersion);
 
-    // External updater will wait until the application exits
+    // Terminate the running application so that the updater can overwrite files
     Environment.Exit(0);
 }
 ```

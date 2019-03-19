@@ -8,7 +8,7 @@ namespace Onova
     /// <summary>
     /// Interface for <see cref="UpdateManager"/>.
     /// </summary>
-    public interface IUpdateManager
+    public interface IUpdateManager : IDisposable
     {
         /// <summary>
         /// Deletes all prepared updates and temporary files.

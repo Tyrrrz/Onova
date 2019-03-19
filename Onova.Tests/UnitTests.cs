@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
@@ -12,6 +13,18 @@ namespace Onova.Tests
     public class UnitTests
     {
         private const string LocalUpdateeName = "Onova.Tests.UnitTests";
+
+        private static string StorageDirPath => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Onova", LocalUpdateeName);
+
+        [TearDown]
+        public void Cleanup()
+        {
+            // Delete storage
+            if (Directory.Exists(StorageDirPath))
+                Directory.Delete(StorageDirPath, true);
+        }
 
         [Test]
         public async Task UpdateManager_CheckForUpdatesAsync_HigherVersionAvailable_Test()
@@ -36,16 +49,17 @@ namespace Onova.Tests
             var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "");
 
             // Update manager
-            var manager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object);
+            using (var manager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object))
+            {
+                // Act
+                var result = await manager.CheckForUpdatesAsync();
 
-            // Act
-            var result = await manager.CheckForUpdatesAsync();
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Versions, Is.EquivalentTo(availableVersions));
-            Assert.That(result.LastVersion, Is.EqualTo(availableVersions.Max()));
-            Assert.That(result.CanUpdate);
+                // Assert
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result.Versions, Is.EquivalentTo(availableVersions));
+                Assert.That(result.LastVersion, Is.EqualTo(availableVersions.Max()));
+                Assert.That(result.CanUpdate);
+            }
         }
 
         [Test]
@@ -71,16 +85,17 @@ namespace Onova.Tests
             var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "");
 
             // Update manager
-            var manager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object);
+            using (var manager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object))
+            {
+                // Act
+                var result = await manager.CheckForUpdatesAsync();
 
-            // Act
-            var result = await manager.CheckForUpdatesAsync();
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Versions, Is.EquivalentTo(availableVersions));
-            Assert.That(result.LastVersion, Is.EqualTo(availableVersions.Max()));
-            Assert.That(result.CanUpdate, Is.Not.True);
+                // Assert
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result.Versions, Is.EquivalentTo(availableVersions));
+                Assert.That(result.LastVersion, Is.EqualTo(availableVersions.Max()));
+                Assert.That(result.CanUpdate, Is.Not.True);
+            }
         }
 
         [Test]
@@ -101,16 +116,17 @@ namespace Onova.Tests
             var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "");
 
             // Update manager
-            var manager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object);
+            using (var manager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object))
+            {
+                // Act
+                var result = await manager.CheckForUpdatesAsync();
 
-            // Act
-            var result = await manager.CheckForUpdatesAsync();
-
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Versions, Is.EquivalentTo(availableVersions));
-            Assert.That(result.LastVersion, Is.Null);
-            Assert.That(result.CanUpdate, Is.Not.True);
+                // Assert
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result.Versions, Is.EquivalentTo(availableVersions));
+                Assert.That(result.LastVersion, Is.Null);
+                Assert.That(result.CanUpdate, Is.Not.True);
+            }
         }
     }
 }

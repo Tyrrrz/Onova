@@ -65,15 +65,17 @@ namespace Onova.Tests
             var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "");
             var resolver = new LocalPackageResolver(TempDirPath, "*.onv");
             var extractor = new ZipPackageExtractor();
-            var manager = new UpdateManager(updatee, resolver, extractor);
 
-            // Act
-            foreach (var version in versions)
-                await manager.PrepareUpdateAsync(version);
+            using (var manager = new UpdateManager(updatee, resolver, extractor))
+            {
+                // Act
+                foreach (var version in versions)
+                    await manager.PrepareUpdateAsync(version);
 
-            // Assert
-            foreach (var version in versions)
-                Assert.That(manager.IsUpdatePrepared(version));
+                // Assert
+                foreach (var version in versions)
+                    Assert.That(manager.IsUpdatePrepared(version));
+            }
         }
 
         [Test]

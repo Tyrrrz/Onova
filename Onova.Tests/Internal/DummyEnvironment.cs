@@ -93,14 +93,22 @@ namespace Onova.Tests.Internal
 
         public static async Task<Version> GetCurrentVersionAsync()
         {
-            var result = await new Cli(DummyFilePath).SetArguments("version").ExecuteAsync();
+            var result = await Cli.Wrap(DummyFilePath)
+                .SetArguments("version")
+                .EnableExitCodeValidation(false)
+                .EnableStandardErrorValidation()
+                .ExecuteAsync();
 
             return Version.Parse(result.StandardOutput);
         }
 
         public static async Task CheckPerformUpdateAsync()
         {
-            await new Cli(DummyFilePath).SetArguments("update").ExecuteAsync();
+            await Cli.Wrap(DummyFilePath)
+                .SetArguments("update")
+                .EnableExitCodeValidation(false)
+                .EnableStandardErrorValidation()
+                .ExecuteAsync();
         }
     }
 }

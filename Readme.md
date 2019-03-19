@@ -82,17 +82,22 @@ This implementation extracts files from NuGet packages, from the specified root 
 
 ### Basic usage example
 
+The following code checks for updates and installs them if they are available, in a single operation.
+
 ```c#
 // Configure to look for packages in specified directory and treat them as zips
-var manager = new UpdateManager(
+using (var manager = new UpdateManager(
     new LocalPackageResolver("c:\\test\\packages", "*.zip"),
-    new ZipPackageExtractor());
-
-// Check for new version and, if available, perform full update and restart
-await manager.CheckPerformUpdateAsync();
+    new ZipPackageExtractor()))
+{
+	// Check for new version and, if available, perform full update and restart
+	await manager.CheckPerformUpdateAsync();
+}
 ```
 
 ### Handling intermediate steps manually
+
+To provide users with the most optimal experience, you will probably want to handle intermediate steps manually.
 
 ```c#
 // Check for updates
@@ -109,6 +114,21 @@ if (result.CanUpdate)
 
     // Terminate the running application so that the updater can overwrite files
     Environment.Exit(0);
+}
+```
+
+### Updating with multiple running instances
+
+To prevent conflicts when running multiple instances of the same application, only the instance that acquired a special lock file is allowed to perform an update. The lock file is acquired inside `UpdateManager`'s constructor and released when `UpdateManager` is disposed. If the lock file wasn't acquired, no exception will be thrown in the constructor itself but subsequent calls to some of the methods will throw an exception.
+
+```c#
+try
+{
+	await manager.PrepareUpdateAsync(...);
+}
+catch (LockFileNotAcquiredException)
+{
+	// This instance of the application cannot perform updates because another instance owns the lock file
 }
 ```
 

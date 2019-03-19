@@ -30,6 +30,9 @@ namespace Onova
         private readonly string _storageDirPath;
         private readonly string _updaterFilePath;
 
+        private readonly LockFile _lockFile;
+
+        private bool _isDisposed;
         private bool _updaterLaunched;
 
         /// <summary>
@@ -47,11 +50,20 @@ namespace Onova
             _resolver = resolver.GuardNotNull(nameof(resolver));
             _extractor = extractor.GuardNotNull(nameof(extractor));
 
+            // Set storage directory path
             _storageDirPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova", _updatee.Name);
 
+            // Set updater executable file path
             _updaterFilePath = Path.Combine(_storageDirPath, $"{_updatee.Name}.Updater.exe");
+
+            // Create storage directory
+            Directory.CreateDirectory(_storageDirPath);
+
+            // Try to acquire lock file
+            var lockFilePath = Path.Combine(_storageDirPath, "Onova.lock");
+            _lockFile = LockFile.TryAcquire(lockFilePath);
         }
 
         /// <summary>
@@ -62,6 +74,18 @@ namespace Onova
         {
         }
 
+        private void EnsureNotDisposed()
+        {
+            if (_isDisposed)
+                throw new ObjectDisposedException(GetType().FullName);
+        }
+
+        private void EnsureLockFileAcquired()
+        {
+            if (_lockFile == null)
+                throw new LockFileNotAcquiredException();
+        }
+
         private string GetPackageFilePath(Version version) => Path.Combine(_storageDirPath, $"{version}.onv");
 
         private string GetPackageContentDirPath(Version version) => Path.Combine(_storageDirPath, $"{version}");
@@ -69,6 +93,13 @@ namespace Onova
         /// <inheritdoc />
         public void Cleanup()
         {
+            // Ensure this instance is not disposed
+            EnsureNotDisposed();
+
+            // Ensure that the lock file was acquired (this is a write operation)
+            EnsureLockFileAcquired();
+
+            // Delete the storage directory if it exists
             if (Directory.Exists(_storageDirPath))
                 Directory.Delete(_storageDirPath, true);
         }
@@ -77,6 +108,9 @@ namespace Onova
         [NotNull]
         public async Task<CheckForUpdatesResult> CheckForUpdatesAsync()
         {
+            // Ensure this instance is not disposed
+            EnsureNotDisposed();
+
             // Get versions
             var versions = await _resolver.GetVersionsAsync().ConfigureAwait(false);
             var lastVersion = versions.Max();
@@ -89,6 +123,9 @@ namespace Onova
         public bool IsUpdatePrepared(Version version)
         {
             version.GuardNotNull(nameof(version));
+
+            // Ensure this instance is not disposed
+            EnsureNotDisposed();
 
             // Get package file path and content directory path
             var packageFilePath = GetPackageFilePath(version);
@@ -108,6 +145,12 @@ namespace Onova
             CancellationToken cancellationToken = default(CancellationToken))
         {
             version.GuardNotNull(nameof(version));
+
+            // Ensure this instance is not disposed
+            EnsureNotDisposed();
+
+            // Ensure that the lock file was acquired (this is a write operation)
+            EnsureLockFileAcquired();
 
             // Set up progress mixer
             var progressMixer = progress != null ? new ProgressMixer(progress) : null;
@@ -145,6 +188,12 @@ namespace Onova
         {
             version.GuardNotNull(nameof(version));
 
+            // Ensure this instance is not disposed
+            EnsureNotDisposed();
+
+            // Ensure that the lock file was acquired (this is a write operation)
+            EnsureLockFileAcquired();
+
             // Ensure update has been prepared
             if (!IsUpdatePrepared(version))
                 throw new UpdateNotPreparedException(version);
@@ -172,6 +221,16 @@ namespace Onova
             // Launch the updater
             ProcessEx.StartCli(_updaterFilePath, args, isElevated);
             _updaterLaunched = true;
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+                _lockFile?.Dispose();
+            }
         }
     }
 }

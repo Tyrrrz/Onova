@@ -4,12 +4,6 @@ namespace Onova.Internal
 {
     internal static class ProcessEx
     {
-        public static int GetCurrentProcessId()
-        {
-            using (var process = Process.GetCurrentProcess())
-                return process.Id;
-        }
-
         public static void StartCli(string filePath, string args, bool isElevated = false)
         {
             // Start info

@@ -202,17 +202,11 @@ namespace Onova
             if (_updaterLaunched)
                 throw new UpdaterAlreadyLaunchedException();
 
-            // Get current process ID
-            var currentProcessId = ProcessEx.GetCurrentProcessId();
-
             // Get package content directory path
             var packageContentDirPath = GetPackageContentDirPath(version);
 
             // Prepare arguments
-            var args = $"{currentProcessId} " +
-                       $"\"{_updatee.FilePath}\" " +
-                       $"\"{packageContentDirPath}\" " +
-                       $"{restart}";
+            var args = $"\"{_updatee.FilePath}\" \"{packageContentDirPath}\" {restart}";
 
             // Decide if updater needs to be elevated
             var updateeDirPath = Path.GetDirectoryName(_updatee.FilePath);

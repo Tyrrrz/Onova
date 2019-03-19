@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Onova.Updater.Internal;
 
@@ -30,18 +31,35 @@ namespace Onova.Updater
             }
         }
 
-        private static void Update(int updateeProcessId, string updateeFilePath,
-            string packageContentDirPath, bool restartUpdatee)
+        private static void Update(string updateeFilePath, string packageContentDirPath, bool restartUpdatee)
         {
-            // Get updatee directory path from file path
-            var updateeDirPath = Path.GetDirectoryName(updateeFilePath);
 
-            // Wait until updatee dies
-            WriteLog("Waiting for updatee to exit...");
-            ProcessEx.WaitForExit(updateeProcessId);
+            // Get running updatee instances
+            WriteLog("Looking for running updatee instances...");
+            var updateeProcessName = Path.GetFileNameWithoutExtension(updateeFilePath);
+            var updateeProcesses = Process.GetProcessesByName(updateeProcessName)
+                .Where(p => PathEx.AreEqual(p.GetFilePath(), updateeFilePath))
+                .ToArray();
+
+            // Wait until all updatee instances exit
+            if (updateeProcesses.Any())
+            {
+                foreach (var updateeProcess in updateeProcesses)
+                {
+                    WriteLog($"Waiting for pid:{updateeProcess.Id} to exit...");
+
+                    using (updateeProcess)
+                        updateeProcess.WaitForExit();
+                }
+            }
+            else
+            {
+                WriteLog("There are no running updatee instances.");
+            }
 
             // Copy over the extracted package
-            WriteLog("Copying package contents...");
+            WriteLog("Copying package contents from storage to updatee's directory...");
+            var updateeDirPath = Path.GetDirectoryName(updateeFilePath);
             DirectoryEx.Copy(packageContentDirPath, updateeDirPath);
 
             // Launch the updatee again if requested
@@ -52,7 +70,7 @@ namespace Onova.Updater
             }
 
             // Delete package directory
-            WriteLog("Deleting package contents...");
+            WriteLog("Deleting package contents from storage...");
             Directory.Delete(packageContentDirPath, true);
         }
 
@@ -62,18 +80,17 @@ namespace Onova.Updater
             using (_log = File.AppendText(LogFilePath))
             {
                 // Launch info
-                WriteLog($"Onova Updater v{Version} started with args: {string.Join(" ", args)}");
+                WriteLog($"Onova Updater v{Version} started with args: {args.JoinToString(" ")}");
 
                 try
                 {
                     // Extract arguments
-                    var updateeProcessId = int.Parse(args[0]);
-                    var updateeFilePath = args[1];
-                    var packageContentDirPath = args[2];
-                    var restartUpdatee = bool.Parse(args[3]);
+                    var updateeFilePath = args[0];
+                    var packageContentDirPath = args[1];
+                    var restartUpdatee = bool.Parse(args[2]);
 
                     // Execute update
-                    Update(updateeProcessId, updateeFilePath, packageContentDirPath, restartUpdatee);
+                    Update(updateeFilePath, packageContentDirPath, restartUpdatee);
                     WriteLog("Update completed successfully.");
                 }
                 catch (Exception ex)

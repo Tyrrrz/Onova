@@ -1,14 +1,18 @@
 ﻿using System.Diagnostics;
-using System.Linq;
+using System.Text;
 
 namespace Onova.Updater.Internal
 {
     internal static class ProcessEx
     {
-        public static void WaitForExit(int processId)
+        public static string GetFilePath(this Process process, int bufferSize = 1024)
         {
-            var process = Process.GetProcesses().FirstOrDefault(p => p.Id == processId);
-            process?.WaitForExit();
+            var buffer = new StringBuilder(bufferSize);
+            var charsWritten = (uint) bufferSize;
+
+            return NativeMethods.QueryFullProcessImageName(process.Handle, 0, buffer, ref charsWritten)
+                ? buffer.ToString()
+                : null;
         }
     }
 }

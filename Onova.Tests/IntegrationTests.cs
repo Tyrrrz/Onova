@@ -62,7 +62,7 @@ namespace Onova.Tests
 
             // Update manager
             var updateeVersion = Version.Parse("1.0");
-            var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "", "");
+            var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "");
             var resolver = new LocalPackageResolver(TempDirPath, "*.onv");
             var extractor = new ZipPackageExtractor();
             var manager = new UpdateManager(updatee, resolver, extractor);

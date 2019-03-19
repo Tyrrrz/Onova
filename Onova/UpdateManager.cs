@@ -58,7 +58,7 @@ namespace Onova
         /// Initializes an instance of <see cref="UpdateManager"/> on the entry assembly.
         /// </summary>
         public UpdateManager(IPackageResolver resolver, IPackageExtractor extractor)
-            : this(new AssemblyMetadata(Assembly.GetEntryAssembly()), resolver, extractor)
+            : this(AssemblyMetadata.FromEntryAssembly(), resolver, extractor)
         {
         }
 
@@ -124,7 +124,7 @@ namespace Onova
                 progressMixer?.Split(0.9), // 0% -> 90%
                 cancellationToken).ConfigureAwait(false);
 
-            // Create directory for package contents
+            // Create empty directory for package contents
             DirectoryEx.Reset(packageContentDirPath);
 
             // Extract package contents
@@ -166,7 +166,8 @@ namespace Onova
                        $"{restart}";
 
             // Decide if updater needs to be elevated
-            var isElevated = !DirectoryEx.CheckWriteAccess(_updatee.DirectoryPath);
+            var updateeDirPath = Path.GetDirectoryName(_updatee.FilePath);
+            var isElevated = !DirectoryEx.CheckWriteAccess(updateeDirPath);
 
             // Launch the updater
             ProcessEx.StartCli(_updaterFilePath, args, isElevated);

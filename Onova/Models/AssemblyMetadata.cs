@@ -9,7 +9,7 @@ namespace Onova.Models
     /// <summary>
     /// Contains information about an assembly.
     /// </summary>
-    public class AssemblyMetadata
+    public partial class AssemblyMetadata
     {
         /// <summary>
         /// Assembly name.
@@ -30,33 +30,35 @@ namespace Onova.Models
         public string FilePath { get; }
 
         /// <summary>
-        /// Assembly directory path.
-        /// </summary>
-        [NotNull]
-        public string DirectoryPath { get; }
-
-        /// <summary>
         /// Initializes a new instance of <see cref="AssemblyMetadata"/>.
         /// </summary>
-        public AssemblyMetadata(string name, Version version, string filePath, string directoryPath)
+        public AssemblyMetadata(string name, Version version, string filePath)
         {
             Name = name.GuardNotNull(nameof(name));
             Version = version.GuardNotNull(nameof(version));
             FilePath = filePath.GuardNotNull(nameof(filePath));
-            DirectoryPath = directoryPath.GuardNotNull(nameof(directoryPath));
         }
+    }
 
+    public partial class AssemblyMetadata
+    {
         /// <summary>
-        /// Initializes a new instance of <see cref="AssemblyMetadata"/>.
+        /// Extracts assembly metadata from given assembly.
         /// </summary>
-        public AssemblyMetadata(Assembly assembly)
+        public static AssemblyMetadata FromAssembly(Assembly assembly)
         {
             assembly.GuardNotNull(nameof(assembly));
 
-            Name = assembly.GetName().Name;
-            Version = assembly.GetName().Version;
-            FilePath = assembly.Location;
-            DirectoryPath = Path.GetDirectoryName(FilePath);
+            var name = assembly.GetName().Name;
+            var version = assembly.GetName().Version;
+            var filePath = assembly.Location;
+
+            return new AssemblyMetadata(name, version, filePath);
         }
+
+        /// <summary>
+        /// Extracts assembly metadata from entry assembly.
+        /// </summary>
+        public static AssemblyMetadata FromEntryAssembly() => FromAssembly(Assembly.GetEntryAssembly());
     }
 }

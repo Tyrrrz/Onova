@@ -33,7 +33,7 @@ namespace Onova.Tests
 
             // Updatee mock
             var updateeVersion = availableVersions.Min();
-            var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "", "");
+            var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "");
 
             // Update manager
             var manager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object);
@@ -68,7 +68,7 @@ namespace Onova.Tests
 
             // Updatee mock
             var updateeVersion = availableVersions.Max();
-            var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "", "");
+            var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "");
 
             // Update manager
             var manager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object);
@@ -98,7 +98,7 @@ namespace Onova.Tests
 
             // Updatee mock
             var updateeVersion = Version.Parse("1.0");
-            var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "", "");
+            var updatee = new AssemblyMetadata(LocalUpdateeName, updateeVersion, "");
 
             // Update manager
             var manager = new UpdateManager(updatee, resolverMock.Object, extractorMock.Object);

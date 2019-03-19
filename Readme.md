@@ -124,11 +124,11 @@ To prevent conflicts when running multiple instances of the same application, on
 ```c#
 try
 {
-	await manager.PrepareUpdateAsync(...);
+    await manager.PrepareUpdateAsync(...);
 }
 catch (LockFileNotAcquiredException)
 {
-	// This instance of the application cannot perform updates because another instance owns the lock file
+    // Another instance of this application owns the lock file
 }
 ```
 

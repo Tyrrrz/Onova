@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFrameworks>net46;netstandard2.0</TargetFrameworks>
     <Version>2.3</Version>
     <Company>Tyrrrz</Company>
     <Authors>$(Company)</Authors>
@@ -19,13 +19,13 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
     <Reference Include="System.Net.Http" />
     <Reference Include="System.IO.Compression" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Copy SourceFiles="$(SolutionDir)Onova.Updater\$(OutDir)Onova.Updater.exe" DestinationFiles="$(ProjectDir)Updater.exe" />
+    <Copy SourceFiles="$(SolutionDir)Onova.Updater\bin\$(Configuration)\net46\Onova.Updater.exe" DestinationFiles="$(ProjectDir)Updater.exe" />
   </Target>
 
   <ItemGroup>

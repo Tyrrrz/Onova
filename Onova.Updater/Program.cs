@@ -33,7 +33,6 @@ namespace Onova.Updater
 
         private static void Update(string updateeFilePath, string packageContentDirPath, bool restartUpdatee)
         {
-
             // Get running updatee instances
             WriteLog("Looking for running updatee instances...");
             var updateeProcessName = Path.GetFileNameWithoutExtension(updateeFilePath);
@@ -42,22 +41,16 @@ namespace Onova.Updater
                 .ToArray();
 
             // Wait until all updatee instances exit
-            if (updateeProcesses.Any())
+            foreach (var updateeProcess in updateeProcesses)
             {
-                foreach (var updateeProcess in updateeProcesses)
+                using (updateeProcess)
                 {
                     WriteLog($"Waiting for pid:{updateeProcess.Id} to exit...");
-
-                    using (updateeProcess)
-                        updateeProcess.WaitForExit();
+                    updateeProcess.WaitForExit();
                 }
             }
-            else
-            {
-                WriteLog("There are no running updatee instances.");
-            }
 
-            // Copy over the extracted package
+            // Copy over the package contents
             WriteLog("Copying package contents from storage to updatee's directory...");
             var updateeDirPath = Path.GetDirectoryName(updateeFilePath);
             DirectoryEx.Copy(packageContentDirPath, updateeDirPath);
@@ -66,10 +59,12 @@ namespace Onova.Updater
             if (restartUpdatee)
             {
                 WriteLog("Restarting updatee...");
-                Process.Start(updateeFilePath);
+
+                using (var restartedUpdateeProcess = Process.Start(updateeFilePath))
+                    WriteLog($"Restarted as pid:{restartedUpdateeProcess?.Id}.");
             }
 
-            // Delete package directory
+            // Delete package content directory
             WriteLog("Deleting package contents from storage...");
             Directory.Delete(packageContentDirPath, true);
         }
@@ -80,7 +75,7 @@ namespace Onova.Updater
             using (_log = File.AppendText(LogFilePath))
             {
                 // Launch info
-                WriteLog($"Onova Updater v{Version} started with args: {args.JoinToString(" ")}");
+                WriteLog($"Onova Updater v{Version} started with args: [{args.JoinToString(", ")}].");
 
                 try
                 {

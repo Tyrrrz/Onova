@@ -18,17 +18,10 @@ namespace Onova.Updater
         private static string LogFilePath => Path.Combine(AssemblyDirPath, "Log.txt");
         private static Version Version => Assembly.GetExecutingAssembly().GetName().Version;
 
-        private static void WriteLog(string value = null)
+        private static void WriteLog(string value)
         {
-            if (value.IsNotBlank())
-            {
-                var date = DateTimeOffset.Now;
-                _log.WriteLine($"{date}: {value}");
-            }
-            else
-            {
-                _log.WriteLine();
-            }
+            var date = DateTimeOffset.Now;
+            _log.WriteLine($"{date:dd-MMM-yyyy HH:mm:ss.fff}> {value}");
         }
 
         private static void Update(string updateeFilePath, string packageContentDirPath, bool restartUpdatee)
@@ -60,7 +53,7 @@ namespace Onova.Updater
         public static void Main(string[] args)
         {
             // Write log
-            using (_log = File.AppendText(LogFilePath))
+            using (_log = File.CreateText(LogFilePath))
             {
                 // Launch info
                 WriteLog($"Onova Updater v{Version} started with args: [{args.JoinToString(", ")}].");
@@ -80,9 +73,6 @@ namespace Onova.Updater
                 {
                     WriteLog(ex.ToString());
                 }
-
-                // Whitespace to separate log entries from different runs
-                WriteLog();
             }
         }
     }

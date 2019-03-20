@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Onova.Updater.Internal;
 
 namespace Onova.Updater
@@ -33,22 +33,10 @@ namespace Onova.Updater
 
         private static void Update(string updateeFilePath, string packageContentDirPath, bool restartUpdatee)
         {
-            // Get running updatee instances
-            WriteLog("Looking for running updatee instances...");
-            var updateeProcessName = Path.GetFileNameWithoutExtension(updateeFilePath);
-            var updateeProcesses = Process.GetProcessesByName(updateeProcessName)
-                .Where(p => PathEx.AreEqual(p.GetFilePath(), updateeFilePath))
-                .ToArray();
-
-            // Wait until all updatee instances exit
-            foreach (var updateeProcess in updateeProcesses)
-            {
-                using (updateeProcess)
-                {
-                    WriteLog($"Waiting for pid:{updateeProcess.Id} to exit...");
-                    updateeProcess.WaitForExit();
-                }
-            }
+            // Wait until updatee is writable to ensure all running instances have exited
+            WriteLog("Waiting for all running updatee instances to exit...");
+            while (!FileEx.CheckWriteAccess(updateeFilePath))
+                Thread.Sleep(100);
 
             // Copy over the package contents
             WriteLog("Copying package contents from storage to updatee's directory...");

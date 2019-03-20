@@ -33,7 +33,6 @@ namespace Onova
 
         private LockFile _lockFile;
         private bool _isDisposed;
-        private bool _updaterLaunched;
 
         /// <summary>
         /// Initializes an instance of <see cref="UpdateManager"/>.
@@ -70,6 +69,10 @@ namespace Onova
         {
         }
 
+        private string GetPackageFilePath(Version version) => Path.Combine(_storageDirPath, $"{version}.onv");
+
+        private string GetPackageContentDirPath(Version version) => Path.Combine(_storageDirPath, $"{version}");
+
         private void EnsureNotDisposed()
         {
             if (_isDisposed)
@@ -93,15 +96,25 @@ namespace Onova
                 throw new LockFileNotAcquiredException();
         }
 
-        private string GetPackageFilePath(Version version) => Path.Combine(_storageDirPath, $"{version}.onv");
+        private void EnsureUpdaterNotLaunched()
+        {
+            // Check whether we have write access to updater executable
+            // (this is a reasonably accurate check for whether that process is running)
+            if (File.Exists(_updaterFilePath) && !FileEx.CheckWriteAccess(_updaterFilePath))
+                throw new UpdaterAlreadyLaunchedException();
+        }
 
-        private string GetPackageContentDirPath(Version version) => Path.Combine(_storageDirPath, $"{version}");
+        private void EnsureUpdatePrepared(Version version)
+        {
+            if (!IsUpdatePrepared(version))
+                throw new UpdateNotPreparedException(version);
+        }
 
         /// <inheritdoc />
         [NotNull]
         public async Task<CheckForUpdatesResult> CheckForUpdatesAsync()
         {
-            // Ensure this instance is not disposed
+            // Ensure that the current state is valid for this operation
             EnsureNotDisposed();
 
             // Get versions
@@ -117,7 +130,7 @@ namespace Onova
         {
             version.GuardNotNull(nameof(version));
 
-            // Ensure this instance is not disposed
+            // Ensure that the current state is valid for this operation
             EnsureNotDisposed();
 
             // Get package file path and content directory path
@@ -139,11 +152,10 @@ namespace Onova
         {
             version.GuardNotNull(nameof(version));
 
-            // Ensure this instance is not disposed
+            // Ensure that the current state is valid for this operation
             EnsureNotDisposed();
-
-            // Ensure that the lock file was acquired (this is a write operation)
             EnsureLockFileAcquired();
+            EnsureUpdaterNotLaunched();
 
             // Set up progress mixer
             var progressMixer = progress != null ? new ProgressMixer(progress) : null;
@@ -181,19 +193,11 @@ namespace Onova
         {
             version.GuardNotNull(nameof(version));
 
-            // Ensure this instance is not disposed
+            // Ensure that the current state is valid for this operation
             EnsureNotDisposed();
-
-            // Ensure that the lock file was acquired (this is a write operation)
             EnsureLockFileAcquired();
-
-            // Ensure update has been prepared
-            if (!IsUpdatePrepared(version))
-                throw new UpdateNotPreparedException(version);
-
-            // Ensure updater hasn't been launched yet
-            if (_updaterLaunched)
-                throw new UpdaterAlreadyLaunchedException();
+            EnsureUpdaterNotLaunched();
+            EnsureUpdatePrepared(version);
 
             // Get package content directory path
             var packageContentDirPath = GetPackageContentDirPath(version);
@@ -207,7 +211,6 @@ namespace Onova
 
             // Launch the updater
             ProcessEx.StartCli(_updaterFilePath, args, isElevated);
-            _updaterLaunched = true;
         }
 
         /// <inheritdoc />

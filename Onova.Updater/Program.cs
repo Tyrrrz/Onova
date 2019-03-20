@@ -93,7 +93,7 @@ namespace Onova.Updater
                     WriteLog(ex.ToString());
                 }
 
-                // White space to separate log entries
+                // Whitespace to separate log entries from different runs
                 WriteLog();
             }
         }

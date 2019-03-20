@@ -1,3 +1,9 @@
+### v2.4.2 (21-Mar-2019)
+
+- Fixed an issue where launched instances of `Onova.Updater` weren't detected if they were started by a different process.
+- Fixed an issue where `Onova.Updater` didn't properly wait until all updatee instances exit if one of those instances launched after the updater did.
+- Log file now keeps track of only one session.
+
 ### v2.4.1 (20-Mar-2019)
 
 - Lock file is now acquired on first call to `PrepareUpdateAsync` or `LaunchUpdater`.

@@ -1,3 +1,9 @@
+### v2.4 (20-Mar-2019)
+
+- Added .NET Standard 2.0 target with Windows-only support for Windows applications running on .NET Core.
+- Added a lock file to ensure that only one instance of the application is able to download and install updates.
+- `Onova.Updater` will now wait until all instances of the application exit, instead of just the one that launched it.
+
 ### v2.3 (14-Mar-2019)
 
 - Added caching support to `GithubPackageResolver` using `If-None-Match` header.

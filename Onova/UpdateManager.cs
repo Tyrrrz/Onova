@@ -98,20 +98,6 @@ namespace Onova
         private string GetPackageContentDirPath(Version version) => Path.Combine(_storageDirPath, $"{version}");
 
         /// <inheritdoc />
-        public void Cleanup()
-        {
-            // Ensure this instance is not disposed
-            EnsureNotDisposed();
-
-            // Ensure that the lock file was acquired (this is a write operation)
-            EnsureLockFileAcquired();
-
-            // Delete the storage directory if it exists
-            if (Directory.Exists(_storageDirPath))
-                Directory.Delete(_storageDirPath, true);
-        }
-
-        /// <inheritdoc />
         [NotNull]
         public async Task<CheckForUpdatesResult> CheckForUpdatesAsync()
         {

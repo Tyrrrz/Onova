@@ -11,11 +11,6 @@ namespace Onova
     public interface IUpdateManager : IDisposable
     {
         /// <summary>
-        /// Deletes all prepared updates and temporary files.
-        /// </summary>
-        void Cleanup();
-
-        /// <summary>
         /// Checks for updates.
         /// </summary>
         Task<CheckForUpdatesResult> CheckForUpdatesAsync();

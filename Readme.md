@@ -119,7 +119,7 @@ if (result.CanUpdate)
 
 ### Updating with multiple running instances
 
-To prevent conflicts when running multiple instances of the same application, only the instance that acquired a special lock file is allowed to perform an update. The lock file is acquired inside `UpdateManager`'s constructor and released when `UpdateManager` is disposed. If the lock file wasn't acquired, no exception will be thrown in the constructor itself but subsequent calls to some of the methods will throw an exception.
+To prevent conflicts when running multiple instances of the same application, only the instance that acquired a special lock file is allowed to perform an update.
 
 ```c#
 try

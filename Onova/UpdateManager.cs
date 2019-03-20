@@ -29,9 +29,9 @@ namespace Onova
 
         private readonly string _storageDirPath;
         private readonly string _updaterFilePath;
+        private readonly string _lockFilePath;
 
-        private readonly LockFile _lockFile;
-
+        private LockFile _lockFile;
         private bool _isDisposed;
         private bool _updaterLaunched;
 
@@ -58,12 +58,8 @@ namespace Onova
             // Set updater executable file path
             _updaterFilePath = Path.Combine(_storageDirPath, $"{_updatee.Name}.Updater.exe");
 
-            // Create storage directory
-            Directory.CreateDirectory(_storageDirPath);
-
-            // Try to acquire lock file
-            var lockFilePath = Path.Combine(_storageDirPath, "Onova.lock");
-            _lockFile = LockFile.TryAcquire(lockFilePath);
+            // Set lock file path
+            _lockFilePath = Path.Combine(_storageDirPath, "Onova.lock");
         }
 
         /// <summary>
@@ -82,6 +78,17 @@ namespace Onova
 
         private void EnsureLockFileAcquired()
         {
+            // If lock file already acquired - return
+            if (_lockFile != null)
+                return;
+
+            // Create storage directory
+            Directory.CreateDirectory(_storageDirPath);
+
+            // Try to acquire lock file
+            _lockFile = LockFile.TryAcquire(_lockFilePath);
+
+            // If failed to acquire - throw
             if (_lockFile == null)
                 throw new LockFileNotAcquiredException();
         }

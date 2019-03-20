@@ -1,3 +1,8 @@
+### v2.4.1 (20-Mar-2019)
+
+- Lock file is now acquired on first call to `PrepareUpdateAsync` or `LaunchUpdater`.
+- Removed `UpdateManager.Cleanup` due to conflicts with lock file.
+
 ### v2.4 (20-Mar-2019)
 
 - Added .NET Standard 2.0 target with Windows-only support for Windows applications running on .NET Core.

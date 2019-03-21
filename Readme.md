@@ -14,22 +14,23 @@ Onova is a lightweight auto-update framework for desktop applications. It was pr
 
 ## Features
 
-- Minimal required configuration
-- Supported resolvers:
+- Requires minimal configuration
+- Supports the following package resolvers:
   - `LocalPackageResolver` - file system
   - `GithubPackageResolver` - GitHub releases
   - `WebPackageResolver` - web version manifest
   - `NugetPackageResolver` - NuGet feed
   - `AggregatePackageResolver` - aggregates multiple resolvers
-- Supported extractors:
+- Supports the following package extractors:
   - `ZipPackageExtractor` - zip archives
   - `NugetPackageExtractor` - NuGet packages
 - Extendable with custom resolvers and extractors
-- Progress reporting and cancellation
-- Update to any available version, not necessarily latest
-- Overwrite files in-place using an external executable
-- Automatically prompt for elevated privileges if necessary
-- Fully self-contained
+- Can report progress and supports cancellation
+- Allows updating to any available version, not necessarily latest
+- Overwrites files in-place using an external executable
+- Works with multiple running instances of an application
+- Automatically prompts for elevated privileges if necessary
+- Fully self-contained and doesn't require additional files
 - Targets .NET Framework 4.6+ and .NET Standard 2.0 (Windows only)
 
 ## Workflow
@@ -117,20 +118,16 @@ if (result.CanUpdate)
 }
 ```
 
-### Updating with multiple running instances
+### Handling updates with multiple running instances of the application
 
-To prevent conflicts when running multiple instances of the same application, only the instance that acquired a special lock file is allowed to perform an update.
+To prevent conflicts when running multiple instances of the same application, only one instance of `UpdateManager` (across all processes) is able to prepare updates and launch the updater.
 
-```c#
-try
-{
-    await manager.PrepareUpdateAsync(...);
-}
-catch (LockFileNotAcquiredException)
-{
-    // Another instance of this application owns the lock file
-}
-```
+In order to correctly handle cases where multiple instances of the application may try to update at the same time, you need to catch these exceptions:
+
+- `LockFileNotAcquiredException` - thrown by `PrepareUpdateAsync` and `LaunchUpdater` when this instance of `UpdateManager` cannot acquire a lock file. This means that another instance currently owns the lock file and is probably performing an update.
+- `UpdaterAlreadyLaunchedException` - thrown by `PrepareUpdateAsync` and `LaunchUpdater` when an updater executable has already been launched, either by this instance of `UpdateManager` or another instance that has released the lock file.
+
+The updater will wait until all instances of the application have exited before applying an update, regardless of which instance launched it.
 
 ## Libraries used
 

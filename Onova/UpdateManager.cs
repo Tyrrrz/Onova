@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -81,15 +82,11 @@ namespace Onova
 
         private void EnsureLockFileAcquired()
         {
-            // If lock file already acquired - return
-            if (_lockFile != null)
-                return;
-
-            // Create storage directory
+            // Ensure storage directory exists
             Directory.CreateDirectory(_storageDirPath);
 
-            // Try to acquire lock file
-            _lockFile = LockFile.TryAcquire(_lockFilePath);
+            // Try to acquire lock file if it's not acquired yet
+            _lockFile = _lockFile ?? LockFile.TryAcquire(_lockFilePath);
 
             // If failed to acquire - throw
             if (_lockFile == null)
@@ -164,7 +161,7 @@ namespace Onova
             var packageFilePath = GetPackageFilePath(version);
             var packageContentDirPath = GetPackageContentDirPath(version);
 
-            // Create storage directory
+            // Ensure storage directory exists
             Directory.CreateDirectory(_storageDirPath);
 
             // Download package
@@ -172,7 +169,7 @@ namespace Onova
                 progressMixer?.Split(0.9), // 0% -> 90%
                 cancellationToken).ConfigureAwait(false);
 
-            // Create empty directory for package contents
+            // Ensure package content directory exists and is empty
             DirectoryEx.Reset(packageContentDirPath);
 
             // Extract package contents
@@ -203,14 +200,32 @@ namespace Onova
             var packageContentDirPath = GetPackageContentDirPath(version);
 
             // Prepare arguments
-            var args = $"\"{_updatee.FilePath}\" \"{packageContentDirPath}\" {restart}";
+            var updaterArgs = $"\"{_updatee.FilePath}\" \"{packageContentDirPath}\" {restart}";
 
             // Decide if updater needs to be elevated
             var updateeDirPath = Path.GetDirectoryName(_updatee.FilePath);
-            var isElevated = !DirectoryEx.CheckWriteAccess(updateeDirPath);
+            var isUpdaterElevated = !DirectoryEx.CheckWriteAccess(updateeDirPath);
 
-            // Launch the updater
-            ProcessEx.StartCli(_updaterFilePath, args, isElevated);
+            // Create updater process start info
+            var updaterStartInfo = new ProcessStartInfo
+            {
+                FileName = _updaterFilePath,
+                Arguments = updaterArgs,
+                CreateNoWindow = true,
+                UseShellExecute = false
+            };
+
+            // If updater needs to be elevated - use shell execute with "runas"
+            if (isUpdaterElevated)
+            {
+                updaterStartInfo.Verb = "runas";
+                updaterStartInfo.UseShellExecute = true;
+            }
+
+            // Create and start updater process
+            var updaterProcess = new Process {StartInfo = updaterStartInfo};
+            using (updaterProcess)
+                updaterProcess.Start();
         }
 
         /// <inheritdoc />

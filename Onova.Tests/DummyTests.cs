@@ -29,8 +29,8 @@ namespace Onova.Tests
                 TestContext.Out.WriteLine($"Updater log:{Environment.NewLine}{log}");
             }
 
-            // Delete dummy environment
-            DummyEnvironment.Delete();
+            // Reset dummy environment
+            DummyEnvironment.Reset();
 
             // Delete storage
             if (Directory.Exists(StorageDirPath))

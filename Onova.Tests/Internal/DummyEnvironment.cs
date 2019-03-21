@@ -17,7 +17,7 @@ namespace Onova.Tests.Internal
         private static string DummyFilePath => Path.Combine(DummyDirPath, DummyFileName);
         private static string DummyPackagesDirPath => Path.Combine(DummyDirPath, "Packages");
 
-        public static void Delete()
+        public static void Reset()
         {
             // Delete directory
             if (Directory.Exists(DummyDirPath))
@@ -80,8 +80,8 @@ namespace Onova.Tests.Internal
 
         public static void Setup(Version baseVersion, params Version[] packageVersions)
         {
-            // Delete
-            Delete();
+            // Delete everything
+            Reset();
 
             // Create base
             CreateBase(baseVersion);

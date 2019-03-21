@@ -25,7 +25,7 @@ namespace Onova.Tests
         [SetUp]
         public void Setup()
         {
-            // Create temp directory
+            // Ensure temp directory exists and is empty
             DirectoryEx.Reset(TempDirPath);
         }
 

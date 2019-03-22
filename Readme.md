@@ -91,8 +91,8 @@ using (var manager = new UpdateManager(
     new LocalPackageResolver("c:\\test\\packages", "*.zip"),
     new ZipPackageExtractor()))
 {
-	// Check for new version and, if available, perform full update and restart
-	await manager.CheckPerformUpdateAsync();
+    // Check for new version and, if available, perform full update and restart
+    await manager.CheckPerformUpdateAsync();
 }
 ```
 

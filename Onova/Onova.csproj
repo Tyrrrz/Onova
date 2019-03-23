@@ -11,7 +11,7 @@
     <PackageProjectUrl>https://github.com/Tyrrrz/Onova</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/Tyrrrz/Onova/blob/master/Changelog.md</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/Tyrrrz/Onova/master/favicon.png</PackageIconUrl>
-    <PackageLicenseExpression>LGPL-3.0</PackageLicenseExpression>
+    <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/Tyrrrz/Onova</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>

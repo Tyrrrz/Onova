@@ -83,7 +83,7 @@ namespace Onova.Services
             // Copy file
             using (var input = File.OpenRead(sourceFilePath))
             using (var output = File.Create(destFilePath))
-                await input.CopyToAsync(output, progress, cancellationToken).ConfigureAwait(false);
+                await input.CopyToAsync(output, progress, cancellationToken);
         }
     }
 }

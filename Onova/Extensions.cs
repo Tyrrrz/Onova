@@ -19,12 +19,12 @@ namespace Onova
             manager.GuardNotNull(nameof(manager));
 
             // Check
-            var result = await manager.CheckForUpdatesAsync().ConfigureAwait(false);
+            var result = await manager.CheckForUpdatesAsync();
             if (!result.CanUpdate)
                 return;
 
             // Prepare
-            await manager.PrepareUpdateAsync(result.LastVersion, progress, cancellationToken).ConfigureAwait(false);
+            await manager.PrepareUpdateAsync(result.LastVersion, progress, cancellationToken);
 
             // Apply
             manager.LaunchUpdater(result.LastVersion, restart);

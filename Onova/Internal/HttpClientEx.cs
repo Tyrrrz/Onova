@@ -36,17 +36,16 @@ namespace Onova.Internal
                 throw new InvalidOperationException("Response does not have 'Content-Length' header set.");
 
             // Read stream
-            var stream = await content.ReadAsStreamAsync().ConfigureAwait(false);
+            var stream = await content.ReadAsStreamAsync();
 
             return new FiniteStream(stream, length);
         }
 
         public static async Task<FiniteStream> GetFiniteStreamAsync(this HttpClient client, string requestUri)
         {
-            var response = await client.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead)
-                .ConfigureAwait(false);
+            var response = await client.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead);
 
-            return await response.Content.ReadAsFiniteStreamAsync().ConfigureAwait(false);
+            return await response.Content.ReadAsFiniteStreamAsync();
         }
     }
 }

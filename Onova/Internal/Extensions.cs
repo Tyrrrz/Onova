@@ -57,10 +57,10 @@ namespace Onova.Internal
             var buffer = new byte[81920];
 
             // Read
-            var bytesCopied = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+            var bytesCopied = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
 
             // Write
-            await destination.WriteAsync(buffer, 0, bytesCopied, cancellationToken).ConfigureAwait(false);
+            await destination.WriteAsync(buffer, 0, bytesCopied, cancellationToken);
 
             return bytesCopied;
         }
@@ -73,7 +73,7 @@ namespace Onova.Internal
             do
             {
                 // Copy
-                bytesCopied = await source.CopyChunkToAsync(destination, cancellationToken).ConfigureAwait(false);
+                bytesCopied = await source.CopyChunkToAsync(destination, cancellationToken);
 
                 // Report progress
                 totalBytesCopied += bytesCopied;
@@ -89,7 +89,7 @@ namespace Onova.Internal
                 throw new MissingManifestResourceException($"Could not find resource [{resourceName}].");
 
             using (var output = File.Create(destFilePath))
-                await input.CopyToAsync(output).ConfigureAwait(false);
+                await input.CopyToAsync(output);
         }
     }
 }

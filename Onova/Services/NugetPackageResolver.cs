@@ -44,7 +44,7 @@ namespace Onova.Services
         private async Task<string> GetPackageBaseAddressResourceUrlAsync()
         {
             // Get all available resources
-            var response = await _httpClient.GetStringAsync(_serviceIndexUrl).ConfigureAwait(false);
+            var response = await _httpClient.GetStringAsync(_serviceIndexUrl);
             var resourcesJson = JToken.Parse(response)["resources"];
 
             // Get URL of the required resource
@@ -65,11 +65,11 @@ namespace Onova.Services
         public async Task<IReadOnlyList<Version>> GetVersionsAsync()
         {
             // Get package base address resource URL
-            var resourceUrl = await GetPackageBaseAddressResourceUrlAsync().ConfigureAwait(false);
+            var resourceUrl = await GetPackageBaseAddressResourceUrlAsync();
 
             // Get versions
             var request = $"{resourceUrl}/{PackageIdNormalized}/index.json";
-            var response = await _httpClient.GetStringAsync(request).ConfigureAwait(false);
+            var response = await _httpClient.GetStringAsync(request);
             var versionsJson = JToken.Parse(response)["versions"];
             var versions = new HashSet<Version>();
 
@@ -96,15 +96,14 @@ namespace Onova.Services
             destFilePath.GuardNotNull(nameof(destFilePath));
 
             // Get package base address resource URL
-            var resourceUrl = await GetPackageBaseAddressResourceUrlAsync().ConfigureAwait(false);
+            var resourceUrl = await GetPackageBaseAddressResourceUrlAsync();
 
             // Get package URL
             var packageUrl = $"{resourceUrl}/{PackageIdNormalized}/{version}/{PackageIdNormalized}.{version}.nupkg";
 
             // Download
             using (var response = await _httpClient
-                .GetAsync(packageUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
-                .ConfigureAwait(false))
+                .GetAsync(packageUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
             {
                 // If status code is 404 then this version doesn't exist
                 if (response.StatusCode == HttpStatusCode.NotFound)
@@ -114,9 +113,9 @@ namespace Onova.Services
                 response.EnsureSuccessStatusCode();
 
                 // Copy content to file
-                using (var input = await response.Content.ReadAsFiniteStreamAsync().ConfigureAwait(false))
+                using (var input = await response.Content.ReadAsFiniteStreamAsync())
                 using (var output = File.Create(destFilePath))
-                    await input.CopyToAsync(output, progress, cancellationToken).ConfigureAwait(false);
+                    await input.CopyToAsync(output, progress, cancellationToken);
             }
         }
     }

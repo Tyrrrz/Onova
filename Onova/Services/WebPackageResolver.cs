@@ -49,7 +49,7 @@ namespace Onova.Services
             var map = new Dictionary<Version, string>();
 
             // Get manifest
-            var response = await _httpClient.GetStringAsync(_manifestUrl).ConfigureAwait(false);
+            var response = await _httpClient.GetStringAsync(_manifestUrl);
 
             foreach (var line in response.Split("\n"))
             {
@@ -78,7 +78,7 @@ namespace Onova.Services
         /// <inheritdoc />
         public async Task<IReadOnlyList<Version>> GetVersionsAsync()
         {
-            var versions = await GetPackageVersionUrlMapAsync().ConfigureAwait(false);
+            var versions = await GetPackageVersionUrlMapAsync();
             return versions.Keys.ToArray();
         }
 
@@ -91,7 +91,7 @@ namespace Onova.Services
             destFilePath.GuardNotNull(nameof(destFilePath));
 
             // Get map
-            var map = await GetPackageVersionUrlMapAsync().ConfigureAwait(false);
+            var map = await GetPackageVersionUrlMapAsync();
 
             // Try to get package URL
             var packageUrl = map.GetOrDefault(version);
@@ -99,9 +99,9 @@ namespace Onova.Services
                 throw new PackageNotFoundException(version);
 
             // Download
-            using (var input = await _httpClient.GetFiniteStreamAsync(packageUrl).ConfigureAwait(false))
+            using (var input = await _httpClient.GetFiniteStreamAsync(packageUrl))
             using (var output = File.Create(destFilePath))
-                await input.CopyToAsync(output, progress, cancellationToken).ConfigureAwait(false);
+                await input.CopyToAsync(output, progress, cancellationToken);
         }
     }
 }

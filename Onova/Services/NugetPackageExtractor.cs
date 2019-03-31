@@ -64,8 +64,7 @@ namespace Onova.Services
                         do
                         {
                             // Copy
-                            bytesCopied = await input.CopyChunkToAsync(output, cancellationToken)
-                                .ConfigureAwait(false);
+                            bytesCopied = await input.CopyChunkToAsync(output, cancellationToken);
 
                             // Report progress
                             totalBytesCopied += bytesCopied;

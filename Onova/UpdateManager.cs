@@ -115,7 +115,7 @@ namespace Onova
             EnsureNotDisposed();
 
             // Get versions
-            var versions = await _resolver.GetVersionsAsync().ConfigureAwait(false);
+            var versions = await _resolver.GetVersionsAsync();
             var lastVersion = versions.Max();
             var canUpdate = lastVersion != null && _updatee.Version < lastVersion;
 
@@ -167,7 +167,7 @@ namespace Onova
             // Download package
             await _resolver.DownloadAsync(version, packageFilePath,
                 progressMixer?.Split(0.9), // 0% -> 90%
-                cancellationToken).ConfigureAwait(false);
+                cancellationToken);
 
             // Ensure package content directory exists and is empty
             DirectoryEx.Reset(packageContentDirPath);
@@ -175,14 +175,13 @@ namespace Onova
             // Extract package contents
             await _extractor.ExtractAsync(packageFilePath, packageContentDirPath,
                 progressMixer?.Split(0.1), // 90% -> 100%
-                cancellationToken).ConfigureAwait(false);
+                cancellationToken);
 
             // Delete package
             File.Delete(packageFilePath);
 
             // Extract updater
-            await Assembly.GetExecutingAssembly().ExtractManifestResourceAsync(UpdaterResourceName, _updaterFilePath)
-                .ConfigureAwait(false);
+            await Assembly.GetExecutingAssembly().ExtractManifestResourceAsync(UpdaterResourceName, _updaterFilePath);
         }
 
         /// <inheritdoc />

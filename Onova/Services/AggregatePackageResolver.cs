@@ -39,7 +39,7 @@ namespace Onova.Services
             // Get unique package versions provided by all resolvers
             foreach (var resolver in _resolvers)
             {
-                var versions = await resolver.GetVersionsAsync().ConfigureAwait(false);
+                var versions = await resolver.GetVersionsAsync();
                 aggregateVersions.AddRange(versions);
             }
 
@@ -51,7 +51,7 @@ namespace Onova.Services
             // Try to find the first resolver that has this package version
             foreach (var resolver in _resolvers)
             {
-                var versions = await resolver.GetVersionsAsync().ConfigureAwait(false);
+                var versions = await resolver.GetVersionsAsync();
                 if (versions.Contains(version))
                     return resolver;
             }
@@ -69,12 +69,12 @@ namespace Onova.Services
             destFilePath.GuardNotNull(nameof(destFilePath));
 
             // Find a resolver that has this package version
-            var resolver = await GetResolverForPackageAsync(version).ConfigureAwait(false);
+            var resolver = await GetResolverForPackageAsync(version);
             if (resolver == null)
                 throw new PackageNotFoundException(version);
 
             // Download package
-            await resolver.DownloadAsync(version, destFilePath, progress, cancellationToken).ConfigureAwait(false);
+            await resolver.DownloadAsync(version, destFilePath, progress, cancellationToken);
         }
     }
 }

@@ -9,7 +9,7 @@ Onova is a lightweight auto-update framework for desktop applications. It was pr
 
 ## Download
 
-- [NuGet](https://nuget.org/packages/Onova): `Install-Package Onova`
+- [NuGet](https://nuget.org/packages/Onova): `dotnet add package Onova`
 - [Continuous integration](https://ci.appveyor.com/project/Tyrrrz/Onova)
 
 ## Features
@@ -39,7 +39,7 @@ Onova is a lightweight auto-update framework for desktop applications. It was pr
 
 Packages and their versions are resolved using an implementation of `IPackageResolver`. Currently there are 5 built-in implementations:
 
-#### `LocalPackageResolver` 
+#### `LocalPackageResolver`
 
 This implementation looks for files in the specified directory using a predefined pattern. Package versions are extracted from file names, e.g. file named `MyProject-v2.1.5.zip` corresponds to package version `2.1.5`.
 
@@ -132,6 +132,7 @@ The updater will wait until all instances of the application have exited before 
 ## Libraries used
 
 - [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+- [ConfigureAwait.Fody](https://github.com/Fody/ConfigureAwait)
 - [Moq](https://github.com/Moq/moq4)
 - [NUnit](https://github.com/nunit/nunit)
 - [CliWrap](https://github.com/Tyrrrz/CliWrap)

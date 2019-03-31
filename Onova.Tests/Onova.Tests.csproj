@@ -1,29 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net46</TargetFramework>
-        <AssemblyName>Onova.Tests</AssemblyName>
-        <RootNamespace>Onova.Tests</RootNamespace>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net46</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <Reference Include="System.IO.Compression" />
-    </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.IO.Compression" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="CliWrap" Version="2.2.0" />
-        <PackageReference Include="Mono.Cecil" Version="0.10.3" />
-        <PackageReference Include="Moq" Version="4.10.1" />
-        <PackageReference Include="NUnit" Version="3.11.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="NUnit" Version="3.11.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
+    <PackageReference Include="CliWrap" Version="2.2.0" />
+    <PackageReference Include="Mono.Cecil" Version="0.10.3" />
+    <PackageReference Include="Moq" Version="4.10.1" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Onova\Onova.csproj" />
-        <ProjectReference Include="..\Onova.Tests.Dummy\Onova.Tests.Dummy.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Onova\Onova.csproj" />
+    <ProjectReference Include="..\Onova.Tests.Dummy\Onova.Tests.Dummy.csproj" />
+  </ItemGroup>
 
 </Project>

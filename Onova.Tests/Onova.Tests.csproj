@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="NUnit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
-    <PackageReference Include="CliWrap" Version="2.2.0" />
+    <PackageReference Include="CliWrap" Version="2.2.1" />
     <PackageReference Include="Mono.Cecil" Version="0.10.3" />
     <PackageReference Include="Moq" Version="4.10.1" />
   </ItemGroup>

@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Copy SourceFiles="$(SolutionDir)Onova.Updater\bin\$(Configuration)\net46\Onova.Updater.exe" DestinationFiles="$(ProjectDir)Updater.exe" />
+    <Copy SourceFiles="..\Onova.Updater\bin\$(Configuration)\net46\Onova.Updater.exe" DestinationFiles="$(ProjectDir)Updater.exe" />
   </Target>
 
   <ItemGroup>

@@ -13,12 +13,12 @@ namespace Onova.Services
         /// <summary>
         /// Gets all available package versions.
         /// </summary>
-        Task<IReadOnlyList<Version>> GetVersionsAsync();
+        Task<IReadOnlyList<Version>> GetPackageVersionsAsync();
 
         /// <summary>
         /// Downloads given package version.
         /// </summary>
-        Task DownloadAsync(Version version, string destFilePath,
+        Task DownloadPackageAsync(Version version, string destFilePath,
             IProgress<double> progress = null,
             CancellationToken cancellationToken = default(CancellationToken));
     }

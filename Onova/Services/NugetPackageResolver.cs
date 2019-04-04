@@ -62,7 +62,7 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<Version>> GetVersionsAsync()
+        public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync()
         {
             // Get package base address resource URL
             var resourceUrl = await GetPackageBaseAddressResourceUrlAsync();
@@ -88,7 +88,7 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public async Task DownloadAsync(Version version, string destFilePath,
+        public async Task DownloadPackageAsync(Version version, string destFilePath,
             IProgress<double> progress = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {

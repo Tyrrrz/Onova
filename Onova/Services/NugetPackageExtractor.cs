@@ -24,7 +24,7 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public async Task ExtractAsync(string sourceFilePath, string destDirPath,
+        public async Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
             IProgress<double> progress = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {

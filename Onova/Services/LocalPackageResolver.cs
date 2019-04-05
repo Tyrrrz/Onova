@@ -76,7 +76,7 @@ namespace Onova.Services
             var map = GetPackageVersionFilePathMap();
 
             // Try to get package file path
-            var sourceFilePath = map.GetOrDefault(version);
+            var sourceFilePath = map.GetValueOrDefault(version);
             if (sourceFilePath == null)
                 throw new PackageNotFoundException(version);
 

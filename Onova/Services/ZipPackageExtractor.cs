@@ -42,11 +42,12 @@ namespace Onova.Services
                     using (var input = entry.Open())
                     using (var output = File.Create(entryDestFilePath))
                     {
+                        var buffer = new byte[81920];
                         int bytesCopied;
                         do
                         {
                             // Copy
-                            bytesCopied = await input.CopyChunkToAsync(output, cancellationToken);
+                            bytesCopied = await input.CopyChunkToAsync(output, buffer, cancellationToken);
 
                             // Report progress
                             totalBytesCopied += bytesCopied;

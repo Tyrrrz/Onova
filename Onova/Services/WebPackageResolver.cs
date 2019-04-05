@@ -58,7 +58,7 @@ namespace Onova.Services
                 var url = line.SubstringAfter(" ").Trim();
 
                 // If either is not set - skip
-                if (versionText.IsBlank() || url.IsBlank())
+                if (versionText.IsEmpty() || url.IsEmpty())
                     continue;
 
                 // Try to parse version
@@ -94,7 +94,7 @@ namespace Onova.Services
             var map = await GetPackageVersionUrlMapAsync();
 
             // Try to get package URL
-            var packageUrl = map.GetOrDefault(version);
+            var packageUrl = map.GetValueOrDefault(version);
             if (packageUrl == null)
                 throw new PackageNotFoundException(version);
 

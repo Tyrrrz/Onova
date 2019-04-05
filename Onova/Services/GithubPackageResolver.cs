@@ -159,7 +159,7 @@ namespace Onova.Services
             var map = await GetPackageVersionUrlMapAsync();
 
             // Try to get package URL
-            var packageUrl = map.GetOrDefault(version);
+            var packageUrl = map.GetValueOrDefault(version);
             if (packageUrl == null)
                 throw new PackageNotFoundException(version);
 

@@ -11,51 +11,35 @@ namespace Onova.Internal
 {
     internal static class Extensions
     {
-        public static bool IsBlank(this string str)
-        {
-            return string.IsNullOrWhiteSpace(str);
-        }
+        public static bool IsEmpty(this string s) => string.IsNullOrEmpty(s);
 
-        public static bool IsNotBlank(this string str)
-        {
-            return !string.IsNullOrWhiteSpace(str);
-        }
-
-        public static string SubstringUntil(this string str, string sub,
+        public static string SubstringUntil(this string s, string sub,
             StringComparison comparison = StringComparison.Ordinal)
         {
-            var index = str.IndexOf(sub, comparison);
-            return index < 0 ? str : str.Substring(0, index);
+            var index = s.IndexOf(sub, comparison);
+            return index < 0 ? s : s.Substring(0, index);
         }
 
-        public static string SubstringAfter(this string str, string sub,
+        public static string SubstringAfter(this string s, string sub,
             StringComparison comparison = StringComparison.Ordinal)
         {
-            var index = str.IndexOf(sub, comparison);
-            return index < 0 ? string.Empty : str.Substring(index + sub.Length, str.Length - index - sub.Length);
+            var index = s.IndexOf(sub, comparison);
+            return index < 0 ? string.Empty : s.Substring(index + sub.Length, s.Length - index - sub.Length);
         }
 
-        public static string[] Split(this string input, params string[] separators)
-        {
-            return input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-        }
+        public static string[] Split(this string input, params string[] separators) =>
+            input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-        public static int AddRange<T>(this HashSet<T> hashSet, IEnumerable<T> sequence)
-        {
-            return sequence.Count(hashSet.Add);
-        }
+        public static int AddRange<T>(this HashSet<T> hashSet, IEnumerable<T> sequence) =>
+            sequence.Count(hashSet.Add);
 
-        public static TValue GetOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dic, TKey key,
-            TValue defaultValue = default(TValue))
-        {
-            return dic.TryGetValue(key, out var result) ? result : defaultValue;
-        }
+        public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dic, TKey key,
+            TValue defaultValue = default(TValue)) =>
+            dic.TryGetValue(key, out var result) ? result : defaultValue;
 
-        public static async Task<int> CopyChunkToAsync(this Stream source, Stream destination,
+        public static async Task<int> CopyChunkToAsync(this Stream source, Stream destination, byte[] buffer,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var buffer = new byte[81920];
-
             // Read
             var bytesCopied = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
 
@@ -68,12 +52,13 @@ namespace Onova.Internal
         public static async Task CopyToAsync(this Stream source, Stream destination,
             IProgress<double> progress = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            var buffer = new byte[81920];
             var totalBytesCopied = 0L;
             int bytesCopied;
             do
             {
                 // Copy
-                bytesCopied = await source.CopyChunkToAsync(destination, cancellationToken);
+                bytesCopied = await source.CopyChunkToAsync(destination, buffer, cancellationToken);
 
                 // Report progress
                 totalBytesCopied += bytesCopied;

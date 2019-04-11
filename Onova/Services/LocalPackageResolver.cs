@@ -77,7 +77,7 @@ namespace Onova.Services
 
             // Try to get package file path
             var sourceFilePath = map.GetValueOrDefault(version);
-            if (sourceFilePath == null)
+            if (sourceFilePath.IsNullOrWhiteSpace())
                 throw new PackageNotFoundException(version);
 
             // Copy file

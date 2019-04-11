@@ -160,7 +160,7 @@ namespace Onova.Services
 
             // Try to get package URL
             var packageUrl = map.GetValueOrDefault(version);
-            if (packageUrl == null)
+            if (packageUrl.IsNullOrWhiteSpace())
                 throw new PackageNotFoundException(version);
 
             // Download

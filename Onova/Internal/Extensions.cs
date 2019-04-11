@@ -11,7 +11,7 @@ namespace Onova.Internal
 {
     internal static class Extensions
     {
-        public static bool IsEmpty(this string s) => string.IsNullOrEmpty(s);
+        public static bool IsNullOrWhiteSpace(this string s) => string.IsNullOrWhiteSpace(s);
 
         public static string SubstringUntil(this string s, string sub,
             StringComparison comparison = StringComparison.Ordinal)

@@ -144,8 +144,7 @@ namespace Onova
 
         /// <inheritdoc />
         public async Task PrepareUpdateAsync(Version version,
-            IProgress<double> progress = null,
-            CancellationToken cancellationToken = default(CancellationToken))
+            IProgress<double> progress = null, CancellationToken cancellationToken = default)
         {
             version.GuardNotNull(nameof(version));
 

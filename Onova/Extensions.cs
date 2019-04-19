@@ -14,7 +14,7 @@ namespace Onova
         /// Checks for new version and performs an update if available.
         /// </summary>
         public static async Task CheckPerformUpdateAsync(this IUpdateManager manager, bool restart = true,
-            IProgress<double> progress = null, CancellationToken cancellationToken = default(CancellationToken))
+            IProgress<double> progress = null, CancellationToken cancellationToken = default)
         {
             manager.GuardNotNull(nameof(manager));
 

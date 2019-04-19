@@ -13,7 +13,6 @@ namespace Onova.Services
         /// Extracts contents of the given package to the given output directory.
         /// </summary>
         Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
-            IProgress<double> progress = null,
-            CancellationToken cancellationToken = default(CancellationToken));
+            IProgress<double> progress = null, CancellationToken cancellationToken = default);
     }
 }

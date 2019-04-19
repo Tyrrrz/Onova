@@ -19,7 +19,6 @@ namespace Onova.Services
         /// Downloads given package version.
         /// </summary>
         Task DownloadPackageAsync(Version version, string destFilePath,
-            IProgress<double> progress = null,
-            CancellationToken cancellationToken = default(CancellationToken));
+            IProgress<double> progress = null, CancellationToken cancellationToken = default);
     }
 }

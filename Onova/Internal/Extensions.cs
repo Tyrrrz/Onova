@@ -6,11 +6,13 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Onova.Internal
 {
     internal static class Extensions
     {
+        [ContractAnnotation("s:null => true")]
         public static bool IsNullOrWhiteSpace(this string s) => string.IsNullOrWhiteSpace(s);
 
         public static string SubstringUntil(this string s, string sub,
@@ -30,15 +32,13 @@ namespace Onova.Internal
         public static string[] Split(this string input, params string[] separators) =>
             input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-        public static int AddRange<T>(this HashSet<T> hashSet, IEnumerable<T> sequence) =>
-            sequence.Count(hashSet.Add);
+        public static int AddRange<T>(this HashSet<T> hashSet, IEnumerable<T> sequence) => sequence.Count(hashSet.Add);
 
-        public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dic, TKey key,
-            TValue defaultValue = default(TValue)) =>
-            dic.TryGetValue(key, out var result) ? result : defaultValue;
+        public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dic, TKey key) =>
+            dic.TryGetValue(key, out var result) ? result : default;
 
         public static async Task<int> CopyChunkToAsync(this Stream source, Stream destination, byte[] buffer,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             // Read
             var bytesCopied = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
@@ -50,7 +50,7 @@ namespace Onova.Internal
         }
 
         public static async Task CopyToAsync(this Stream source, Stream destination,
-            IProgress<double> progress = null, CancellationToken cancellationToken = default(CancellationToken))
+            IProgress<double> progress = null, CancellationToken cancellationToken = default)
         {
             var buffer = new byte[81920];
             var totalBytesCopied = 0L;

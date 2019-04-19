@@ -89,8 +89,7 @@ namespace Onova.Services
 
         /// <inheritdoc />
         public async Task DownloadPackageAsync(Version version, string destFilePath,
-            IProgress<double> progress = null,
-            CancellationToken cancellationToken = default(CancellationToken))
+            IProgress<double> progress = null, CancellationToken cancellationToken = default)
         {
             version.GuardNotNull(nameof(version));
             destFilePath.GuardNotNull(nameof(destFilePath));

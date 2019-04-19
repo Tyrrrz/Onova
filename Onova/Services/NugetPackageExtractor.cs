@@ -25,8 +25,7 @@ namespace Onova.Services
 
         /// <inheritdoc />
         public async Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
-            IProgress<double> progress = null,
-            CancellationToken cancellationToken = default(CancellationToken))
+            IProgress<double> progress = null, CancellationToken cancellationToken = default)
         {
             sourceFilePath.GuardNotNull(nameof(sourceFilePath));
             destDirPath.GuardNotNull(nameof(destDirPath));
@@ -54,7 +53,8 @@ namespace Onova.Services
                     var entryDestDirPath = Path.GetDirectoryName(entryDestFilePath);
 
                     // Create directory
-                    Directory.CreateDirectory(entryDestDirPath);
+                    if (!entryDestDirPath.IsNullOrWhiteSpace())
+                        Directory.CreateDirectory(entryDestDirPath);
 
                     // Extract entry
                     using (var input = entry.Open())

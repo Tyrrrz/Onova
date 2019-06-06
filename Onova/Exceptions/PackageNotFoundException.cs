@@ -17,7 +17,7 @@ namespace Onova.Exceptions
         /// Initializes an instance of <see cref="PackageNotFoundException"/>.
         /// </summary>
         public PackageNotFoundException(Version version)
-            : base($"Package version [{version}] was not found.")
+            : base($"Package version [{version}] was not found by the configured package resolver.")
         {
             Version = version.GuardNotNull(nameof(version));
         }

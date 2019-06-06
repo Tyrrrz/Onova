@@ -11,7 +11,7 @@ namespace Onova.Exceptions
         /// Initializes an instance of <see cref="UpdaterAlreadyLaunchedException"/>.
         /// </summary>
         public UpdaterAlreadyLaunchedException()
-            : base("Updater has already been launched.")
+            : base("Updater has already been launched, either by this or another instance of this application.")
         {
         }
     }

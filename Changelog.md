@@ -1,3 +1,11 @@
+### v2.4.3 (15-Jun-2019)
+
+- Renamed methods on `IPackageExtractor` and `IPackageResolver`.
+- Fixed incorrect behavior in `ZipPackageExtractor` and `NugetPackageExtractor` when used with archives that contain subdirectories.
+- Fixed an issue in `Onova.Updater` where files in subdirectories were copied to incorrect locations.
+- Fixed an issue where `ZipPackageExtractor` threw an exception when the destination path is rooted.
+- Improved exception messages.
+
 ### v2.4.2 (21-Mar-2019)
 
 - Fixed an issue where launched instances of `Onova.Updater` weren't detected if they were started by a different process.

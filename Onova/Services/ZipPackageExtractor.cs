@@ -38,6 +38,10 @@ namespace Onova.Services
                     if (!entryDestDirPath.IsNullOrWhiteSpace())
                         Directory.CreateDirectory(entryDestDirPath);
 
+                    // If the entry is a directory - continue
+                    if (entry.FullName.Last() == Path.DirectorySeparatorChar || entry.FullName.Last() == Path.AltDirectorySeparatorChar)
+                        continue;
+
                     // Extract entry
                     using (var input = entry.Open())
                     using (var output = File.Create(entryDestFilePath))

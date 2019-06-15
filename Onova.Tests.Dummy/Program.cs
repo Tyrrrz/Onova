@@ -19,7 +19,7 @@ namespace Onova.Tests.Dummy
             new LocalPackageResolver(PackagesDirPath, "*.onv"),
             new ZipPackageExtractor());
 
-        public static async Task MainAsync(string[] args)
+        public static async Task Main(string[] args)
         {
             var command = args.Length > 0 ? args[0] : null;
 
@@ -35,7 +35,5 @@ namespace Onova.Tests.Dummy
                 await UpdateManager.CheckPerformUpdateAsync(false, progressHandler);
             }
         }
-
-        public static void Main(string[] args) => MainAsync(args).GetAwaiter().GetResult();
     }
 }

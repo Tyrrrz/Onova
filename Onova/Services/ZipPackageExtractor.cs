@@ -35,7 +35,8 @@ namespace Onova.Services
                     var entryDestDirPath = Path.GetDirectoryName(entryDestFilePath);
 
                     // Create directory
-                    Directory.CreateDirectory(entryDestDirPath);
+                    if (!entryDestDirPath.IsNullOrWhiteSpace())
+                        Directory.CreateDirectory(entryDestDirPath);
 
                     // Extract entry
                     using (var input = entry.Open())

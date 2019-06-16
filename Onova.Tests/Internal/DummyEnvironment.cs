@@ -1,70 +1,63 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Reflection;
 using System.Threading.Tasks;
 using CliWrap;
 using Mono.Cecil;
-using NUnit.Framework;
 
 namespace Onova.Tests.Internal
 {
-    internal static class DummyEnvironment
+    internal class DummyEnvironment : IDisposable
     {
-        private const string DummyFileName = "Onova.Tests.Dummy.exe";
+        private static readonly Assembly DummyAssembly = typeof(Dummy.Program).Assembly;
+        private static readonly string DummyAssemblyFileName = Path.GetFileName(DummyAssembly.Location);
+        private static readonly string DummyAssemblyDirPath = Path.GetDirectoryName(DummyAssembly.Location);
 
-        private static string TestDirPath => TestContext.CurrentContext.TestDirectory;
-        private static string DummyDirPath => Path.Combine(TestDirPath, "Dummy");
-        private static string DummyFilePath => Path.Combine(DummyDirPath, DummyFileName);
-        private static string DummyPackagesDirPath => Path.Combine(DummyDirPath, "Packages");
+        private readonly string _rootDirPath;
 
-        public static void Reset()
+        private string DummyFilePath => Path.Combine(_rootDirPath, DummyAssemblyFileName);
+        private string DummyPackagesDirPath => Path.Combine(_rootDirPath, "Packages");
+
+        public DummyEnvironment(string rootDirPath)
         {
-            // Delete directory
-            if (Directory.Exists(DummyDirPath))
-                Directory.Delete(DummyDirPath, true);
+            _rootDirPath = rootDirPath;
         }
 
-        private static void SetAssemblyVersion(string filePath, Version version)
+        private void SetAssemblyVersion(string filePath, Version version)
         {
             using (var assemblyStream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite))
             using (var assemblyDefinition = AssemblyDefinition.ReadAssembly(assemblyStream))
             {
-                // Change assembly version
                 assemblyDefinition.Name.Version = version;
                 assemblyDefinition.Write(assemblyStream);
             }
         }
 
-        private static void CreateBase(Version version)
+        private void CreateBase(Version version)
         {
             // Create dummy directory
-            Directory.CreateDirectory(DummyDirPath);
+            Directory.CreateDirectory(_rootDirPath);
 
             // Copy files
-            foreach (var filePath in Directory.EnumerateFiles(TestDirPath))
+            foreach (var filePath in Directory.EnumerateFiles(DummyAssemblyDirPath))
             {
                 var fileName = Path.GetFileName(filePath);
-                var fileExt = Path.GetExtension(filePath);
-
-                // Only exe and dll
-                if (!string.Equals(fileExt, ".exe", StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(fileExt, ".dll", StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                File.Copy(filePath, Path.Combine(DummyDirPath, fileName));
+                File.Copy(filePath, Path.Combine(_rootDirPath, fileName));
             }
 
             // Change base dummy version
             SetAssemblyVersion(DummyFilePath, version);
         }
 
-        private static void CreatePackage(Version version)
+        private void CreatePackage(Version version)
         {
             // Create package directory
             Directory.CreateDirectory(DummyPackagesDirPath);
 
             // Temporarily copy the dummy
-            var dummyTempFilePath = Path.Combine(DummyDirPath, $"{DummyFileName}.{version}");
+            var dummyTempFilePath = Path.Combine(_rootDirPath, $"{DummyAssemblyFileName}.{version}");
             File.Copy(DummyFilePath, dummyTempFilePath);
 
             // Change dummy version
@@ -72,43 +65,37 @@ namespace Onova.Tests.Internal
 
             // Create package
             using (var zip = ZipFile.Open(Path.Combine(DummyPackagesDirPath, $"{version}.onv"), ZipArchiveMode.Create))
-                zip.CreateEntryFromFile(dummyTempFilePath, DummyFileName);
+                zip.CreateEntryFromFile(dummyTempFilePath, DummyAssemblyFileName);
 
             // Delete temp file
             File.Delete(dummyTempFilePath);
         }
 
-        public static void Setup(Version baseVersion, params Version[] packageVersions)
+        private void Cleanup()
         {
-            // Delete everything
-            Reset();
-
-            // Create base
-            CreateBase(baseVersion);
-
-            // Create packages
-            foreach (var packageVersion in packageVersions)
-                CreatePackage(packageVersion);
+            if (Directory.Exists(_rootDirPath))
+                Directory.Delete(_rootDirPath, true);
         }
 
-        public static async Task<Version> GetCurrentVersionAsync()
+        public void Setup(Version baseVersion, IReadOnlyList<Version> availableVersions)
         {
-            var result = await Cli.Wrap(DummyFilePath)
-                .SetArguments("version")
-                .EnableExitCodeValidation(false)
-                .EnableStandardErrorValidation()
-                .ExecuteAsync();
+            Cleanup();
 
+            CreateBase(baseVersion);
+
+            foreach (var version in availableVersions)
+                CreatePackage(version);
+        }
+
+        public async Task<Version> GetCurrentVersionAsync()
+        {
+            var result = await Cli.Wrap(DummyFilePath).SetArguments("version").ExecuteAsync();
             return Version.Parse(result.StandardOutput);
         }
 
-        public static async Task CheckPerformUpdateAsync()
-        {
-            await Cli.Wrap(DummyFilePath)
-                .SetArguments("update")
-                .EnableExitCodeValidation(false)
-                .EnableStandardErrorValidation()
-                .ExecuteAsync();
-        }
+        public async Task CheckPerformUpdateAsync() =>
+            await Cli.Wrap(DummyFilePath).SetArguments("update").ExecuteAsync();
+
+        public void Dispose() => Cleanup();
     }
 }

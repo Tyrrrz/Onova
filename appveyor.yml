@@ -9,8 +9,11 @@ before_build:
 build:
   verbosity: minimal
 
+after_test:
+- choco install codecov && codecov -f "Onova.Tests/bin/%CONFIGURATION%/Coverage.xml" --required
+
 artifacts:
-- path: Onova\bin\$(configuration)\Onova*.nupkg
+- path: Onova/bin/$(configuration)/Onova*.nupkg
   name: Onova.nupkg
 
 deploy:

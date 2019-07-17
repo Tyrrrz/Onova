@@ -140,6 +140,7 @@ The updater will wait until all instances of the application have exited before 
 - [NUnit](https://github.com/nunit/nunit)
 - [CliWrap](https://github.com/Tyrrrz/CliWrap)
 - [Mono.Cecil](https://github.com/jbevain/cecil)
+- [Coverlet](https://github.com/tonerdo/coverlet)
 
 ## Donate
 

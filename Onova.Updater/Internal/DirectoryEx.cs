@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading;
 
 namespace Onova.Updater.Internal
 {
@@ -17,6 +18,11 @@ namespace Onova.Updater.Internal
                 // Get destination file path
                 var destFileName = Path.GetFileName(sourceFilePath);
                 var destFilePath = Path.Combine(destDirPath, destFileName);
+
+                Program.WriteLog($"Waiting for file to be writable... {destFilePath}");
+                while (File.Exists(destFilePath) && !FileEx.CheckWriteAccess(destFilePath))
+                    Thread.Sleep(100);
+
                 File.Copy(sourceFilePath, destFilePath, overwrite);
             }
 

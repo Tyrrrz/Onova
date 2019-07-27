@@ -18,10 +18,36 @@ namespace Onova.Updater
         private static string LogFilePath => Path.Combine(AssemblyDirPath, "Log.txt");
         private static Version Version => Assembly.GetExecutingAssembly().GetName().Version;
 
-        private static void WriteLog(string value)
+        public static void WriteLog(string value)
         {
             var date = DateTimeOffset.Now;
             _log.WriteLine($"{date:dd-MMM-yyyy HH:mm:ss.fff}> {value}");
+        }
+
+        public static void Main(string[] args)
+        {
+            // Write log
+            using (_log = File.CreateText(LogFilePath))
+            {
+                // Launch info
+                WriteLog($"Onova Updater v{Version} started with args: [{args.JoinToString(", ")}].");
+
+                try
+                {
+                    // Extract arguments
+                    var updateeFilePath = args[0];
+                    var packageContentDirPath = args[1];
+                    var restartUpdatee = bool.Parse(args[2]);
+
+                    // Execute update
+                    Update(updateeFilePath, packageContentDirPath, restartUpdatee);
+                    WriteLog("Update completed successfully.");
+                }
+                catch (Exception ex)
+                {
+                    WriteLog(ex.ToString());
+                }
+            }
         }
 
         private static void Update(string updateeFilePath, string packageContentDirPath, bool restartUpdatee)
@@ -53,32 +79,6 @@ namespace Onova.Updater
             // Delete package content directory
             WriteLog("Deleting package contents from storage...");
             Directory.Delete(packageContentDirPath, true);
-        }
-
-        public static void Main(string[] args)
-        {
-            // Write log
-            using (_log = File.CreateText(LogFilePath))
-            {
-                // Launch info
-                WriteLog($"Onova Updater v{Version} started with args: [{args.JoinToString(", ")}].");
-
-                try
-                {
-                    // Extract arguments
-                    var updateeFilePath = args[0];
-                    var packageContentDirPath = args[1];
-                    var restartUpdatee = bool.Parse(args[2]);
-
-                    // Execute update
-                    Update(updateeFilePath, packageContentDirPath, restartUpdatee);
-                    WriteLog("Update completed successfully.");
-                }
-                catch (Exception ex)
-                {
-                    WriteLog(ex.ToString());
-                }
-            }
         }
     }
 }

@@ -63,7 +63,8 @@ namespace Onova.Models
         public static AssemblyMetadata FromEntryAssembly()
         {
             var entryAssembly = Assembly.GetEntryAssembly();
-            string framework = entryAssembly.GetCustomAttribute<TargetFrameworkAttribute>().FrameworkName;
+
+            string framework  = entryAssembly.GetCustomAttribute<TargetFrameworkAttribute>().FrameworkName;
             if (framework.StartsWith(".NETCoreApp"))
             {
                 var name        = entryAssembly.GetName().Name;
@@ -74,7 +75,7 @@ namespace Onova.Models
                 {
                     filePath = Path.ChangeExtension(filePath, ".exe");
                     if (!File.Exists(filePath))
-                        throw new FileNotFoundException($"Currently executing assembly was DLL, so assumed WPF/WinForms .NET Core, but exe with same name {Path.GetFileName(filePath)} does not exist.");
+                        throw new FileNotFoundException($"Entry assembly was .NET Core DLL. Defaulted to assume assumed WPF/WinForms application, but exe with same name {Path.GetFileName(filePath)} does not exist. If the source is a .NET Core console application, please refer to the readme.");
                 }
 
                 return new AssemblyMetadata(name, version, filePath);

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
+using System.Runtime.Versioning;
 using JetBrains.Annotations;
 using Onova.Internal;
 
@@ -58,6 +60,27 @@ namespace Onova.Models
         /// <summary>
         /// Extracts assembly metadata from entry assembly.
         /// </summary>
-        public static AssemblyMetadata FromEntryAssembly() => FromAssembly(Assembly.GetEntryAssembly());
+        public static AssemblyMetadata FromEntryAssembly()
+        {
+            var entryAssembly = Assembly.GetEntryAssembly();
+            string framework = entryAssembly.GetCustomAttribute<TargetFrameworkAttribute>().FrameworkName;
+            if (framework.StartsWith(".NETCoreApp"))
+            {
+                var name        = entryAssembly.GetName().Name;
+                var version     = entryAssembly.GetName().Version;
+                var filePath    = entryAssembly.Location;
+
+                if (filePath.EndsWith(".dll"))
+                {
+                    filePath = Path.ChangeExtension(filePath, ".exe");
+                    if (!File.Exists(filePath))
+                        throw new FileNotFoundException($"Currently executing assembly was DLL, so assumed WPF/WinForms .NET Core, but exe with same name {Path.GetFileName(filePath)} does not exist.");
+                }
+
+                return new AssemblyMetadata(name, version, filePath);
+            }
+
+            return FromAssembly(entryAssembly);
+        }
     }
 }

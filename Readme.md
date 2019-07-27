@@ -120,6 +120,32 @@ if (result.CanUpdate)
     Environment.Exit(0);
 }
 ```
+### Handling .NET Core Applications
+If your application is a .NET Core application and the start-up file is a DLL as opposed to an .exe, you can work around this by passing a custom instance of `AssemblyMetadata` to `UpdateManager`. 
+
+Assuming that your project is called `MyProject` and compiles to `MyProject.dll`.
+
+##### A. Make a batch script (`MyProject.bat`)
+```batch
+dotnet MyProject.dll
+```
+
+Include it in your project as `Content` set to `Copy Always`, it should copy to your output directory.
+
+
+##### B. Pass custom AssemblyMetadata to UpdateManager.
+```csharp
+var entryAssembly = Assembly.GetEntryAssembly();
+var name        = entryAssembly.GetName().Name;
+var version     = entryAssembly.GetName().Version;
+var filePath    = Path.GetDirectoryName(entryAssembly.Location) + "\\MyProject.bat";
+
+var metadata = new AssemblyMetadata(name, version, filePath);
+using (var manager = new UpdateManager(metadata, ...))
+...
+```
+
+When Onova's updater will try to restart your application, it will now run the batch file instead.
 
 ### Handling updates with multiple running instances of the application
 
@@ -131,6 +157,7 @@ In order to correctly handle cases where multiple instances of the application m
 - `UpdaterAlreadyLaunchedException` - thrown by `PrepareUpdateAsync` and `LaunchUpdater` when an updater executable has already been launched, either by this instance of `UpdateManager` or another instance that has released the lock file.
 
 The updater will wait until all instances of the application have exited before applying an update, regardless of which instance launched it.
+
 
 ## Libraries used
 

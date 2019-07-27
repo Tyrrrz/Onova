@@ -41,7 +41,12 @@ namespace Onova.Updater
             {
                 WriteLog("Restarting updatee...");
 
-                using (var restartedUpdateeProcess = Process.Start(updateeFilePath))
+                ProcessStartInfo start = new ProcessStartInfo();
+                start.FileName = updateeFilePath; // Specify exe name.
+                start.UseShellExecute = false;
+                start.WorkingDirectory = Path.GetDirectoryName(updateeFilePath);
+
+                using (var restartedUpdateeProcess = Process.Start(start))
                     WriteLog($"Restarted as pid:{restartedUpdateeProcess?.Id}.");
             }
 

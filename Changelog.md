@@ -1,3 +1,7 @@
+### v2.4.4 (08-Aug-2019)
+
+- Added support for restarting .NET Core 3.0 apps. If the updatee is not an `.exe` file, it will try to find an `.exe` file with the same name. If it's not found, it will try to restart updatee via `dotnet`.
+
 ### v2.4.3 (15-Jun-2019)
 
 - Renamed methods on `IPackageExtractor` and `IPackageResolver`.

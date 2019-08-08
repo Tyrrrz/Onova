@@ -34,6 +34,7 @@ Onova is a lightweight auto-update framework for desktop applications. It was pr
 - Works with multiple running instances of an application
 - Automatically prompts for elevated privileges if necessary
 - Fully self-contained and doesn't require additional files
+- Supports desktop apps built with .NET Core 3.0+
 - Targets .NET Framework 4.6+ and .NET Standard 2.0 (Windows only)
 
 ## Workflow

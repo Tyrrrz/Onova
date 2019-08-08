@@ -26,6 +26,8 @@ namespace Onova.Updater
 
         private static void Update(string updateeFilePath, string packageContentDirPath, bool restartUpdatee)
         {
+            var updateeDirPath = Path.GetDirectoryName(updateeFilePath);
+
             // Wait until updatee is writable to ensure all running instances have exited
             WriteLog("Waiting for all running updatee instances to exit...");
             while (!FileEx.CheckWriteAccess(updateeFilePath))
@@ -33,13 +35,39 @@ namespace Onova.Updater
 
             // Copy over the package contents
             WriteLog("Copying package contents from storage to updatee's directory...");
-            var updateeDirPath = Path.GetDirectoryName(updateeFilePath);
             DirectoryEx.Copy(packageContentDirPath, updateeDirPath);
 
-            // Launch the updatee again if requested
+            // Restart updatee if requested
             if (restartUpdatee)
             {
                 WriteLog("Restarting updatee...");
+
+                var startInfo = new ProcessStartInfo
+                {
+                    WorkingDirectory = updateeDirPath
+                };
+
+                // If updatee is an .exe file - start it directly
+                if (string.Equals(Path.GetExtension(updateeFilePath), ".exe", StringComparison.OrdinalIgnoreCase))
+                {
+                    startInfo.FileName = updateeFilePath;
+                }
+                // If not - figure out what to do with it
+                else
+                {
+                    // If there's an .exe file with same name - start it instead
+                    // Security vulnerability?
+                    if (File.Exists(Path.ChangeExtension(updateeFilePath, ".exe")))
+                    {
+                        startInfo.FileName = Path.ChangeExtension(updateeFilePath, ".exe");
+                    }
+                    // Otherwise - start the updatee using dotnet SDK
+                    else
+                    {
+                        startInfo.FileName = "dotnet";
+                        startInfo.Arguments = updateeFilePath;
+                    }
+                }
 
                 using (var restartedUpdateeProcess = Process.Start(updateeFilePath))
                     WriteLog($"Restarted as pid:{restartedUpdateeProcess?.Id}.");

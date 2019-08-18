@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net46</TargetFramework>
-    <Version>2.4.4</Version>
+    <Version>2.4.5</Version>
     <ApplicationIcon>..\favicon.ico</ApplicationIcon>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>

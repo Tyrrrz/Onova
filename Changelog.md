@@ -1,3 +1,7 @@
+### v2.4.5 (18-Aug-2019)
+
+- Fixed an issue where updatee wasn't restarted properly if it's a `.dll` file.
+
 ### v2.4.4 (08-Aug-2019)
 
 - Added support for restarting .NET Core 3.0 apps. If the updatee is not an `.exe` file, it will try to find an `.exe` file with the same name. If it's not found, it will try to restart updatee via `dotnet`.

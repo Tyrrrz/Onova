@@ -44,7 +44,8 @@ namespace Onova.Updater
 
                 var startInfo = new ProcessStartInfo
                 {
-                    WorkingDirectory = updateeDirPath
+                    WorkingDirectory = updateeDirPath,
+                    UseShellExecute = false
                 };
 
                 // If updatee is an .exe file - start it directly
@@ -69,7 +70,7 @@ namespace Onova.Updater
                     }
                 }
 
-                using (var restartedUpdateeProcess = Process.Start(updateeFilePath))
+                using (var restartedUpdateeProcess = Process.Start(startInfo))
                     WriteLog($"Restarted as pid:{restartedUpdateeProcess?.Id}.");
             }
 

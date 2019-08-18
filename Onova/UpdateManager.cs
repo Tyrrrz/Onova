@@ -1,19 +1,16 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Onova.Exceptions;
 using Onova.Internal;
 using Onova.Models;
 using Onova.Services;
-
-#if NETSTANDARD2_0
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
-#endif
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Onova
 {
@@ -22,7 +19,7 @@ namespace Onova
     /// </summary>
     public class UpdateManager : IUpdateManager
     {
-        private const string UpdaterResourceName = "Onova.Updater.exe";
+        private const string UpdaterResourceName = "Onova.Updater.dll";
 
         private readonly AssemblyMetadata _updatee;
         private readonly IPackageResolver _resolver;
@@ -40,12 +37,6 @@ namespace Onova
         /// </summary>
         public UpdateManager(AssemblyMetadata updatee, IPackageResolver resolver, IPackageExtractor extractor)
         {
-#if NETSTANDARD2_0
-            // Ensure that this is only used on Windows
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                throw new PlatformNotSupportedException("Onova only supports Windows.");
-#endif
-
             _updatee = updatee.GuardNotNull(nameof(updatee));
             _resolver = resolver.GuardNotNull(nameof(resolver));
             _extractor = extractor.GuardNotNull(nameof(extractor));
@@ -56,10 +47,22 @@ namespace Onova
                 "Onova", _updatee.Name);
 
             // Set updater executable file path
-            _updaterFilePath = Path.Combine(_storageDirPath, $"{_updatee.Name}.Updater.exe");
+            _updaterFilePath = Path.Combine(_storageDirPath, $"{_updatee.Name}.Updater.dll");
 
             // Set lock file path
             _lockFilePath = Path.Combine(_storageDirPath, "Onova.lock");
+
+            /*
+            Console.WriteLine("ASS " + Assembly.GetExecutingAssembly().GetManifestResourceStream(UpdaterResourceName));
+            string[] names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+
+            foreach(var name in names)
+            {
+                Console.WriteLine(name);
+            }
+            */
+
+
         }
 
         /// <summary>
@@ -179,6 +182,9 @@ namespace Onova
             // Delete package
             File.Delete(packageFilePath);
 
+            //Extract runtimeconfig.json
+            File.Copy("VHDPlus.Updater.runtimeconfig.json", Path.Combine(_storageDirPath, "VHDPlus.Updater.runtimeconfig.json"), true);
+
             // Extract updater
             await Assembly.GetExecutingAssembly().ExtractManifestResourceAsync(UpdaterResourceName, _updaterFilePath);
         }
@@ -204,26 +210,39 @@ namespace Onova
             var updateeDirPath = Path.GetDirectoryName(_updatee.FilePath);
             var isUpdaterElevated = !DirectoryEx.CheckWriteAccess(updateeDirPath);
 
-            // Create updater process start info
-            var updaterStartInfo = new ProcessStartInfo
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                FileName = _updaterFilePath,
-                Arguments = updaterArgs,
-                CreateNoWindow = true,
-                UseShellExecute = false
-            };
+                // Create updater process start info
+                var updaterStartInfo = new ProcessStartInfo
+                {
+                    FileName = "dotnet",
+                    Arguments = _updaterFilePath + " " + updaterArgs,
+                    CreateNoWindow = true,
+                    UseShellExecute = true
+                };
 
-            // If updater needs to be elevated - use shell execute with "runas"
-            if (isUpdaterElevated)
+                // If updater needs to be elevated - use shell execute with "runas"
+                if (isUpdaterElevated)
+                {
+                    updaterStartInfo.Verb = "runas";
+                    updaterStartInfo.UseShellExecute = true;
+                }
+
+                // Create and start updater process
+                var updaterProcess = new Process { StartInfo = updaterStartInfo };
+                using (updaterProcess)
+                    updaterProcess.Start();
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                updaterStartInfo.Verb = "runas";
-                updaterStartInfo.UseShellExecute = true;
+                Process proc = new System.Diagnostics.Process();
+                proc.StartInfo.FileName = "/bin/bash";
+                proc.StartInfo.Arguments = "-c \" " + "dotnet " + _updaterFilePath + " " + updaterArgs + " \"";
+                proc.StartInfo.UseShellExecute = false;
+                proc.StartInfo.RedirectStandardOutput = true;
+                proc.Start();
             }
 
-            // Create and start updater process
-            var updaterProcess = new Process {StartInfo = updaterStartInfo};
-            using (updaterProcess)
-                updaterProcess.Start();
         }
 
         /// <inheritdoc />

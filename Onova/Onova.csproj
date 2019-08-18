@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net46;netstandard2.0</TargetFrameworks>
-    <Version>2.4.4</Version>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <Version>2.4.5</Version>
     <Company>Tyrrrz</Company>
     <Authors>$(Company)</Authors>
     <Copyright>Copyright (C) Alexey Golub</Copyright>
@@ -26,17 +26,34 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Copy SourceFiles="..\Onova.Updater\bin\$(Configuration)\net46\Onova.Updater.exe" DestinationFiles="$(ProjectDir)Updater.exe" />
+    <Copy SourceFiles="..\Onova.Updater\bin\$(Configuration)\netstandard2.0\Onova.Updater.dll" DestinationFiles="$(ProjectDir)Updater.dll" />
   </Target>
 
   <ItemGroup>
-    <EmbeddedResource Include="Updater.exe" />
+    <None Remove="Updater.dll" />
+    <None Remove="VHDPlus.Updater.runtimeconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="VHDPlus.Updater.runtimeconfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Updater.dll" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="ConfigureAwait.Fody" Version="3.1.0" PrivateAssets="all" />
     <PackageReference Include="Fody" Version="4.2.1" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Onova.Updater">
+      <HintPath>Updater.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

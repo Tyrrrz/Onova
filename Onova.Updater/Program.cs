@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Onova.Updater.Internal;
 
@@ -55,22 +56,43 @@ namespace Onova.Updater
                 // If not - figure out what to do with it
                 else
                 {
-                    // If there's an .exe file with same name - start it instead
-                    // Security vulnerability?
-                    if (File.Exists(Path.ChangeExtension(updateeFilePath, ".exe")))
+
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
-                        startInfo.FileName = Path.ChangeExtension(updateeFilePath, ".exe");
+                        var process = new Process
+                        {
+                            StartInfo = new ProcessStartInfo
+                            {
+                                FileName = "dotnet",
+                                Arguments = Path.GetFileName(updateeFilePath),
+                                WorkingDirectory = Path.GetDirectoryName(updateeFilePath),
+                                UseShellExecute = false,
+                                RedirectStandardOutput = false,
+                                RedirectStandardError = false,
+                                CreateNoWindow = true
+                            }
+                        };
+                        process.Start();
                     }
-                    // Otherwise - start the updatee using dotnet SDK
-                    else
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
-                        startInfo.FileName = "dotnet";
-                        startInfo.Arguments = updateeFilePath;
+                        Process proc = new System.Diagnostics.Process();
+                        proc.StartInfo.FileName = "/bin/bash";
+                        proc.StartInfo.Arguments = "-c \" " + "dotnet " + updateeFilePath + " \"";
+                        proc.StartInfo.UseShellExecute = false;
+                        proc.StartInfo.RedirectStandardOutput = true;
+
+                        WriteLog("ARGS: " + proc.StartInfo.Arguments);
+
+                        proc.Start();
                     }
+
+
+
+                        WriteLog("WorkingDir: " + startInfo.WorkingDirectory + "  FileName: " + startInfo.FileName + " Arguments:" + startInfo.Arguments);                                    
                 }
 
-                using (var restartedUpdateeProcess = Process.Start(updateeFilePath))
-                    WriteLog($"Restarted as pid:{restartedUpdateeProcess?.Id}.");
+                
             }
 
             // Delete package content directory

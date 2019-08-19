@@ -20,12 +20,14 @@ namespace Onova
     public class UpdateManager : IUpdateManager
     {
         private const string UpdaterResourceName = "Onova.Updater.dll";
+        private const string UpdaterRuntimeConfigResourceName = "Onova.Updater.runtimeconfig.json";
 
         private readonly AssemblyMetadata _updatee;
         private readonly IPackageResolver _resolver;
         private readonly IPackageExtractor _extractor;
 
         private readonly string _storageDirPath;
+        private readonly string _runtimeconfigFilePath;
         private readonly string _updaterFilePath;
         private readonly string _lockFilePath;
 
@@ -49,20 +51,10 @@ namespace Onova
             // Set updater executable file path
             _updaterFilePath = Path.Combine(_storageDirPath, $"{_updatee.Name}.Updater.dll");
 
+            _runtimeconfigFilePath = Path.Combine(_storageDirPath, $"{_updatee.Name}.Updater.runtimeconfig.json");
+
             // Set lock file path
             _lockFilePath = Path.Combine(_storageDirPath, "Onova.lock");
-
-            /*
-            Console.WriteLine("ASS " + Assembly.GetExecutingAssembly().GetManifestResourceStream(UpdaterResourceName));
-            string[] names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-
-            foreach(var name in names)
-            {
-                Console.WriteLine(name);
-            }
-            */
-
-
         }
 
         /// <summary>
@@ -183,7 +175,7 @@ namespace Onova
             File.Delete(packageFilePath);
 
             //Extract runtimeconfig.json
-            File.Copy("VHDPlus.Updater.runtimeconfig.json", Path.Combine(_storageDirPath, "VHDPlus.Updater.runtimeconfig.json"), true);
+            await Assembly.GetExecutingAssembly().ExtractManifestResourceAsync(UpdaterRuntimeConfigResourceName, _runtimeconfigFilePath);
 
             // Extract updater
             await Assembly.GetExecutingAssembly().ExtractManifestResourceAsync(UpdaterResourceName, _updaterFilePath);

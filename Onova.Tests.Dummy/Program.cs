@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -20,11 +19,9 @@ namespace Onova.Tests.Dummy
             new LocalPackageResolver(PackagesDirPath, "*.onv"),
             new ZipPackageExtractor());
 
-        public static int Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            /*
-            //var command = args.Length > 0 ? args[0] : null;
-            var command = "update";
+            var command = args.Length > 0 ? args[0] : null;
 
             // Print current assembly version
             if (command == "version" || command == null)
@@ -36,34 +33,7 @@ namespace Onova.Tests.Dummy
             {
                 var progressHandler = new Progress<double>(p => Console.WriteLine($"Progress: {p:P0}"));
                 await UpdateManager.CheckPerformUpdateAsync(false, progressHandler);
-
-                Console.Read();
             }
-            */
-
-            Console.WriteLine("TEST1");
-
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "dotnet",
-                    Arguments = "VHDPlus.dll",
-                    WorkingDirectory = @"C:\Users\HendrikMennen\Source\Repos\VHDP\VHDPlus\bin\Debug\netcoreapp2.1",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = false,
-                    RedirectStandardError = false,
-                    CreateNoWindow = true
-                }
-
-            };
-
-            process.Start();
-
-            Console.ReadLine();
-
-            return 0;
-
         }
     }
 }

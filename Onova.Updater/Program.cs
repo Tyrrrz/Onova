@@ -57,6 +57,7 @@ namespace Onova.Updater
                 else
                 {
 
+                    //Start with dotnet
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
                         var process = new Process
@@ -72,27 +73,24 @@ namespace Onova.Updater
                                 CreateNoWindow = true
                             }
                         };
+                        WriteLog("Windows detected. Restarting with: " + process.StartInfo.FileName + " " + process.StartInfo.Arguments + " in WorkingDirectory: " + process.StartInfo.WorkingDirectory);
                         process.Start();
                     }
                     else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
-                        Process proc = new System.Diagnostics.Process();
-                        proc.StartInfo.FileName = "/bin/bash";
-                        proc.StartInfo.Arguments = "-c \" " + "dotnet " + updateeFilePath + " \"";
-                        proc.StartInfo.UseShellExecute = false;
-                        proc.StartInfo.RedirectStandardOutput = true;
-
-                        WriteLog("ARGS: " + proc.StartInfo.Arguments);
-
-                        proc.Start();
-                    }
-
-
-
-                        WriteLog("WorkingDir: " + startInfo.WorkingDirectory + "  FileName: " + startInfo.FileName + " Arguments:" + startInfo.Arguments);                                    
-                }
-
-                
+                        var process = new Process
+                        {
+                            StartInfo = new ProcessStartInfo
+                            {
+                                FileName = "/bin/bash",
+                                Arguments = "-c \" " + "dotnet " + updateeFilePath + " \"",
+                                UseShellExecute = false,
+                            }
+                        };
+                        WriteLog("Linux detected. Restarting with: " + process.StartInfo.FileName + " " + process.StartInfo.Arguments);
+                        process.Start();
+                    }                                                     
+                }               
             }
 
             // Delete package content directory

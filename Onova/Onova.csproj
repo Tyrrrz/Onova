@@ -27,21 +27,17 @@
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Copy SourceFiles="..\Onova.Updater\bin\$(Configuration)\netstandard2.0\Onova.Updater.dll" DestinationFiles="$(ProjectDir)Updater.dll" />
+    <Copy SourceFiles="..\Onova.Updater\bin\$(Configuration)\netstandard2.0\Onova.Updater.runtimeconfig.json" DestinationFiles="$(ProjectDir)Updater.runtimeconfig.json" />
   </Target>
 
   <ItemGroup>
     <None Remove="Updater.dll" />
-    <None Remove="VHDPlus.Updater.runtimeconfig.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="VHDPlus.Updater.runtimeconfig.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Remove="Updater.runtimeconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Updater.dll" />
+    <EmbeddedResource Include="Updater.runtimeconfig.json" />
   </ItemGroup>
 
   <ItemGroup>

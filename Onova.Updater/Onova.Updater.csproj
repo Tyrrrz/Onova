@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>exe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.4.4</Version>
+    <Version>2.4.5</Version>
     <ApplicationIcon>..\favicon.ico</ApplicationIcon>
     <LangVersion>latest</LangVersion>
     <StartupObject />

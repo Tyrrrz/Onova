@@ -110,7 +110,7 @@ namespace Onova
             EnsureNotDisposed();
 
             // Get versions
-            var versions = await _resolver.GetPackageVersionsAsync();
+            var versions = await Task.Run(() => _resolver.GetPackageVersionsAsync());
             var lastVersion = versions.Max();
             var canUpdate = lastVersion != null && _updatee.Version < lastVersion;
 

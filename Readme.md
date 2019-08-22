@@ -133,6 +133,10 @@ In order to correctly handle cases where multiple instances of the application m
 
 The updater will wait until all instances of the application have exited before applying an update, regardless of which instance launched it.
 
+## Etymology
+
+The name "Onova" comes from Ukrainian word for "update" (noun).
+
 ## Libraries used
 
 - [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)

@@ -1,3 +1,8 @@
+### v2.5 (07-Oct-2019)
+
+- Added `GetPreparedUpdates` method that returns a list of versions for which an update has been prepared. Useful in certain auto-update scenarios, for example when the preparation happens during application lifetime, but the update is applied at startup.
+- When restarting updatee, command line arguments are now routed from the application that initiated the update.
+
 ### v2.4.5 (18-Aug-2019)
 
 - Fixed an issue where updatee wasn't restarted properly if it's a `.dll` file.

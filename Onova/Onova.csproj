@@ -10,7 +10,7 @@
     <PackageTags>auto update</PackageTags>
     <PackageProjectUrl>https://github.com/Tyrrrz/Onova</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/Tyrrrz/Onova/blob/master/Changelog.md</PackageReleaseNotes>
-    <PackageIconUrl>https://raw.githubusercontent.com/Tyrrrz/Onova/master/favicon.png</PackageIconUrl>
+    <PackageIcon>favicon.png</PackageIcon>
     <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/Tyrrrz/Onova</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -26,11 +26,15 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Copy SourceFiles="..\Onova.Updater\bin\$(Configuration)\net46\Onova.Updater.exe" DestinationFiles="$(ProjectDir)Updater.exe" />
+    <Copy SourceFiles="../Onova.Updater/bin/$(Configuration)/net46/Onova.Updater.exe" DestinationFiles="$(ProjectDir)Updater.exe" />
   </Target>
 
   <ItemGroup>
     <EmbeddedResource Include="Updater.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../favicon.png" Pack="True" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>

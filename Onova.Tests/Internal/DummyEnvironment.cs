@@ -87,14 +87,13 @@ namespace Onova.Tests.Internal
                 CreatePackage(version);
         }
 
-        public async Task<Version> GetCurrentVersionAsync()
-        {
-            var result = await Cli.Wrap(DummyFilePath).SetArguments("version").ExecuteAsync();
-            return Version.Parse(result.StandardOutput);
-        }
+        public string GetLastRunArguments(Version version) => File.ReadAllText(Path.Combine(_rootDirPath, $"lastrun-{version}.txt"));
 
-        public async Task CheckPerformUpdateAsync() =>
-            await Cli.Wrap(DummyFilePath).SetArguments("update").ExecuteAsync();
+        public async Task<string> RunDummyAsync(string arguments)
+        {
+            var result = await Cli.Wrap(DummyFilePath).SetArguments(arguments).ExecuteAsync();
+            return result.StandardOutput;
+        }
 
         public void Dispose() => Cleanup();
     }

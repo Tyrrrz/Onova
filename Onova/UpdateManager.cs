@@ -222,8 +222,11 @@ namespace Onova
             // Get package content directory path
             var packageContentDirPath = GetPackageContentDirPath(version);
 
+            // Get original command line arguments and encode them to avoid issues with quotes
+            var routedArgs = EnvironmentEx.GetCommandLineWithoutExecutable().GetString().ToBase64();
+
             // Prepare arguments
-            var updaterArgs = $"\"{_updatee.FilePath}\" \"{packageContentDirPath}\" {restart}";
+            var updaterArgs = $"\"{_updatee.FilePath}\" \"{packageContentDirPath}\" \"{restart}\" \"{routedArgs}\"";
 
             // Decide if updater needs to be elevated
             var updateeDirPath = Path.GetDirectoryName(_updatee.FilePath);

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,6 +27,12 @@ namespace Onova.Internal
             var index = s.IndexOf(sub, comparison);
             return index < 0 ? string.Empty : s.Substring(index + sub.Length, s.Length - index - sub.Length);
         }
+
+        public static byte[] GetString(this string input, Encoding encoding) => encoding.GetBytes(input);
+
+        public static byte[] GetString(this string input) => input.GetString(Encoding.UTF8);
+
+        public static string ToBase64(this byte[] data) => Convert.ToBase64String(data);
 
         public static string[] Split(this string input, params string[] separators) =>
             input.Split(separators, StringSplitOptions.RemoveEmptyEntries);

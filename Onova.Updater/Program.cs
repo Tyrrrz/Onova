@@ -24,7 +24,7 @@ namespace Onova.Updater
             _log.WriteLine($"{date:dd-MMM-yyyy HH:mm:ss.fff}> {value}");
         }
 
-        private static void Update(string updateeFilePath, string packageContentDirPath, bool restartUpdatee)
+        private static void Update(string updateeFilePath, string packageContentDirPath, bool restartUpdatee, string routedArgs)
         {
             var updateeDirPath = Path.GetDirectoryName(updateeFilePath);
 
@@ -40,11 +40,10 @@ namespace Onova.Updater
             // Restart updatee if requested
             if (restartUpdatee)
             {
-                WriteLog("Restarting updatee...");
-
                 var startInfo = new ProcessStartInfo
                 {
                     WorkingDirectory = updateeDirPath,
+                    Arguments = routedArgs,
                     UseShellExecute = false
                 };
 
@@ -66,10 +65,11 @@ namespace Onova.Updater
                     else
                     {
                         startInfo.FileName = "dotnet";
-                        startInfo.Arguments = updateeFilePath;
+                        startInfo.Arguments = $"{updateeFilePath} {routedArgs}";
                     }
                 }
 
+                WriteLog($"Restarting updatee [{startInfo.FileName} {startInfo.Arguments}]...");
                 using (var restartedUpdateeProcess = Process.Start(startInfo))
                     WriteLog($"Restarted as pid:{restartedUpdateeProcess?.Id}.");
             }
@@ -93,9 +93,10 @@ namespace Onova.Updater
                     var updateeFilePath = args[0];
                     var packageContentDirPath = args[1];
                     var restartUpdatee = bool.Parse(args[2]);
+                    var routedArgs = args[3].FromBase64().GetString();
 
                     // Execute update
-                    Update(updateeFilePath, packageContentDirPath, restartUpdatee);
+                    Update(updateeFilePath, packageContentDirPath, restartUpdatee, routedArgs);
                     WriteLog("Update completed successfully.");
                 }
                 catch (Exception ex)

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Onova.Services;
+using Onova.Tests.Dummy.Internal;
 
 namespace Onova.Tests.Dummy
 {
@@ -11,9 +13,10 @@ namespace Onova.Tests.Dummy
 
     public static class Program
     {
-        private static string AssemblyDirPath => AppDomain.CurrentDomain.BaseDirectory;
-        private static string PackagesDirPath => Path.Combine(AssemblyDirPath, "Packages");
         private static Version Version => Assembly.GetExecutingAssembly().GetName().Version;
+        private static string AssemblyDirPath => AppDomain.CurrentDomain.BaseDirectory;
+        private static string LastRunFilePath => Path.Combine(AssemblyDirPath, $"lastrun-{Version}.txt");
+        private static string PackagesDirPath => Path.Combine(AssemblyDirPath, "Packages");
 
         private static readonly IUpdateManager UpdateManager = new UpdateManager(
             new LocalPackageResolver(PackagesDirPath, "*.onv"),
@@ -21,7 +24,12 @@ namespace Onova.Tests.Dummy
 
         public static async Task Main(string[] args)
         {
-            var command = args.Length > 0 ? args[0] : null;
+            // Dump arguments to file.
+            // This is only accurate enough for simple inputs.
+            File.WriteAllText(LastRunFilePath, args.JoinToString(" "));
+
+            // Get command name
+            var command = args.FirstOrDefault();
 
             // Print current assembly version
             if (command == "version" || command == null)
@@ -29,10 +37,12 @@ namespace Onova.Tests.Dummy
                 Console.WriteLine(Version);
             }
             // Update to latest version
-            else if (command == "update")
+            else if (command == "update" || command == "update-and-restart")
             {
+                var restart = command == "update-and-restart";
                 var progressHandler = new Progress<double>(p => Console.WriteLine($"Progress: {p:P0}"));
-                await UpdateManager.CheckPerformUpdateAsync(false, progressHandler);
+
+                await UpdateManager.CheckPerformUpdateAsync(restart, progressHandler);
             }
         }
     }

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Onova.Exceptions;
 using Onova.Internal;
 using Onova.Models;
@@ -108,7 +107,6 @@ namespace Onova
         }
 
         /// <inheritdoc />
-        [NotNull]
         public async Task<CheckForUpdatesResult> CheckForUpdatesAsync()
         {
             // Ensure that the current state is valid for this operation

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using JetBrains.Annotations;
 using Onova.Internal;
 
 namespace Onova.Models
@@ -13,19 +12,16 @@ namespace Onova.Models
         /// <summary>
         /// Assembly name.
         /// </summary>
-        [NotNull]
         public string Name { get; }
 
         /// <summary>
         /// Assembly version.
         /// </summary>
-        [NotNull]
         public Version Version { get; }
 
         /// <summary>
         /// Assembly file path.
         /// </summary>
-        [NotNull]
         public string FilePath { get; }
 
         /// <summary>

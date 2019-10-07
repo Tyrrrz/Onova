@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using Onova.Internal;
 
 namespace Onova.Models
@@ -13,14 +12,12 @@ namespace Onova.Models
         /// <summary>
         /// All available package versions.
         /// </summary>
-        [NotNull, ItemNotNull]
         public IReadOnlyList<Version> Versions { get; }
 
         /// <summary>
         /// Last available package version.
         /// Null if there are no available packages.
         /// </summary>
-        [CanBeNull]
         public Version LastVersion { get; }
 
         /// <summary>

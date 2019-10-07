@@ -6,13 +6,11 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 
 namespace Onova.Internal
 {
     internal static class Extensions
     {
-        [ContractAnnotation("s:null => true")]
         public static bool IsNullOrWhiteSpace(this string s) => string.IsNullOrWhiteSpace(s);
 
         public static string SubstringUntil(this string s, string sub,

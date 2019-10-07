@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Models;
@@ -21,7 +22,12 @@ namespace Onova
         bool IsUpdatePrepared(Version version);
 
         /// <summary>
-        /// Prepares an update to given version.
+        /// Gets a list of all prepared updates.
+        /// </summary>
+        IReadOnlyList<Version> GetPreparedUpdates();
+
+        /// <summary>
+        /// Prepares an update to specified version.
         /// </summary>
         Task PrepareUpdateAsync(Version version,
             IProgress<double> progress = null, CancellationToken cancellationToken = default);

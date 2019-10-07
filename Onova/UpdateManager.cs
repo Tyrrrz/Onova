@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -138,6 +139,32 @@ namespace Onova
             return !File.Exists(packageFilePath) &&
                    Directory.Exists(packageContentDirPath) &&
                    File.Exists(_updaterFilePath);
+        }
+
+        /// <inheritdoc />
+        public IReadOnlyList<Version> GetPreparedUpdates()
+        {
+            // Ensure that the current state is valid for this operation
+            EnsureNotDisposed();
+
+            var result = new List<Version>();
+
+            // Enumerate all immediate directories in storage
+            foreach (var packageContentDirPath in Directory.EnumerateDirectories(_storageDirPath))
+            {
+                // Get directory name
+                var packageContentDirName = Path.GetFileName(packageContentDirPath);
+
+                // Try to extract version out of the name
+                if (packageContentDirName == null || !Version.TryParse(packageContentDirName, out var version))
+                    continue;
+                
+                // If this package is prepared - add it to the list
+                if (IsUpdatePrepared(version))
+                    result.Add(version);
+            }
+
+            return result;
         }
 
         /// <inheritdoc />

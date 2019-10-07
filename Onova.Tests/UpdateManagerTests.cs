@@ -42,7 +42,7 @@ namespace Onova.Tests
                 Directory.Delete(StorageDirPath, true);
         }
 
-        private static IEnumerable<TestCaseData> GetData_CheckForUpdatesAsync()
+        private static IEnumerable<TestCaseData> GetTestCases_CheckForUpdatesAsync()
         {
             yield return new TestCaseData(
                 Version.Parse("1.0"),
@@ -77,7 +77,7 @@ namespace Onova.Tests
         }
 
         [Test]
-        [TestCaseSource(nameof(GetData_CheckForUpdatesAsync))]
+        [TestCaseSource(nameof(GetTestCases_CheckForUpdatesAsync))]
         public async Task CheckForUpdatesAsync_Test(Version updateeVersion, IReadOnlyList<Version> availableVersions,
             Version expectedLastVersion, bool expectedCanUpdate)
         {
@@ -101,6 +101,43 @@ namespace Onova.Tests
                     Assert.That(result.LastVersion, Is.EqualTo(expectedLastVersion), "Last version");
                     Assert.That(result.CanUpdate, Is.EqualTo(expectedCanUpdate), "Can update");
                 });
+            }
+        }
+
+        [Test]
+        public async Task GetPreparedUpdates_Test()
+        {
+            // Arrange
+            var versions = new[]
+            {
+                Version.Parse("1.0"),
+                Version.Parse("2.0"),
+                Version.Parse("3.0")
+            };
+
+            foreach (var version in versions)
+            {
+                var packageFilePath = Path.Combine(TempDirPath, $"{version}.onv");
+
+                using (var zip = ZipFile.Open(packageFilePath, ZipArchiveMode.Create))
+                    zip.CreateEntry("File.bin").WriteAllText("Hello world");
+            }
+
+            var updateeVersion = versions.Min();
+            var updatee = new AssemblyMetadata(UpdateeName, updateeVersion, "");
+            var resolver = new LocalPackageResolver(TempDirPath, "*.onv");
+            var extractor = new ZipPackageExtractor();
+
+            using (var manager = new UpdateManager(updatee, resolver, extractor))
+            {
+                foreach (var version in versions)
+                    await manager.PrepareUpdateAsync(version);
+
+                // Act
+                var preparedUpdates = manager.GetPreparedUpdates();
+
+                // Assert
+                Assert.That(preparedUpdates, Is.EquivalentTo(versions));
             }
         }
 
@@ -130,11 +167,10 @@ namespace Onova.Tests
 
             using (var manager = new UpdateManager(updatee, resolver, extractor))
             {
-                // Act
                 foreach (var version in versions)
                     await manager.PrepareUpdateAsync(version);
 
-                // Assert
+                // Act & Assert
                 foreach (var version in versions)
                     Assert.That(manager.IsUpdatePrepared(version));
             }

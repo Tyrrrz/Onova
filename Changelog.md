@@ -1,3 +1,7 @@
+### v2.5.1 (09-Oct-2019)
+
+- Fixed `GetPreparedUpdates` throwing an exception when storage directory hasn't been created yet.
+
 ### v2.5 (07-Oct-2019)
 
 - Added `GetPreparedUpdates` method that returns a list of versions for which an update has been prepared. Useful in certain auto-update scenarios, for example when the preparation happens during application lifetime, but the update is applied at startup.

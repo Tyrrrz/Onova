@@ -150,18 +150,21 @@ namespace Onova
             var result = new List<Version>();
 
             // Enumerate all immediate directories in storage
-            foreach (var packageContentDirPath in Directory.EnumerateDirectories(_storageDirPath))
+            if (Directory.Exists(_storageDirPath))
             {
-                // Get directory name
-                var packageContentDirName = Path.GetFileName(packageContentDirPath);
+                foreach (var packageContentDirPath in Directory.EnumerateDirectories(_storageDirPath))
+                {
+                    // Get directory name
+                    var packageContentDirName = Path.GetFileName(packageContentDirPath);
 
-                // Try to extract version out of the name
-                if (packageContentDirName == null || !Version.TryParse(packageContentDirName, out var version))
-                    continue;
-                
-                // If this package is prepared - add it to the list
-                if (IsUpdatePrepared(version))
-                    result.Add(version);
+                    // Try to extract version out of the name
+                    if (packageContentDirName == null || !Version.TryParse(packageContentDirName, out var version))
+                        continue;
+
+                    // If this package is prepared - add it to the list
+                    if (IsUpdatePrepared(version))
+                        result.Add(version);
+                }
             }
 
             return result;

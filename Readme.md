@@ -1,10 +1,9 @@
 # Onova
 
-[![Build](https://img.shields.io/appveyor/ci/Tyrrrz/Onova/master.svg)](https://ci.appveyor.com/project/Tyrrrz/Onova/branch/master)
-[![Tests](https://img.shields.io/appveyor/tests/Tyrrrz/Onova/master.svg)](https://ci.appveyor.com/project/Tyrrrz/Onova/branch/master/tests)
-[![Coverage](https://img.shields.io/codecov/c/gh/Tyrrrz/Onova/master.svg)](https://codecov.io/gh/Tyrrrz/Onova)
-[![NuGet](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
-[![NuGet](https://img.shields.io/nuget/dt/Onova.svg)](https://nuget.org/packages/Onova)
+[![Build](https://github.com/Tyrrrz/Onova/workflows/CI/badge.svg?branch=master)](https://github.com/Tyrrrz/Onova/actions)
+[![Coverage](https://codecov.io/gh/Tyrrrz/Onova/branch/master/graph/badge.svg)](https://codecov.io/gh/Tyrrrz/Onova)
+[![Version](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
+[![Downloads](https://img.shields.io/nuget/dt/Onova.svg)](https://nuget.org/packages/Onova)
 [![Donate](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://patreon.com/tyrrrz)
 [![Donate](https://img.shields.io/badge/buymeacoffee-donate-yellow.svg)](https://buymeacoffee.com/tyrrrz)
 
@@ -13,7 +12,6 @@ Onova is a lightweight auto-update framework for desktop applications. It was pr
 ## Download
 
 - [NuGet](https://nuget.org/packages/Onova): `dotnet add package Onova`
-- [Continuous integration](https://ci.appveyor.com/project/Tyrrrz/Onova)
 
 ## Features
 

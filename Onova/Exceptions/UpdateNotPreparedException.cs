@@ -1,5 +1,4 @@
 ﻿using System;
-using Onova.Internal;
 
 namespace Onova.Exceptions
 {
@@ -19,7 +18,7 @@ namespace Onova.Exceptions
         public UpdateNotPreparedException(Version version)
             : base($"Update to version [{version}] is not prepared. Please prepare an update before applying it.")
         {
-            Version = version.GuardNotNull(nameof(version));
+            Version = version;
         }
     }
 }

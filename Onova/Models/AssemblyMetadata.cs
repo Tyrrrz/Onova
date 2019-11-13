@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using Onova.Internal;
 
 namespace Onova.Models
 {
@@ -29,9 +28,9 @@ namespace Onova.Models
         /// </summary>
         public AssemblyMetadata(string name, Version version, string filePath)
         {
-            Name = name.GuardNotNull(nameof(name));
-            Version = version.GuardNotNull(nameof(version));
-            FilePath = filePath.GuardNotNull(nameof(filePath));
+            Name = name;
+            Version = version;
+            FilePath = filePath;
         }
     }
 
@@ -42,8 +41,6 @@ namespace Onova.Models
         /// </summary>
         public static AssemblyMetadata FromAssembly(Assembly assembly)
         {
-            assembly.GuardNotNull(nameof(assembly));
-
             var name = assembly.GetName().Name;
             var version = assembly.GetName().Version;
             var filePath = assembly.Location;

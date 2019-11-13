@@ -32,7 +32,7 @@ namespace Onova
         private readonly string _updaterFilePath;
         private readonly string _lockFilePath;
 
-        private LockFile _lockFile;
+        private LockFile? _lockFile;
         private bool _isDisposed;
 
         /// <summary>
@@ -46,9 +46,9 @@ namespace Onova
                 throw new PlatformNotSupportedException("Onova only supports Windows.");
 #endif
 
-            _updatee = updatee.GuardNotNull(nameof(updatee));
-            _resolver = resolver.GuardNotNull(nameof(resolver));
-            _extractor = extractor.GuardNotNull(nameof(extractor));
+            _updatee = updatee;
+            _resolver = resolver;
+            _extractor = extractor;
 
             // Set storage directory path
             _storageDirPath = Path.Combine(
@@ -86,7 +86,7 @@ namespace Onova
             Directory.CreateDirectory(_storageDirPath);
 
             // Try to acquire lock file if it's not acquired yet
-            _lockFile = _lockFile ?? LockFile.TryAcquire(_lockFilePath);
+            _lockFile ??= LockFile.TryAcquire(_lockFilePath);
 
             // If failed to acquire - throw
             if (_lockFile == null)
@@ -124,8 +124,6 @@ namespace Onova
         /// <inheritdoc />
         public bool IsUpdatePrepared(Version version)
         {
-            version.GuardNotNull(nameof(version));
-
             // Ensure that the current state is valid for this operation
             EnsureNotDisposed();
 
@@ -172,10 +170,8 @@ namespace Onova
 
         /// <inheritdoc />
         public async Task PrepareUpdateAsync(Version version,
-            IProgress<double> progress = null, CancellationToken cancellationToken = default)
+            IProgress<double>? progress = null, CancellationToken cancellationToken = default)
         {
-            version.GuardNotNull(nameof(version));
-
             // Ensure that the current state is valid for this operation
             EnsureNotDisposed();
             EnsureLockFileAcquired();
@@ -214,8 +210,6 @@ namespace Onova
         /// <inheritdoc />
         public void LaunchUpdater(Version version, bool restart = true)
         {
-            version.GuardNotNull(nameof(version));
-
             // Ensure that the current state is valid for this operation
             EnsureNotDisposed();
             EnsureLockFileAcquired();

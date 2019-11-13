@@ -28,9 +28,9 @@ namespace Onova.Services
         /// </summary>
         public NugetPackageResolver(HttpClient httpClient, string serviceIndexUrl, string packageId)
         {
-            _httpClient = httpClient.GuardNotNull(nameof(httpClient));
-            _serviceIndexUrl = serviceIndexUrl.GuardNotNull(nameof(serviceIndexUrl));
-            _packageId = packageId.GuardNotNull(nameof(packageId));
+            _httpClient = httpClient;
+            _serviceIndexUrl = serviceIndexUrl;
+            _packageId = packageId;
         }
 
         /// <summary>
@@ -89,33 +89,29 @@ namespace Onova.Services
 
         /// <inheritdoc />
         public async Task DownloadPackageAsync(Version version, string destFilePath,
-            IProgress<double> progress = null, CancellationToken cancellationToken = default)
+            IProgress<double>? progress = null, CancellationToken cancellationToken = default)
         {
-            version.GuardNotNull(nameof(version));
-            destFilePath.GuardNotNull(nameof(destFilePath));
-
             // Get package base address resource URL
             var resourceUrl = await GetPackageBaseAddressResourceUrlAsync();
 
             // Get package URL
             var packageUrl = $"{resourceUrl}/{PackageIdNormalized}/{version}/{PackageIdNormalized}.{version}.nupkg";
 
-            // Download
-            using (var response = await _httpClient
-                .GetAsync(packageUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
-            {
-                // If status code is 404 then this version doesn't exist
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                    throw new PackageNotFoundException(version);
+            // Get response
+            using var response = await _httpClient.GetAsync(packageUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
-                // Ensure success status code otherwise
-                response.EnsureSuccessStatusCode();
+            // If status code is 404 then this version doesn't exist
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                throw new PackageNotFoundException(version);
 
-                // Copy content to file
-                using (var input = await response.Content.ReadAsFiniteStreamAsync())
-                using (var output = File.Create(destFilePath))
-                    await input.CopyToAsync(output, progress, cancellationToken);
-            }
+            // Ensure success status code otherwise
+            response.EnsureSuccessStatusCode();
+
+            // Copy content to file
+            using var input = await response.Content.ReadAsFiniteStreamAsync();
+            using var output = File.Create(destFilePath);
+
+            await input.CopyToAsync(output, progress, cancellationToken);
         }
     }
 }

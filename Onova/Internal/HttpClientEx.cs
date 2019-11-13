@@ -7,7 +7,7 @@ namespace Onova.Internal
 {
     internal static class HttpClientEx
     {
-        private static HttpClient _singleton;
+        private static HttpClient? _singleton;
 
         public static HttpClient GetSingleton()
         {
@@ -44,7 +44,6 @@ namespace Onova.Internal
         public static async Task<FiniteStream> GetFiniteStreamAsync(this HttpClient client, string requestUri)
         {
             var response = await client.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead);
-
             return await response.Content.ReadAsFiniteStreamAsync();
         }
     }

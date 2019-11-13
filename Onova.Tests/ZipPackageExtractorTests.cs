@@ -15,11 +15,10 @@ namespace Onova.Tests
 
         private static void CreateZipArchive(string filePath, IReadOnlyDictionary<string, byte[]> entries)
         {
-            using (var zip = ZipFile.Open(filePath, ZipArchiveMode.Create))
-            {
-                foreach (var entry in entries)
-                    zip.CreateEntry(entry.Key).WriteAllBytes(entry.Value);
-            }
+            using var zip = ZipFile.Open(filePath, ZipArchiveMode.Create);
+
+            foreach (var (path, data) in entries)
+                zip.CreateEntry(path).WriteAllBytes(data);
         }
 
         [SetUp]

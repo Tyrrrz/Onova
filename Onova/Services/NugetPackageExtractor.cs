@@ -20,63 +20,58 @@ namespace Onova.Services
         /// </summary>
         public NugetPackageExtractor(string rootDirPath)
         {
-            _rootDirPath = rootDirPath.GuardNotNull(nameof(rootDirPath));
+            _rootDirPath = rootDirPath;
         }
 
         /// <inheritdoc />
         public async Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
-            IProgress<double> progress = null, CancellationToken cancellationToken = default)
+            IProgress<double>? progress = null, CancellationToken cancellationToken = default)
         {
-            sourceFilePath.GuardNotNull(nameof(sourceFilePath));
-            destDirPath.GuardNotNull(nameof(destDirPath));
-
             // Read the zip
-            using (var archive = ZipFile.OpenRead(sourceFilePath))
+            using var archive = ZipFile.OpenRead(sourceFilePath);
+
+            // Get entries in the content directory
+            var entries = archive.Entries
+                .Where(e => e.FullName.StartsWith(_rootDirPath, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
+            // For progress reporting
+            var totalBytes = entries.Sum(e => e.Length);
+            var totalBytesCopied = 0L;
+
+            // Loop through entries
+            foreach (var entry in entries)
             {
-                // Get entries in the content directory
-                var entries = archive.Entries
-                    .Where(e => e.FullName.StartsWith(_rootDirPath, StringComparison.OrdinalIgnoreCase))
-                    .ToArray();
+                // Get relative entry path
+                var relativeEntryPath = entry.FullName.Substring(_rootDirPath.Length).TrimStart('/', '\\');
 
-                // For progress reporting
-                var totalBytes = entries.Sum(e => e.Length);
-                var totalBytesCopied = 0L;
+                // Get destination paths
+                var entryDestFilePath = Path.Combine(destDirPath, relativeEntryPath);
+                var entryDestDirPath = Path.GetDirectoryName(entryDestFilePath);
 
-                // Loop through entries
-                foreach (var entry in entries)
+                // Create directory
+                if (!string.IsNullOrWhiteSpace(entryDestDirPath))
+                    Directory.CreateDirectory(entryDestDirPath);
+
+                // If the entry is a directory - continue
+                if (entry.FullName.Last() == Path.DirectorySeparatorChar || entry.FullName.Last() == Path.AltDirectorySeparatorChar)
+                    continue;
+
+                // Extract entry
+                using var input = entry.Open();
+                using var output = File.Create(entryDestFilePath);
+
+                var buffer = new byte[81920];
+                int bytesCopied;
+                do
                 {
-                    // Get relative entry path
-                    var relativeEntryPath = entry.FullName.Substring(_rootDirPath.Length).TrimStart('/', '\\');
+                    // Copy
+                    bytesCopied = await input.CopyChunkToAsync(output, buffer, cancellationToken);
 
-                    // Get destination paths
-                    var entryDestFilePath = Path.Combine(destDirPath, relativeEntryPath);
-                    var entryDestDirPath = Path.GetDirectoryName(entryDestFilePath);
-
-                    // Create directory
-                    if (!entryDestDirPath.IsNullOrWhiteSpace())
-                        Directory.CreateDirectory(entryDestDirPath);
-
-                    // If the entry is a directory - continue
-                    if (entry.FullName.Last() == Path.DirectorySeparatorChar || entry.FullName.Last() == Path.AltDirectorySeparatorChar)
-                        continue;
-
-                    // Extract entry
-                    using (var input = entry.Open())
-                    using (var output = File.Create(entryDestFilePath))
-                    {
-                        var buffer = new byte[81920];
-                        int bytesCopied;
-                        do
-                        {
-                            // Copy
-                            bytesCopied = await input.CopyChunkToAsync(output, buffer, cancellationToken);
-
-                            // Report progress
-                            totalBytesCopied += bytesCopied;
-                            progress?.Report(1.0 * totalBytesCopied / totalBytes);
-                        } while (bytesCopied > 0);
-                    }
-                }
+                    // Report progress
+                    totalBytesCopied += bytesCopied;
+                    progress?.Report(1.0 * totalBytesCopied / totalBytes);
+                } while (bytesCopied > 0);
             }
         }
     }

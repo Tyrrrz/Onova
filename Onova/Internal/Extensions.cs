@@ -12,8 +12,6 @@ namespace Onova.Internal
 {
     internal static class Extensions
     {
-        public static bool IsNullOrWhiteSpace(this string s) => string.IsNullOrWhiteSpace(s);
-
         public static string SubstringUntil(this string s, string sub,
             StringComparison comparison = StringComparison.Ordinal)
         {
@@ -55,7 +53,7 @@ namespace Onova.Internal
         }
 
         public static async Task CopyToAsync(this Stream source, Stream destination,
-            IProgress<double> progress = null, CancellationToken cancellationToken = default)
+            IProgress<double>? progress = null, CancellationToken cancellationToken = default)
         {
             var buffer = new byte[81920];
             var totalBytesCopied = 0L;
@@ -78,8 +76,8 @@ namespace Onova.Internal
             if (input == null)
                 throw new MissingManifestResourceException($"Could not find resource [{resourceName}].");
 
-            using (var output = File.Create(destFilePath))
-                await input.CopyToAsync(output);
+            using var output = File.Create(destFilePath);
+            await input.CopyToAsync(output);
         }
     }
 }

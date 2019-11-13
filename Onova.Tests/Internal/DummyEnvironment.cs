@@ -13,7 +13,7 @@ namespace Onova.Tests.Internal
     {
         private static readonly Assembly DummyAssembly = typeof(Dummy.Program).Assembly;
         private static readonly string DummyAssemblyFileName = Path.GetFileName(DummyAssembly.Location);
-        private static readonly string DummyAssemblyDirPath = Path.GetDirectoryName(DummyAssembly.Location);
+        private static readonly string DummyAssemblyDirPath = Path.GetDirectoryName(DummyAssembly.Location)!;
 
         private readonly string _rootDirPath;
 
@@ -27,12 +27,11 @@ namespace Onova.Tests.Internal
 
         private void SetAssemblyVersion(string filePath, Version version)
         {
-            using (var assemblyStream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite))
-            using (var assemblyDefinition = AssemblyDefinition.ReadAssembly(assemblyStream))
-            {
-                assemblyDefinition.Name.Version = version;
-                assemblyDefinition.Write(assemblyStream);
-            }
+            using var assemblyStream = File.Open(filePath, FileMode.Open, FileAccess.ReadWrite);
+            using var assemblyDefinition = AssemblyDefinition.ReadAssembly(assemblyStream);
+
+            assemblyDefinition.Name.Version = version;
+            assemblyDefinition.Write(assemblyStream);
         }
 
         private void CreateBase(Version version)

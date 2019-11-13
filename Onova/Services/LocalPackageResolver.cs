@@ -24,8 +24,8 @@ namespace Onova.Services
         /// </summary>
         public LocalPackageResolver(string repositoryDirPath, string fileNamePattern = "*")
         {
-            _repositoryDirPath = repositoryDirPath.GuardNotNull(nameof(repositoryDirPath));
-            _fileNamePattern = fileNamePattern.GuardNotNull(nameof(fileNamePattern));
+            _repositoryDirPath = repositoryDirPath;
+            _fileNamePattern = fileNamePattern;
         }
 
         private IReadOnlyDictionary<Version, string> GetPackageVersionFilePathMap()
@@ -66,23 +66,21 @@ namespace Onova.Services
 
         /// <inheritdoc />
         public async Task DownloadPackageAsync(Version version, string destFilePath,
-            IProgress<double> progress = null, CancellationToken cancellationToken = default)
+            IProgress<double>? progress = null, CancellationToken cancellationToken = default)
         {
-            version.GuardNotNull(nameof(version));
-            destFilePath.GuardNotNull(nameof(destFilePath));
-
             // Get map
             var map = GetPackageVersionFilePathMap();
 
             // Try to get package file path
             var sourceFilePath = map.GetValueOrDefault(version);
-            if (sourceFilePath.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(sourceFilePath))
                 throw new PackageNotFoundException(version);
 
             // Copy file
-            using (var input = File.OpenRead(sourceFilePath))
-            using (var output = File.Create(destFilePath))
-                await input.CopyToAsync(output, progress, cancellationToken);
+            using var input = File.OpenRead(sourceFilePath);
+            using var output = File.Create(destFilePath);
+
+            await input.CopyToAsync(output, progress, cancellationToken);
         }
     }
 }

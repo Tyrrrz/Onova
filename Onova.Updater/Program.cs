@@ -70,8 +70,9 @@ namespace Onova.Updater
                 }
 
                 WriteLog($"Restarting updatee [{startInfo.FileName} {startInfo.Arguments}]...");
-                using (var restartedUpdateeProcess = Process.Start(startInfo))
-                    WriteLog($"Restarted as pid:{restartedUpdateeProcess?.Id}.");
+
+                using var restartedUpdateeProcess = Process.Start(startInfo);
+                WriteLog($"Restarted as pid:{restartedUpdateeProcess?.Id}.");
             }
 
             // Delete package content directory

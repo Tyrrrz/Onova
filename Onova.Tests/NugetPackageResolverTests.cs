@@ -63,11 +63,10 @@ namespace Onova.Tests
             // Assert
             Assert.That(File.Exists(destFilePath), "File exists");
 
-            using (var zip = ZipFile.OpenRead(destFilePath))
-            {
-                var content = zip.GetEntry("Files/Content.txt").ReadAllText();
-                Assert.That(content, Is.EqualTo("Hello world"), "File content");
-            }
+            using var zip = ZipFile.OpenRead(destFilePath);
+
+            var content = zip.GetEntry("Files/Content.txt").ReadAllText();
+            Assert.That(content, Is.EqualTo("Hello world"), "File content");
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using Onova.Internal;
 
 namespace Onova.Exceptions
 {
@@ -19,7 +18,7 @@ namespace Onova.Exceptions
         public PackageNotFoundException(Version version)
             : base($"Package version [{version}] was not found by the configured package resolver.")
         {
-            Version = version.GuardNotNull(nameof(version));
+            Version = version;
         }
     }
 }

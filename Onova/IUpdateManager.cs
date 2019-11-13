@@ -30,7 +30,7 @@ namespace Onova
         /// Prepares an update to specified version.
         /// </summary>
         Task PrepareUpdateAsync(Version version,
-            IProgress<double> progress = null, CancellationToken cancellationToken = default);
+            IProgress<double>? progress = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Launches an external executable that will apply an update to given version, once this application exits.

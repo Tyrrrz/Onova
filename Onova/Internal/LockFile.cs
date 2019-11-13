@@ -17,7 +17,7 @@ namespace Onova.Internal
 
     internal partial class LockFile
     {
-        public static LockFile TryAcquire(string filePath)
+        public static LockFile? TryAcquire(string filePath)
         {
             try
             {

@@ -26,8 +26,8 @@ namespace Onova.Services
         private readonly string _repositoryName;
         private readonly string _assetNamePattern;
 
-        private EntityTagHeaderValue _cachedPackageVersionUrlMapETag;
-        private IReadOnlyDictionary<Version, string> _cachedPackageVersionUrlMap;
+        private EntityTagHeaderValue? _cachedPackageVersionUrlMapETag;
+        private IReadOnlyDictionary<Version, string>? _cachedPackageVersionUrlMap;
 
         /// <summary>
         /// Initializes an instance of <see cref="GithubPackageResolver"/>.
@@ -35,11 +35,11 @@ namespace Onova.Services
         public GithubPackageResolver(HttpClient httpClient, string apiBaseAddress, string repositoryOwner,
             string repositoryName, string assetNamePattern)
         {
-            _httpClient = httpClient.GuardNotNull(nameof(httpClient));
-            _apiBaseAddress = apiBaseAddress.GuardNotNull(nameof(apiBaseAddress));
-            _repositoryOwner = repositoryOwner.GuardNotNull(nameof(repositoryOwner));
-            _repositoryName = repositoryName.GuardNotNull(nameof(repositoryName));
-            _assetNamePattern = assetNamePattern.GuardNotNull(nameof(assetNamePattern));
+            _httpClient = httpClient;
+            _apiBaseAddress = apiBaseAddress;
+            _repositoryOwner = repositoryOwner;
+            _repositoryName = repositoryName;
+            _assetNamePattern = assetNamePattern;
         }
 
         /// <summary>
@@ -110,34 +110,33 @@ namespace Onova.Services
         {
             // Get releases
             var url = $"{_apiBaseAddress}/repos/{_repositoryOwner}/{_repositoryName}/releases";
-            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
-            {
-                // Set If-None-Match header if ETag is available
-                if (_cachedPackageVersionUrlMapETag != null)
-                    request.Headers.IfNoneMatch.Add(_cachedPackageVersionUrlMapETag);
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-                using (var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead))
-                {
-                    // If not modified - return cached
-                    if (response.StatusCode == HttpStatusCode.NotModified)
-                        return _cachedPackageVersionUrlMap;
+            // Set If-None-Match header if ETag is available
+            if (_cachedPackageVersionUrlMapETag != null && _cachedPackageVersionUrlMap != null)
+                request.Headers.IfNoneMatch.Add(_cachedPackageVersionUrlMapETag);
 
-                    // Ensure success status code otherwise
-                    response.EnsureSuccessStatusCode();
+            // Get response
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
-                    // Parse response
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var releasesJson = JToken.Parse(responseContent);
-                    var map = ParsePackageVersionUrlMap(releasesJson);
+            // If not modified - return cached
+            if (response.StatusCode == HttpStatusCode.NotModified)
+                return _cachedPackageVersionUrlMap!;
 
-                    // Cache result
-                    _cachedPackageVersionUrlMapETag = response.Headers.ETag;
-                    _cachedPackageVersionUrlMap = map;
+            // Ensure success status code otherwise
+            response.EnsureSuccessStatusCode();
 
-                    // Return result
-                    return map;
-                }
-            }
+            // Parse response
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var releasesJson = JToken.Parse(responseContent);
+            var map = ParsePackageVersionUrlMap(releasesJson);
+
+            // Cache result
+            _cachedPackageVersionUrlMapETag = response.Headers.ETag;
+            _cachedPackageVersionUrlMap = map;
+
+            // Return result
+            return map;
         }
 
         /// <inheritdoc />
@@ -149,23 +148,21 @@ namespace Onova.Services
 
         /// <inheritdoc />
         public async Task DownloadPackageAsync(Version version, string destFilePath,
-            IProgress<double> progress = null, CancellationToken cancellationToken = default)
+            IProgress<double>? progress = null, CancellationToken cancellationToken = default)
         {
-            version.GuardNotNull(nameof(version));
-            destFilePath.GuardNotNull(nameof(destFilePath));
-
             // Get map
             var map = await GetPackageVersionUrlMapAsync();
 
             // Try to get package URL
             var packageUrl = map.GetValueOrDefault(version);
-            if (packageUrl.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(packageUrl))
                 throw new PackageNotFoundException(version);
 
             // Download
-            using (var input = await _httpClient.GetFiniteStreamAsync(packageUrl))
-            using (var output = File.Create(destFilePath))
-                await input.CopyToAsync(output, progress, cancellationToken);
+            using var input = await _httpClient.GetFiniteStreamAsync(packageUrl);
+            using var output = File.Create(destFilePath);
+
+            await input.CopyToAsync(output, progress, cancellationToken);
         }
     }
 }

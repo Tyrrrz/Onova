@@ -24,8 +24,8 @@ namespace Onova.Services
         /// </summary>
         public WebPackageResolver(HttpClient httpClient, string manifestUrl)
         {
-            _httpClient = httpClient.GuardNotNull(nameof(httpClient));
-            _manifestUrl = manifestUrl.GuardNotNull(nameof(manifestUrl));
+            _httpClient = httpClient;
+            _manifestUrl = manifestUrl;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Onova.Services
                 var url = line.SubstringAfter(" ").Trim();
 
                 // If either is not set - skip
-                if (versionText.IsNullOrWhiteSpace() || url.IsNullOrWhiteSpace())
+                if (string.IsNullOrWhiteSpace(versionText) || string.IsNullOrWhiteSpace(url))
                     continue;
 
                 // Try to parse version
@@ -84,23 +84,21 @@ namespace Onova.Services
 
         /// <inheritdoc />
         public async Task DownloadPackageAsync(Version version, string destFilePath,
-            IProgress<double> progress = null, CancellationToken cancellationToken = default)
+            IProgress<double>? progress = null, CancellationToken cancellationToken = default)
         {
-            version.GuardNotNull(nameof(version));
-            destFilePath.GuardNotNull(nameof(destFilePath));
-
             // Get map
             var map = await GetPackageVersionUrlMapAsync();
 
             // Try to get package URL
             var packageUrl = map.GetValueOrDefault(version);
-            if (packageUrl.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(packageUrl))
                 throw new PackageNotFoundException(version);
 
             // Download
-            using (var input = await _httpClient.GetFiniteStreamAsync(packageUrl))
-            using (var output = File.Create(destFilePath))
-                await input.CopyToAsync(output, progress, cancellationToken);
+            using var input = await _httpClient.GetFiniteStreamAsync(packageUrl);
+            using var output = File.Create(destFilePath);
+
+            await input.CopyToAsync(output, progress, cancellationToken);
         }
     }
 }

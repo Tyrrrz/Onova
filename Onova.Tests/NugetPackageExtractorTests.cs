@@ -15,11 +15,10 @@ namespace Onova.Tests
 
         private static void CreateNugetPackage(string filePath, string rootDirPath, IReadOnlyDictionary<string, byte[]> entries)
         {
-            using (var zip = ZipFile.Open(filePath, ZipArchiveMode.Create))
-            {
-                foreach (var entry in entries)
-                    zip.CreateEntry($"{rootDirPath}/{entry.Key}").WriteAllBytes(entry.Value);
-            }
+            using var zip = ZipFile.Open(filePath, ZipArchiveMode.Create);
+
+            foreach (var (path, data) in entries)
+                zip.CreateEntry($"{rootDirPath}/{path}").WriteAllBytes(data);
         }
 
         [SetUp]

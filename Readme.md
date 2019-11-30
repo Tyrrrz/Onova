@@ -133,13 +133,3 @@ The updater will wait until all instances of the application have exited before 
 ## Etymology
 
 The name "Onova" comes from Ukrainian word for "update" (noun).
-
-## Libraries used
-
-- [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
-- [ConfigureAwait.Fody](https://github.com/Fody/ConfigureAwait)
-- [Moq](https://github.com/Moq/moq4)
-- [NUnit](https://github.com/nunit/nunit)
-- [CliWrap](https://github.com/Tyrrrz/CliWrap)
-- [Mono.Cecil](https://github.com/jbevain/cecil)
-- [Coverlet](https://github.com/tonerdo/coverlet)

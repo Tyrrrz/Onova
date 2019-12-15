@@ -24,4 +24,4 @@ jobs:
         dotnet pack Onova --configuration Release --no-build
 
     - name: Deploy
-      run: dotnet nuget push Onova/bin/Release/*.nupkg -s nuget.org -k ${{secrets.NUGET_TOKEN}}
+      run: dotnet nuget push Onova\bin\Release\*.nupkg -s nuget.org -k ${{secrets.NUGET_TOKEN}}

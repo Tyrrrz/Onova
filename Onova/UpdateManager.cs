@@ -24,7 +24,6 @@ namespace Onova
     {
         private const string UpdaterResourceName = "Onova.Updater.exe";
 
-        private readonly AssemblyMetadata _updatee;
         private readonly IPackageResolver _resolver;
         private readonly IPackageExtractor _extractor;
 
@@ -34,6 +33,9 @@ namespace Onova
 
         private LockFile? _lockFile;
         private bool _isDisposed;
+
+        /// <inheritdoc />
+        public AssemblyMetadata Updatee { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="UpdateManager"/>.
@@ -46,17 +48,17 @@ namespace Onova
                 throw new PlatformNotSupportedException("Onova only supports Windows.");
 #endif
 
-            _updatee = updatee;
+            Updatee = updatee;
             _resolver = resolver;
             _extractor = extractor;
 
             // Set storage directory path
             _storageDirPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova", _updatee.Name);
+                "Onova", updatee.Name);
 
             // Set updater executable file path
-            _updaterFilePath = Path.Combine(_storageDirPath, $"{_updatee.Name}.Updater.exe");
+            _updaterFilePath = Path.Combine(_storageDirPath, $"{updatee.Name}.Updater.exe");
 
             // Set lock file path
             _lockFilePath = Path.Combine(_storageDirPath, "Onova.lock");
@@ -116,7 +118,7 @@ namespace Onova
             // Get versions
             var versions = await _resolver.GetPackageVersionsAsync();
             var lastVersion = versions.Max();
-            var canUpdate = lastVersion != null && _updatee.Version < lastVersion;
+            var canUpdate = lastVersion != null && Updatee.Version < lastVersion;
 
             return new CheckForUpdatesResult(versions, lastVersion, canUpdate);
         }
@@ -223,10 +225,10 @@ namespace Onova
             var routedArgs = EnvironmentEx.GetCommandLineWithoutExecutable().GetString().ToBase64();
 
             // Prepare arguments
-            var updaterArgs = $"\"{_updatee.FilePath}\" \"{packageContentDirPath}\" \"{restart}\" \"{routedArgs}\"";
+            var updaterArgs = $"\"{Updatee.FilePath}\" \"{packageContentDirPath}\" \"{restart}\" \"{routedArgs}\"";
 
             // Decide if updater needs to be elevated
-            var updateeDirPath = Path.GetDirectoryName(_updatee.FilePath);
+            var updateeDirPath = Path.GetDirectoryName(Updatee.FilePath);
             var isUpdaterElevated = !DirectoryEx.CheckWriteAccess(updateeDirPath);
 
             // Create updater process start info

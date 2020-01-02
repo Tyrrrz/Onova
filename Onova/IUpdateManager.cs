@@ -12,6 +12,11 @@ namespace Onova
     public interface IUpdateManager : IDisposable
     {
         /// <summary>
+        /// Information about the assembly, for which the updates are managed.
+        /// </summary>
+        AssemblyMetadata Updatee { get; }
+
+        /// <summary>
         /// Checks for updates.
         /// </summary>
         Task<CheckForUpdatesResult> CheckForUpdatesAsync();

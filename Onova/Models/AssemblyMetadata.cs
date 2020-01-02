@@ -38,15 +38,21 @@ namespace Onova.Models
     {
         /// <summary>
         /// Extracts assembly metadata from given assembly.
+        /// The specified path is used to override the executable file path in case the assembly is not meant to run directly.
         /// </summary>
-        public static AssemblyMetadata FromAssembly(Assembly assembly)
+        public static AssemblyMetadata FromAssembly(Assembly assembly, string assemblyFilePath)
         {
             var name = assembly.GetName().Name;
             var version = assembly.GetName().Version;
-            var filePath = assembly.Location;
+            var filePath = assemblyFilePath;
 
             return new AssemblyMetadata(name, version, filePath);
         }
+
+        /// <summary>
+        /// Extracts assembly metadata from given assembly.
+        /// </summary>
+        public static AssemblyMetadata FromAssembly(Assembly assembly) => FromAssembly(assembly, assembly.Location);
 
         /// <summary>
         /// Extracts assembly metadata from entry assembly.

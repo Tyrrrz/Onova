@@ -1,3 +1,10 @@
+### v2.5.2 (02-Jan-2020)
+
+- Added an overload for `AssemblyMetadata.FromAssembly` that also takes an assembly file path. This can be used to override default assembly file path in cases where the entry assembly is launched via a proxy.
+- Added `IUpdateManager.Updatee` property to expose the updatee metadata for convenience. For example, it can be used to show current application version in the UI.
+- Added nullable reference type annotations.
+- Added source link.
+
 ### v2.5.1 (09-Oct-2019)
 
 - Fixed `GetPreparedUpdates` throwing an exception when storage directory hasn't been created yet.

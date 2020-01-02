@@ -17,7 +17,7 @@ namespace Onova
         {
             // Check
             var result = await manager.CheckForUpdatesAsync();
-            if (result.LastVersion == null)
+            if (!result.CanUpdate || result.LastVersion == null)
                 return;
 
             // Prepare

@@ -9,6 +9,7 @@ using Onova.Tests.Internal;
 namespace Onova.Tests
 {
     [TestFixture]
+    [NonParallelizable]
     public class DummyTests
     {
         private static string TempDirPath => Path.Combine(TestContext.CurrentContext.TestDirectory, "Temp");

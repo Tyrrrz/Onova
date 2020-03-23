@@ -18,7 +18,7 @@ jobs:
     - name: Build & test
       run: |
         dotnet build --configuration Release
-        dotnet test --configuration Release --no-build
+        dotnet test --configuration Release --no-build --logger GitHubActions
 
     - name: Upload coverage
       uses: codecov/codecov-action@v1.0.5

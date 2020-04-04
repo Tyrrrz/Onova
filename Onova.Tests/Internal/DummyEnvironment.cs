@@ -87,11 +87,17 @@ namespace Onova.Tests.Internal
                 CreatePackage(version);
         }
 
-        public string GetLastRunArguments(Version version) => File.ReadAllText(Path.Combine(_rootDirPath, $"lastrun-{version}.txt"));
+        public string[] GetLastRunArguments(Version version) =>
+            File.ReadAllLines(Path.Combine(_rootDirPath, $"lastrun-{version}.txt"));
 
         public async Task<string> RunDummyAsync(params string[] arguments)
         {
-            var result = await Cli.Wrap(DummyFilePath).WithArguments(arguments).ExecuteBufferedAsync();
+            var result = await Cli.Wrap("dotnet")
+                .WithArguments(a => a
+                    .Add(DummyFilePath)
+                    .Add(arguments))
+                .ExecuteBufferedAsync();
+
             return result.StandardOutput;
         }
 

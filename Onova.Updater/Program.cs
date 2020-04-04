@@ -44,7 +44,7 @@ namespace Onova.Updater
                 {
                     WorkingDirectory = updateeDirPath,
                     Arguments = routedArgs,
-                    UseShellExecute = false
+                    UseShellExecute = true // avoid sharing console window with updatee
                 };
 
                 // If updatee is an .exe file - start it directly

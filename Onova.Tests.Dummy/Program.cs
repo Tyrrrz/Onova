@@ -13,8 +13,8 @@ namespace Onova.Tests.Dummy
 
     public static class Program
     {
-        private static Version Version => Assembly.GetExecutingAssembly().GetName().Version;
-        private static string AssemblyDirPath => AppDomain.CurrentDomain.BaseDirectory;
+        private static Version Version => Assembly.GetExecutingAssembly().GetName().Version!;
+        private static string AssemblyDirPath => AppDomain.CurrentDomain.BaseDirectory!;
         private static string LastRunFilePath => Path.Combine(AssemblyDirPath, $"lastrun-{Version}.txt");
         private static string PackagesDirPath => Path.Combine(AssemblyDirPath, "Packages");
 
@@ -26,7 +26,7 @@ namespace Onova.Tests.Dummy
         {
             // Dump arguments to file.
             // This is only accurate enough for simple inputs.
-            File.WriteAllText(LastRunFilePath, args.JoinToString(" "));
+            File.WriteAllLines(LastRunFilePath, args);
 
             // Get command name
             var command = args.FirstOrDefault();

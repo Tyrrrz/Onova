@@ -94,11 +94,11 @@ namespace Onova.Tests
             dummy.Setup(baseVersion, availableVersions);
 
             // Act
-            const string args = "update-and-restart and some extra arguments";
+            var args = new[] {"update-and-restart", "with", "extra", "arguments"};
             await dummy.RunDummyAsync(args);
 
             // Wait a bit for update and restart
-            await Task.Delay(50);
+            await Task.Delay(1000);
 
             // Assert
             Assert.That(dummy.GetLastRunArguments(availableVersions.Max()), Is.EqualTo(args), "Command line arguments from last run");

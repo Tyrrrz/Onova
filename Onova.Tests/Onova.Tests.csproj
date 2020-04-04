@@ -2,7 +2,7 @@
   <Import Project="../Onova.props" />
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <CollectCoverage>true</CollectCoverage>
@@ -24,6 +24,14 @@
   <ItemGroup>
     <ProjectReference Include="..\Onova\Onova.csproj" />
     <ProjectReference Include="..\Onova.Tests.Dummy\Onova.Tests.Dummy.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../Onova.Tests.Dummy/bin/$(Configuration)/$(TargetFramework)/Onova.Tests.Dummy.runtimeconfig.json">
+      <Link>Onova.Tests.Dummy.runtimeconfig.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>False</Visible>
+    </None>
   </ItemGroup>
 
 </Project>

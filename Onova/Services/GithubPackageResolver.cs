@@ -5,10 +5,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using Onova.Exceptions;
 using Onova.Internal;
 
@@ -68,14 +68,14 @@ namespace Onova.Services
         {
         }
 
-        private IReadOnlyDictionary<Version, string> ParsePackageVersionUrlMap(JToken releasesJson)
+        private IReadOnlyDictionary<Version, string> ParsePackageVersionUrlMap(JsonElement releasesJson)
         {
             var map = new Dictionary<Version, string>();
 
-            foreach (var releaseJson in releasesJson)
+            foreach (var releaseJson in releasesJson.EnumerateArray())
             {
                 // Get release name
-                var releaseName = releaseJson["name"].Value<string>();
+                var releaseName = releaseJson.GetProperty("name").GetString();
 
                 // Try to parse version
                 var versionText = Regex.Match(releaseName, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
@@ -83,16 +83,16 @@ namespace Onova.Services
                     continue;
 
                 // Skip pre-releases
-                var isPreRelease = releaseJson["prerelease"].Value<bool>();
+                var isPreRelease = releaseJson.GetProperty("prerelease").GetBoolean();
                 if (isPreRelease)
                     continue;
 
                 // Find asset
-                var assetsJson = releaseJson["assets"];
-                foreach (var assetJson in assetsJson)
+                var assetsJson = releaseJson.GetProperty("assets");
+                foreach (var assetJson in assetsJson.EnumerateArray())
                 {
-                    var assetName = assetJson["name"].Value<string>();
-                    var assetUrl = assetJson["browser_download_url"].Value<string>();
+                    var assetName = assetJson.GetProperty("name").GetString();
+                    var assetUrl = assetJson.GetProperty("browser_download_url").GetString();
 
                     // See if name matches
                     if (!WildcardPattern.IsMatch(assetName, _assetNamePattern))
@@ -127,9 +127,8 @@ namespace Onova.Services
             response.EnsureSuccessStatusCode();
 
             // Parse response
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var releasesJson = JToken.Parse(responseContent);
-            var map = ParsePackageVersionUrlMap(releasesJson);
+            using var responseJson = await response.Content.ReadAsJsonAsync();
+            var map = ParsePackageVersionUrlMap(responseJson.RootElement);
 
             // Cache result
             _cachedPackageVersionUrlMapETag = response.Headers.ETag;

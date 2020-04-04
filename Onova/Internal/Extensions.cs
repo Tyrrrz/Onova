@@ -37,9 +37,6 @@ namespace Onova.Internal
 
         public static int AddRange<T>(this HashSet<T> hashSet, IEnumerable<T> sequence) => sequence.Count(hashSet.Add);
 
-        public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dic, TKey key) =>
-            dic.TryGetValue(key, out var result) ? result : default;
-
         public static async Task<int> CopyChunkToAsync(this Stream source, Stream destination, byte[] buffer,
             CancellationToken cancellationToken = default)
         {

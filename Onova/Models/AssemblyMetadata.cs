@@ -42,8 +42,8 @@ namespace Onova.Models
         /// </summary>
         public static AssemblyMetadata FromAssembly(Assembly assembly, string assemblyFilePath)
         {
-            var name = assembly.GetName().Name;
-            var version = assembly.GetName().Version;
+            var name = assembly.GetName().Name!;
+            var version = assembly.GetName().Version!;
             var filePath = assemblyFilePath;
 
             return new AssemblyMetadata(name, version, filePath);
@@ -57,6 +57,10 @@ namespace Onova.Models
         /// <summary>
         /// Extracts assembly metadata from entry assembly.
         /// </summary>
-        public static AssemblyMetadata FromEntryAssembly() => FromAssembly(Assembly.GetEntryAssembly());
+        public static AssemblyMetadata FromEntryAssembly()
+        {
+            var assembly = Assembly.GetEntryAssembly() ?? throw new InvalidOperationException("Can't get entry assembly.");
+            return FromAssembly(assembly);
+        }
     }
 }

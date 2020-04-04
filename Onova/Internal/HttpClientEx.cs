@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Onova.Internal
@@ -35,7 +36,7 @@ namespace Onova.Internal
             if (length < 0)
                 throw new InvalidOperationException("Response does not have 'Content-Length' header set.");
 
-            // Read stream
+            // Don't dispose inner stream
             var stream = await content.ReadAsStreamAsync();
 
             return new FiniteStream(stream, length);
@@ -43,8 +44,21 @@ namespace Onova.Internal
 
         public static async Task<FiniteStream> GetFiniteStreamAsync(this HttpClient client, string requestUri)
         {
+            // Don't dispose response as it also disposes the stream
             var response = await client.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead);
             return await response.Content.ReadAsFiniteStreamAsync();
+        }
+
+        public static async Task<JsonDocument> ReadAsJsonAsync(this HttpContent content)
+        {
+            using var stream = await content.ReadAsStreamAsync();
+            return await JsonDocument.ParseAsync(stream);
+        }
+
+        public static async Task<JsonDocument> GetJsonAsync(this HttpClient client, string requestUri)
+        {
+            using var response = await client.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead);
+            return await response.Content.ReadAsJsonAsync();
         }
     }
 }

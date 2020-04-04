@@ -229,7 +229,7 @@ namespace Onova
 
             // Decide if updater needs to be elevated
             var updateeDirPath = Path.GetDirectoryName(Updatee.FilePath);
-            var isUpdaterElevated = !DirectoryEx.CheckWriteAccess(updateeDirPath);
+            var isUpdaterElevated = !string.IsNullOrWhiteSpace(updateeDirPath) && !DirectoryEx.CheckWriteAccess(updateeDirPath);
 
             // Create updater process start info
             var updaterStartInfo = new ProcessStartInfo

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CliWrap;
 using CliWrap.Buffered;
 using Mono.Cecil;
+using Polly;
 
 namespace Onova.Tests.Internal
 {
@@ -75,7 +76,14 @@ namespace Onova.Tests.Internal
             File.Delete(dummyTempFilePath);
         }
 
-        private void Cleanup() => DirectoryEx.DeleteIfExists(_rootDirPath);
+        private void Cleanup()
+        {
+            // Sometimes this fails for some reason, even when dummy has already exited.
+            // Use a retry policy to circumvent that.
+            var policy = Policy.Handle<UnauthorizedAccessException>().WaitAndRetry(5, _ => TimeSpan.FromSeconds(1));
+
+            policy.Execute(() => DirectoryEx.DeleteIfExists(_rootDirPath));
+        }
 
         public void Setup(Version baseVersion, IReadOnlyList<Version> availableVersions)
         {

@@ -40,6 +40,6 @@ namespace Onova
         /// <summary>
         /// Launches an external executable that will apply an update to given version, once this application exits.
         /// </summary>
-        void LaunchUpdater(Version version, bool restart = true);
+        void LaunchUpdater(Version version, bool restart, string restartArguments);
     }
 }

@@ -210,7 +210,7 @@ namespace Onova
         }
 
         /// <inheritdoc />
-        public void LaunchUpdater(Version version, bool restart = true)
+        public void LaunchUpdater(Version version, bool restart, string restartArguments)
         {
             // Ensure that the current state is valid for this operation
             EnsureNotDisposed();
@@ -222,7 +222,7 @@ namespace Onova
             var packageContentDirPath = GetPackageContentDirPath(version);
 
             // Get original command line arguments and encode them to avoid issues with quotes
-            var routedArgs = EnvironmentEx.GetCommandLineWithoutExecutable().GetBytes().ToBase64();
+            var routedArgs = restartArguments.GetBytes().ToBase64();
 
             // Prepare arguments
             var updaterArgs = $"\"{Updatee.FilePath}\" \"{packageContentDirPath}\" \"{restart}\" \"{routedArgs}\"";

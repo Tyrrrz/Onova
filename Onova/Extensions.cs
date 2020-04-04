@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Onova.Internal;
 
 namespace Onova
 {
@@ -9,6 +10,12 @@ namespace Onova
     /// </summary>
     public static class Extensions
     {
+        /// <summary>
+        /// Launches an external executable that will apply an update to given version, once this application exits.
+        /// </summary>
+        public static void LaunchUpdater(this IUpdateManager manager, Version version, bool restart = true) =>
+            manager.LaunchUpdater(version, restart, EnvironmentEx.GetCommandLineWithoutExecutable());
+
         /// <summary>
         /// Checks for new version and performs an update if available.
         /// </summary>

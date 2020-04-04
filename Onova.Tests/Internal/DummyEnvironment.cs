@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Reflection;
 using System.Threading.Tasks;
 using CliWrap;
+using CliWrap.Buffered;
 using Mono.Cecil;
 
 namespace Onova.Tests.Internal
@@ -88,9 +89,9 @@ namespace Onova.Tests.Internal
 
         public string GetLastRunArguments(Version version) => File.ReadAllText(Path.Combine(_rootDirPath, $"lastrun-{version}.txt"));
 
-        public async Task<string> RunDummyAsync(string arguments)
+        public async Task<string> RunDummyAsync(params string[] arguments)
         {
-            var result = await Cli.Wrap(DummyFilePath).SetArguments(arguments).ExecuteAsync();
+            var result = await Cli.Wrap(DummyFilePath).WithArguments(arguments).ExecuteBufferedAsync();
             return result.StandardOutput;
         }
 

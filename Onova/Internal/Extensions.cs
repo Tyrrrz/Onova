@@ -26,9 +26,9 @@ namespace Onova.Internal
             return index < 0 ? string.Empty : s.Substring(index + sub.Length, s.Length - index - sub.Length);
         }
 
-        public static byte[] GetString(this string input, Encoding encoding) => encoding.GetBytes(input);
+        public static byte[] GetBytes(this string input, Encoding encoding) => encoding.GetBytes(input);
 
-        public static byte[] GetString(this string input) => input.GetString(Encoding.UTF8);
+        public static byte[] GetBytes(this string input) => input.GetBytes(Encoding.UTF8);
 
         public static string ToBase64(this byte[] data) => Convert.ToBase64String(data);
 

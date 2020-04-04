@@ -1,3 +1,13 @@
+### v2.6 (04-Apr-2020)
+
+- Added an overload for `LaunchUpdater` that allows specifying custom command line arguments to use when restarting the application.
+- Fixed an issue where the application was incorrectly restarted with a hidden window in case of a console application.
+- Replaced Newtonsoft.Json dependency with System.Text.Json. This means that Onova doesn't have any external dependencies now, when used in a project targeting .NET Core 3.0 or higher.
+- Extended support for cancellation to `CheckForUpdatesAsync` and some other methods.
+- Supported .NET Framework version was bumped from v4.6 to v4.6.1.
+
+Note, there were some very minor changes in interfaces `IUpdateManager` and `IPackageResolver`. If you were implementing them yourself, you will have to update to the new contract, but the changes should be trivial.
+
 ### v2.5.2 (02-Jan-2020)
 
 - Added an overload for `AssemblyMetadata.FromAssembly` that also takes an assembly file path. This can be used to override default assembly file path in cases where the entry assembly is launched via a proxy.

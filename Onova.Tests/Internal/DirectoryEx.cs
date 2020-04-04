@@ -4,10 +4,20 @@ namespace Onova.Tests.Internal
 {
     internal static class DirectoryEx
     {
+        public static void DeleteIfExists(string dirPath, bool recursive = true)
+        {
+            try
+            {
+                Directory.Delete(dirPath, recursive);
+            }
+            catch (DirectoryNotFoundException)
+            {
+            }
+        }
+
         public static void Reset(string dirPath)
         {
-            if (Directory.Exists(dirPath))
-                Directory.Delete(dirPath, true);
+            DeleteIfExists(dirPath);
             Directory.CreateDirectory(dirPath);
         }
     }

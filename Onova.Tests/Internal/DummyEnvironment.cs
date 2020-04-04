@@ -13,17 +13,21 @@ namespace Onova.Tests.Internal
     internal class DummyEnvironment : IDisposable
     {
         private static readonly Assembly DummyAssembly = typeof(Dummy.Program).Assembly;
-        private static readonly string DummyAssemblyFileName = Path.GetFileName(DummyAssembly.Location);
+        private static readonly string DummyAssemblyFileName = Path.GetFileName(DummyAssembly.Location)!;
         private static readonly string DummyAssemblyDirPath = Path.GetDirectoryName(DummyAssembly.Location)!;
 
         private readonly string _rootDirPath;
 
-        private string DummyFilePath => Path.Combine(_rootDirPath, DummyAssemblyFileName);
-        private string DummyPackagesDirPath => Path.Combine(_rootDirPath, "Packages");
+        private string DummyFilePath { get; }
+
+        private string DummyPackagesDirPath { get; }
 
         public DummyEnvironment(string rootDirPath)
         {
             _rootDirPath = rootDirPath;
+
+            DummyFilePath = Path.Combine(_rootDirPath, DummyAssemblyFileName);
+            DummyPackagesDirPath = Path.Combine(_rootDirPath, "Packages");
         }
 
         private void SetAssemblyVersion(string filePath, Version version)
@@ -71,11 +75,7 @@ namespace Onova.Tests.Internal
             File.Delete(dummyTempFilePath);
         }
 
-        private void Cleanup()
-        {
-            if (Directory.Exists(_rootDirPath))
-                Directory.Delete(_rootDirPath, true);
-        }
+        private void Cleanup() => DirectoryEx.DeleteIfExists(_rootDirPath);
 
         public void Setup(Version baseVersion, IReadOnlyList<Version> availableVersions)
         {
@@ -87,8 +87,13 @@ namespace Onova.Tests.Internal
                 CreatePackage(version);
         }
 
-        public string[] GetLastRunArguments(Version version) =>
-            File.ReadAllLines(Path.Combine(_rootDirPath, $"lastrun-{version}.txt"));
+        public string[] GetLastRunArguments(Version version)
+        {
+            var filePath = Path.Combine(_rootDirPath, $"lastrun-{version}.txt");
+            return File.Exists(filePath) ? File.ReadAllLines(filePath) : Array.Empty<string>();
+        }
+
+        public bool IsRunning() => !FileEx.CheckWriteAccess(DummyFilePath);
 
         public async Task<string> RunDummyAsync(params string[] arguments)
         {

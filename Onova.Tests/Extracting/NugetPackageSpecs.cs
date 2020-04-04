@@ -1,0 +1,69 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Onova.Services;
+using Onova.Tests.Internal;
+using Xunit;
+
+namespace Onova.Tests.Extracting
+{
+    public class NugetPackageSpecs : IDisposable
+    {
+        private string TempDirPath { get; } = Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(NugetPackageSpecs)}_{Guid.NewGuid()}");
+
+        public NugetPackageSpecs() => DirectoryEx.Reset(TempDirPath);
+
+        public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
+
+        private void CreateNugetPackage(string filePath, string rootDirPath, IReadOnlyDictionary<string, byte[]> entries)
+        {
+            using var zip = ZipFile.Open(filePath, ZipArchiveMode.Create);
+
+            foreach (var (path, data) in entries)
+                zip.CreateEntry($"{rootDirPath}/{path}").WriteAllBytes(data);
+        }
+
+        [Fact]
+        public async Task ExtractPackageAsync_Test()
+        {
+            // Arrange
+            var entries = new Dictionary<string, byte[]>
+            {
+                ["File1.bin"] = new byte[] {1, 2, 3},
+                ["File2.bin"] = new byte[] {4, 5, 6},
+                ["SubDir1/"] = new byte[0],
+                ["SubDir1/File3.bin"] = new byte[] {7, 8, 9},
+                ["SubDir1/SubDir2/"] = new byte[0],
+                ["SubDir1/SubDir2/File4.bin"] = new byte[] {10, 11, 12}
+            };
+
+            var packageFilePath = Path.Combine(TempDirPath, "Package.nupkg");
+            CreateNugetPackage(packageFilePath, "Files", entries);
+
+            var extractor = new NugetPackageExtractor("Files");
+
+            var destDirPath = Path.Combine(TempDirPath, "Output");
+
+            // Act
+            await extractor.ExtractPackageAsync(packageFilePath, destDirPath);
+
+            // Assert
+            foreach (var (path, expectedData) in entries)
+            {
+                var destEntryPath = Path.Combine(destDirPath, path);
+
+                if (path.EndsWith("/"))
+                {
+                    Directory.Exists(destEntryPath).Should().BeTrue();
+                }
+                else
+                {
+                    File.ReadAllBytes(destEntryPath).Should().BeEquivalentTo(expectedData);
+                }
+            }
+        }
+    }
+}

@@ -12,6 +12,8 @@ namespace Onova
     {
         /// <summary>
         /// Launches an external executable that will apply an update to given version, once this application exits.
+        /// The updater can be instructed to also restart the application after it's updated.
+        /// If the application is to be restarted, it will receive the same command line arguments as it did initially.
         /// </summary>
         public static void LaunchUpdater(this IUpdateManager manager, Version version, bool restart = true) =>
             manager.LaunchUpdater(version, restart, EnvironmentEx.GetCommandLineWithoutExecutable());

@@ -19,7 +19,7 @@ namespace Onova
         /// <summary>
         /// Checks for updates.
         /// </summary>
-        Task<CheckForUpdatesResult> CheckForUpdatesAsync();
+        Task<CheckForUpdatesResult> CheckForUpdatesAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Checks whether an update to given version has been prepared.

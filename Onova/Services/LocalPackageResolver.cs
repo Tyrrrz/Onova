@@ -58,7 +58,7 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public Task<IReadOnlyList<Version>> GetPackageVersionsAsync()
+        public Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default)
         {
             var versions = GetPackageVersionFilePathMap().Keys.ToArray();
             return Task.FromResult((IReadOnlyList<Version>) versions);

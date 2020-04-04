@@ -17,7 +17,19 @@ namespace System.Collections.Generic
     internal static class Extensions
     {
         public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dic, TKey key) =>
-            dic.TryGetValue(key, out var result) ? result : default;
+            dic.TryGetValue(key, out var result) ? result! : default;
+    }
+}
+
+namespace System.IO
+{
+    using Threading;
+    using Threading.Tasks;
+
+    internal static class Extensions
+    {
+        public static async Task<int> ReadAsync(this Stream stream, byte[] buffer, CancellationToken cancellationToken) =>
+            await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
     }
 }
 #endif

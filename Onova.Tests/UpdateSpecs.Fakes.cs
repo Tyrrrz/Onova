@@ -18,7 +18,8 @@ namespace Onova.Tests
                 _versions = versions;
             }
 
-            public Task<IReadOnlyList<Version>> GetPackageVersionsAsync() => Task.FromResult(_versions);
+            public Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default) =>
+                Task.FromResult(_versions);
 
             public Task DownloadPackageAsync(Version version, string destFilePath,
                 IProgress<double>? progress = null, CancellationToken cancellationToken = default)

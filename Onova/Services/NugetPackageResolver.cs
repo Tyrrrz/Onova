@@ -40,10 +40,10 @@ namespace Onova.Services
         {
         }
 
-        private async Task<string> GetPackageBaseAddressResourceUrlAsync()
+        private async Task<string> GetPackageBaseAddressResourceUrlAsync(CancellationToken cancellationToken)
         {
             // Get all available resources
-            using var responseJson = await _httpClient.GetJsonAsync(_serviceIndexUrl);
+            using var responseJson = await _httpClient.GetJsonAsync(_serviceIndexUrl, cancellationToken);
             var resourcesJson = responseJson.RootElement.GetProperty("resources");
 
             // Get URL of the required resource
@@ -61,14 +61,14 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync()
+        public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default)
         {
             // Get package base address resource URL
-            var resourceUrl = await GetPackageBaseAddressResourceUrlAsync();
+            var resourceUrl = await GetPackageBaseAddressResourceUrlAsync(cancellationToken);
 
             // Get versions
             var request = $"{resourceUrl}/{PackageIdNormalized}/index.json";
-            using var responseJson = await _httpClient.GetJsonAsync(request);
+            using var responseJson = await _httpClient.GetJsonAsync(request, cancellationToken);
             var versionsJson = responseJson.RootElement.GetProperty("versions");
             var versions = new HashSet<Version>();
 
@@ -91,7 +91,7 @@ namespace Onova.Services
             IProgress<double>? progress = null, CancellationToken cancellationToken = default)
         {
             // Get package base address resource URL
-            var resourceUrl = await GetPackageBaseAddressResourceUrlAsync();
+            var resourceUrl = await GetPackageBaseAddressResourceUrlAsync(cancellationToken);
 
             // Get package URL
             var packageUrl = $"{resourceUrl}/{PackageIdNormalized}/{version}/{PackageIdNormalized}.{version}.nupkg";
@@ -107,10 +107,8 @@ namespace Onova.Services
             response.EnsureSuccessStatusCode();
 
             // Copy content to file
-            using var input = await response.Content.ReadAsFiniteStreamAsync();
             using var output = File.Create(destFilePath);
-
-            await input.CopyToAsync(output, progress, cancellationToken);
+            await response.Content.CopyToStreamAsync(output, progress, cancellationToken);
         }
     }
 }

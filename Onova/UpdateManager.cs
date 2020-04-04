@@ -110,13 +110,13 @@ namespace Onova
         }
 
         /// <inheritdoc />
-        public async Task<CheckForUpdatesResult> CheckForUpdatesAsync()
+        public async Task<CheckForUpdatesResult> CheckForUpdatesAsync(CancellationToken cancellationToken = default)
         {
             // Ensure that the current state is valid for this operation
             EnsureNotDisposed();
 
             // Get versions
-            var versions = await _resolver.GetPackageVersionsAsync();
+            var versions = await _resolver.GetPackageVersionsAsync(cancellationToken);
             var lastVersion = versions.Max();
             var canUpdate = lastVersion != null && Updatee.Version < lastVersion;
 

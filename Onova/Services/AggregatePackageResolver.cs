@@ -32,26 +32,26 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync()
+        public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default)
         {
             var aggregateVersions = new HashSet<Version>();
 
             // Get unique package versions provided by all resolvers
             foreach (var resolver in _resolvers)
             {
-                var versions = await resolver.GetPackageVersionsAsync();
+                var versions = await resolver.GetPackageVersionsAsync(cancellationToken);
                 aggregateVersions.AddRange(versions);
             }
 
             return aggregateVersions.ToArray();
         }
 
-        private async Task<IPackageResolver?> GetResolverForPackageAsync(Version version)
+        private async Task<IPackageResolver?> GetResolverForPackageAsync(Version version, CancellationToken cancellationToken)
         {
             // Try to find the first resolver that has this package version
             foreach (var resolver in _resolvers)
             {
-                var versions = await resolver.GetPackageVersionsAsync();
+                var versions = await resolver.GetPackageVersionsAsync(cancellationToken);
                 if (versions.Contains(version))
                     return resolver;
             }
@@ -65,7 +65,7 @@ namespace Onova.Services
             IProgress<double>? progress = null, CancellationToken cancellationToken = default)
         {
             // Find a resolver that has this package version
-            var resolver = await GetResolverForPackageAsync(version) ??
+            var resolver = await GetResolverForPackageAsync(version, cancellationToken) ??
                            throw new PackageNotFoundException(version);
 
             // Download package

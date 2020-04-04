@@ -106,7 +106,7 @@ namespace Onova.Services
             return map;
         }
 
-        private async Task<IReadOnlyDictionary<Version, string>> GetPackageVersionUrlMapAsync()
+        private async Task<IReadOnlyDictionary<Version, string>> GetPackageVersionUrlMapAsync(CancellationToken cancellationToken)
         {
             // Get releases
             var url = $"{_apiBaseAddress}/repos/{_repositoryOwner}/{_repositoryName}/releases";
@@ -117,7 +117,7 @@ namespace Onova.Services
                 request.Headers.IfNoneMatch.Add(_cachedPackageVersionUrlMapETag);
 
             // Get response
-            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
             // If not modified - return cached
             if (response.StatusCode == HttpStatusCode.NotModified)
@@ -127,7 +127,7 @@ namespace Onova.Services
             response.EnsureSuccessStatusCode();
 
             // Parse response
-            using var responseJson = await response.Content.ReadAsJsonAsync();
+            using var responseJson = await response.Content.ReadAsJsonAsync(cancellationToken);
             var map = ParsePackageVersionUrlMap(responseJson.RootElement);
 
             // Cache result
@@ -139,9 +139,9 @@ namespace Onova.Services
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync()
+        public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default)
         {
-            var versions = await GetPackageVersionUrlMapAsync();
+            var versions = await GetPackageVersionUrlMapAsync(cancellationToken);
             return versions.Keys.ToArray();
         }
 
@@ -150,7 +150,7 @@ namespace Onova.Services
             IProgress<double>? progress = null, CancellationToken cancellationToken = default)
         {
             // Get map
-            var map = await GetPackageVersionUrlMapAsync();
+            var map = await GetPackageVersionUrlMapAsync(cancellationToken);
 
             // Try to get package URL
             var packageUrl = map.GetValueOrDefault(version);
@@ -158,10 +158,8 @@ namespace Onova.Services
                 throw new PackageNotFoundException(version);
 
             // Download
-            using var input = await _httpClient.GetFiniteStreamAsync(packageUrl);
             using var output = File.Create(destFilePath);
-
-            await input.CopyToAsync(output, progress, cancellationToken);
+            await _httpClient.GetStreamAndCopyToAsync(packageUrl, output, progress, cancellationToken);
         }
     }
 }

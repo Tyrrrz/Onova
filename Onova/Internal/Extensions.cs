@@ -34,13 +34,10 @@ namespace Onova.Internal
 
         public static int AddRange<T>(this HashSet<T> hashSet, IEnumerable<T> sequence) => sequence.Count(hashSet.Add);
 
-        public static async Task<int> CopyChunkToAsync(this Stream source, Stream destination, byte[] buffer,
+        public static async Task<int> CopyBufferedToAsync(this Stream source, Stream destination, byte[] buffer,
             CancellationToken cancellationToken = default)
         {
-            // Read
-            var bytesCopied = await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
-
-            // Write
+            var bytesCopied = await source.ReadAsync(buffer, cancellationToken);
             await destination.WriteAsync(buffer, 0, bytesCopied, cancellationToken);
 
             return bytesCopied;
@@ -55,7 +52,7 @@ namespace Onova.Internal
             do
             {
                 // Copy
-                bytesCopied = await source.CopyChunkToAsync(destination, buffer, cancellationToken);
+                bytesCopied = await source.CopyBufferedToAsync(destination, buffer, cancellationToken);
 
                 // Report progress
                 totalBytesCopied += bytesCopied;

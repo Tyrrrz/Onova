@@ -32,9 +32,6 @@ namespace Onova.Internal
 
         public static string ToBase64(this byte[] data) => Convert.ToBase64String(data);
 
-        public static string[] Split(this string input, params string[] separators) =>
-            input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-
         public static int AddRange<T>(this HashSet<T> hashSet, IEnumerable<T> sequence) => sequence.Count(hashSet.Add);
 
         public static async Task<int> CopyChunkToAsync(this Stream source, Stream destination, byte[] buffer,
@@ -69,9 +66,8 @@ namespace Onova.Internal
         public static async Task ExtractManifestResourceAsync(this Assembly assembly, string resourceName,
             string destFilePath)
         {
-            var input = assembly.GetManifestResourceStream(resourceName);
-            if (input == null)
-                throw new MissingManifestResourceException($"Could not find resource [{resourceName}].");
+            var input = assembly.GetManifestResourceStream(resourceName) ??
+                        throw new MissingManifestResourceException($"Could not find resource [{resourceName}].");
 
             using var output = File.Create(destFilePath);
             await input.CopyToAsync(output);

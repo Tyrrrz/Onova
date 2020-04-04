@@ -3,6 +3,15 @@
 // Polyfills to bridge the missing APIs in older versions of the framework/standard.
 
 #if NETSTANDARD2_0 || NET461
+namespace System
+{
+    internal static class Extensions
+    {
+        public static string[] Split(this string input, params string[] separators) =>
+            input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+    }
+}
+
 namespace System.Collections.Generic
 {
     internal static class Extensions

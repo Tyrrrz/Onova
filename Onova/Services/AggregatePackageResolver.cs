@@ -65,9 +65,8 @@ namespace Onova.Services
             IProgress<double>? progress = null, CancellationToken cancellationToken = default)
         {
             // Find a resolver that has this package version
-            var resolver = await GetResolverForPackageAsync(version);
-            if (resolver == null)
-                throw new PackageNotFoundException(version);
+            var resolver = await GetResolverForPackageAsync(version) ??
+                           throw new PackageNotFoundException(version);
 
             // Download package
             await resolver.DownloadPackageAsync(version, destFilePath, progress, cancellationToken);

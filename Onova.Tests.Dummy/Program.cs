@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Onova.Services;
-using Onova.Tests.Dummy.Internal;
 
 namespace Onova.Tests.Dummy
 {

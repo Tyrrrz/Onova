@@ -11,10 +11,6 @@ using Onova.Internal;
 using Onova.Models;
 using Onova.Services;
 
-#if NETSTANDARD2_0
-using System.Runtime.InteropServices;
-#endif
-
 namespace Onova
 {
     /// <summary>
@@ -42,11 +38,7 @@ namespace Onova
         /// </summary>
         public UpdateManager(AssemblyMetadata updatee, IPackageResolver resolver, IPackageExtractor extractor)
         {
-#if NETSTANDARD2_0
-            // Ensure that this is only used on Windows
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                throw new PlatformNotSupportedException("Onova only supports Windows.");
-#endif
+            Platform.EnsureWindows();
 
             Updatee = updatee;
             _resolver = resolver;

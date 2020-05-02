@@ -14,7 +14,8 @@ namespace Onova.Updater
             var restartUpdatee = bool.Parse(args[2]);
             var routedArgs = args[3].FromBase64().GetString();
 
-            new Updater(updateeFilePath, packageContentDirPath, restartUpdatee, routedArgs).Run();
+            using var updater = new Updater(updateeFilePath, packageContentDirPath, restartUpdatee, routedArgs);
+            updater.Run();
         }
     }
 }

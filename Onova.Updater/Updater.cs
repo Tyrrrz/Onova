@@ -28,6 +28,7 @@ namespace Onova.Updater
         {
             var date = DateTimeOffset.Now;
             _log.WriteLine($"{date:dd-MMM-yyyy HH:mm:ss.fff}> {content}");
+            _log.Flush();
         }
 
         private void RunCore()

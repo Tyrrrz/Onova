@@ -75,10 +75,16 @@ namespace Onova.Services
             foreach (var releaseJson in releasesJson.EnumerateArray())
             {
                 // Get release name
-                var releaseName = releaseJson.GetProperty("name").GetString();
+                var releaseTitle = releaseJson.GetProperty("name").GetString();
+
+                // In case property name is null, empty or whitespace then in web version of GitHub it is replaced by a property "tag_name"
+                if (string.IsNullOrWhiteSpace(releaseTitle))
+                {
+                    releaseTitle = releaseJson.GetProperty("tag_name").GetString();
+                }
 
                 // Try to parse version
-                var versionText = Regex.Match(releaseName, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
+                var versionText = Regex.Match(releaseTitle, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
                 if (!Version.TryParse(versionText, out var version))
                     continue;
 

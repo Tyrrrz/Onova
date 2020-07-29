@@ -1,3 +1,8 @@
+### v2.6.1 (29-Jul-2020)
+
+- Fixed an issue in `GithubPackageResolver` where the version was not extracted correctly if release name was not set, but tag name was. (Thanks [@miakh](https://github.com/miakh))
+- Changed logging in `Onova.Updater` so that each new entry is flushed to file as soon as possible. This should help avoid empty logs after crashes.
+
 ### v2.6 (04-Apr-2020)
 
 - Added an overload for `LaunchUpdater` that allows specifying custom command line arguments to use when restarting the application.

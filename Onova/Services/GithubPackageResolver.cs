@@ -98,7 +98,7 @@ namespace Onova.Services
                 foreach (var assetJson in assetsJson.EnumerateArray())
                 {
                     var assetName = assetJson.GetProperty("name").GetString();
-                    var assetUrl = assetJson.GetProperty("browser_download_url").GetString();
+                    var assetUrl = assetJson.GetProperty("url").GetString();
 
                     // See if name matches
                     if (!WildcardPattern.IsMatch(assetName, _assetNamePattern))

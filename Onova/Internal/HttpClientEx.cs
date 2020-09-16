@@ -82,9 +82,11 @@ namespace Onova.Internal
         public static async Task GetStreamAndCopyToAsync(this HttpClient client, string requestUri, Stream destination,
             IProgress<double>? progress = null, CancellationToken cancellationToken = default)
         {
-            using var response = await client.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-            response.EnsureSuccessStatusCode();
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
+            requestMessage.Headers.Add("Accept", "application/octet-stream");
 
+            using var response = await client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            response.EnsureSuccessStatusCode();
             await response.Content.CopyToStreamAsync(destination, progress, cancellationToken);
         }
     }

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
 using Onova.Internal;
+using Onova.Internal.Extensions;
 
 namespace Onova.Services
 {
@@ -32,7 +33,7 @@ namespace Onova.Services
         /// Initializes an instance of <see cref="WebPackageResolver"/>.
         /// </summary>
         public WebPackageResolver(string manifestUrl)
-            : this(HttpClientEx.GetSingleton(), manifestUrl)
+            : this(Singleton.HttpClient, manifestUrl)
         {
         }
 
@@ -96,7 +97,9 @@ namespace Onova.Services
 
             // Download
             using var output = File.Create(destFilePath);
-            await _httpClient.GetStreamAndCopyToAsync(packageUrl, output, progress, cancellationToken);
+
+            using var response = await _httpClient.GetAsync(packageUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            await response.Content.CopyToStreamAsync(output, progress, cancellationToken);
         }
     }
 }

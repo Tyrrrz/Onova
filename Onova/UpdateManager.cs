@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
 using Onova.Internal;
+using Onova.Internal.Extensions;
 using Onova.Models;
 using Onova.Services;
 
@@ -150,12 +151,17 @@ namespace Onova
                     var packageContentDirName = Path.GetFileName(packageContentDirPath);
 
                     // Try to extract version out of the name
-                    if (packageContentDirName == null || !Version.TryParse(packageContentDirName, out var version))
+                    if (string.IsNullOrWhiteSpace(packageContentDirName) ||
+                        !Version.TryParse(packageContentDirName, out var version))
+                    {
                         continue;
+                    }
 
                     // If this package is prepared - add it to the list
                     if (IsUpdatePrepared(version))
+                    {
                         result.Add(version);
+                    }
                 }
             }
 

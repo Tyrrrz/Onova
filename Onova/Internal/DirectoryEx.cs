@@ -26,6 +26,7 @@ namespace Onova.Internal
         {
             if (Directory.Exists(dirPath))
                 Directory.Delete(dirPath, true);
+
             Directory.CreateDirectory(dirPath);
         }
     }

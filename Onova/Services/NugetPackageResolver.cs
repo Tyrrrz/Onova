@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
 using Onova.Internal;
+using Onova.Internal.Extensions;
 
 namespace Onova.Services
 {
@@ -36,15 +37,15 @@ namespace Onova.Services
         /// Initializes an instance of <see cref="NugetPackageResolver"/>.
         /// </summary>
         public NugetPackageResolver(string serviceIndexUrl, string packageId)
-            : this(HttpClientEx.GetSingleton(), serviceIndexUrl, packageId)
+            : this(Singleton.HttpClient, serviceIndexUrl, packageId)
         {
         }
 
         private async Task<string> GetPackageBaseAddressResourceUrlAsync(CancellationToken cancellationToken)
         {
             // Get all available resources
-            using var responseJson = await _httpClient.GetJsonAsync(_serviceIndexUrl, cancellationToken);
-            var resourcesJson = responseJson.RootElement.GetProperty("resources");
+            var responseJson = await _httpClient.GetJsonAsync(_serviceIndexUrl, cancellationToken);
+            var resourcesJson = responseJson.GetProperty("resources");
 
             // Get URL of the required resource
             var expectedResourceType = "PackageBaseAddress/3.0.0";
@@ -68,8 +69,8 @@ namespace Onova.Services
 
             // Get versions
             var request = $"{resourceUrl}/{PackageIdNormalized}/index.json";
-            using var responseJson = await _httpClient.GetJsonAsync(request, cancellationToken);
-            var versionsJson = responseJson.RootElement.GetProperty("versions");
+            var responseJson = await _httpClient.GetJsonAsync(request, cancellationToken);
+            var versionsJson = responseJson.GetProperty("versions");
             var versions = new HashSet<Version>();
 
             foreach (var versionJson in versionsJson.EnumerateArray())

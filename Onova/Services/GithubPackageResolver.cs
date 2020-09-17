@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
 using Onova.Internal;
+using Onova.Internal.Extensions;
 
 namespace Onova.Services
 {
@@ -56,7 +57,7 @@ namespace Onova.Services
         /// </summary>
         public GithubPackageResolver(string apiBaseAddress, string repositoryOwner, string repositoryName,
             string assetNamePattern)
-            : this(HttpClientEx.GetSingleton(), apiBaseAddress, repositoryOwner, repositoryName, assetNamePattern)
+            : this(Singleton.HttpClient, apiBaseAddress, repositoryOwner, repositoryName, assetNamePattern)
         {
         }
 
@@ -64,7 +65,7 @@ namespace Onova.Services
         /// Initializes an instance of <see cref="GithubPackageResolver"/>.
         /// </summary>
         public GithubPackageResolver(string repositoryOwner, string repositoryName, string assetNamePattern)
-            : this(HttpClientEx.GetSingleton(), repositoryOwner, repositoryName, assetNamePattern)
+            : this(Singleton.HttpClient, repositoryOwner, repositoryName, assetNamePattern)
         {
         }
 
@@ -133,8 +134,8 @@ namespace Onova.Services
             response.EnsureSuccessStatusCode();
 
             // Parse response
-            using var responseJson = await response.Content.ReadAsJsonAsync(cancellationToken);
-            var map = ParsePackageVersionUrlMap(responseJson.RootElement);
+            var responseJson = await response.Content.ReadAsJsonAsync(cancellationToken);
+            var map = ParsePackageVersionUrlMap(responseJson);
 
             // Cache result
             _cachedPackageVersionUrlMapETag = response.Headers.ETag;
@@ -165,7 +166,12 @@ namespace Onova.Services
 
             // Download
             using var output = File.Create(destFilePath);
-            await _httpClient.GetStreamAndCopyToAsync(packageUrl, output, progress, cancellationToken);
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, packageUrl);
+            request.Headers.Add("Accept", "application/octet-stream"); // required
+
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            await response.Content.CopyToStreamAsync(output, progress, cancellationToken);
         }
     }
 }

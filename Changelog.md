@@ -1,3 +1,7 @@
+### v2.6.2 (17-Sep-2020)
+
+- Fixed an issue in `GithubPackageResolver` which prevented it from working properly with private repositories. (Thanks [@derech1e](https://github.com/derech1e))
+
 ### v2.6.1 (29-Jul-2020)
 
 - Fixed an issue in `GithubPackageResolver` where the version was not extracted correctly if release name was not set, but tag name was. (Thanks [@miakh](https://github.com/miakh))

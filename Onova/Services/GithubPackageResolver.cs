@@ -165,12 +165,13 @@ namespace Onova.Services
                 throw new PackageNotFoundException(version);
 
             // Download
-            using var output = File.Create(destFilePath);
-
             using var request = new HttpRequestMessage(HttpMethod.Get, packageUrl);
             request.Headers.Add("Accept", "application/octet-stream"); // required
 
             using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            using var output = File.Create(destFilePath);
             await response.Content.CopyToStreamAsync(output, progress, cancellationToken);
         }
     }

@@ -96,9 +96,10 @@ namespace Onova.Services
                 throw new PackageNotFoundException(version);
 
             // Download
-            using var output = File.Create(destFilePath);
-
             using var response = await _httpClient.GetAsync(packageUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            using var output = File.Create(destFilePath);
             await response.Content.CopyToStreamAsync(output, progress, cancellationToken);
         }
     }

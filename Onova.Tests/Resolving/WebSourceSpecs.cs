@@ -10,7 +10,9 @@ namespace Onova.Tests.Resolving
 {
     public class WebSourceSpecs : IDisposable
     {
-        private string TempDirPath { get; } = Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(WebSourceSpecs)}_{Guid.NewGuid()}");
+        private string TempDirPath { get; } = Path.Combine(
+            Directory.GetCurrentDirectory(), $"{nameof(WebSourceSpecs)}_{Guid.NewGuid()}"
+        );
 
         public WebSourceSpecs() => DirectoryEx.Reset(TempDirPath);
 
@@ -31,7 +33,8 @@ namespace Onova.Tests.Resolving
             await resolver.DownloadPackageAsync(Version.Parse("2.0"), destFilePath);
 
             // Assert
-            File.ReadAllText(destFilePath).Should().Be("Hello world");
+            var content = await File.ReadAllTextAsync(destFilePath);
+            content.Should().Be("Hello world");
         }
 
         [Fact]
@@ -47,7 +50,8 @@ namespace Onova.Tests.Resolving
             versions.Should().BeEquivalentTo(
                 Version.Parse("1.0"),
                 Version.Parse("2.0"),
-                Version.Parse("3.0"));
+                Version.Parse("3.0")
+            );
         }
     }
 }

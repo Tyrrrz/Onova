@@ -48,17 +48,16 @@ namespace Onova.Services
             var resourcesJson = responseJson.GetProperty("resources");
 
             // Get URL of the required resource
-            var expectedResourceType = "PackageBaseAddress/3.0.0";
             foreach (var resourceJson in resourcesJson.EnumerateArray())
             {
                 // Check resource type
                 var resourceType = resourceJson.GetProperty("@type").GetString();
-                if (resourceType == expectedResourceType)
+                if (string.Equals(resourceType, "PackageBaseAddress/3.0.0", StringComparison.OrdinalIgnoreCase))
                     return resourceJson.GetProperty("@id").GetString();
             }
 
             // Resource not found
-            throw new InvalidOperationException($"[{expectedResourceType}] resource not found in service index.");
+            throw new InvalidOperationException("Expected resource not found in service index.");
         }
 
         /// <inheritdoc />
@@ -75,13 +74,10 @@ namespace Onova.Services
 
             foreach (var versionJson in versionsJson.EnumerateArray())
             {
-                // Try to parse version
                 var versionText = versionJson.GetString();
-                if (!Version.TryParse(versionText, out var version))
-                    continue;
 
-                // Add to list
-                versions.Add(version);
+                if (Version.TryParse(versionText, out var version))
+                    versions.Add(version);
             }
 
             return versions.ToArray();

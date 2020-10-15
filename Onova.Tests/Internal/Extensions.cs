@@ -11,14 +11,6 @@ namespace Onova.Tests.Internal
             stream.Write(content, 0, content.Length);
         }
 
-        public static void WriteAllText(this ZipArchiveEntry entry, string contents)
-        {
-            using var stream = entry.Open();
-            using var writer = new StreamWriter(stream);
-
-            writer.Write(contents);
-        }
-
         public static string ReadAllText(this ZipArchiveEntry entry)
         {
             using var stream = entry.Open();

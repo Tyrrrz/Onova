@@ -12,7 +12,9 @@ namespace Onova.Tests.Resolving
 {
     public class LocalSourceSpecs : IDisposable
     {
-        private string TempDirPath { get; } = Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(LocalSourceSpecs)}_{Guid.NewGuid()}");
+        private string TempDirPath { get; } = Path.Combine(
+            Directory.GetCurrentDirectory(), $"{nameof(LocalSourceSpecs)}_{Guid.NewGuid()}"
+        );
 
         public LocalSourceSpecs() => DirectoryEx.Reset(TempDirPath);
 
@@ -52,7 +54,8 @@ namespace Onova.Tests.Resolving
             await resolver.DownloadPackageAsync(version, destFilePath);
 
             // Assert
-            File.ReadAllBytes(destFilePath).Should().BeEquivalentTo(expectedData);
+            var data = await File.ReadAllBytesAsync(destFilePath);
+            data.Should().BeEquivalentTo(expectedData);
         }
 
         [Fact]

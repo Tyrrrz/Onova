@@ -25,9 +25,11 @@ namespace Onova.Tests
             var updatee = new AssemblyMetadata("TestUpdatee", Version.Parse("1.0"), "");
 
             // Cleanup storage directory (TODO: move this to API)
-            DirectoryEx.DeleteIfExists(Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova", updatee.Name));
+            DirectoryEx.DeleteIfExists(
+                Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "Onova", updatee.Name)
+            );
 
             var availableVersions = new[]
             {
@@ -39,7 +41,8 @@ namespace Onova.Tests
             using var updateManager = new UpdateManager(
                 updatee,
                 new FakePackageResolver(availableVersions),
-                new FakePackageExtractor());
+                new FakePackageExtractor()
+            );
 
             // Act
             var result = await updateManager.CheckForUpdatesAsync();
@@ -57,9 +60,11 @@ namespace Onova.Tests
             var updatee = new AssemblyMetadata("TestUpdatee", Version.Parse("3.0"), "");
 
             // Cleanup storage directory (TODO: move this to API)
-            DirectoryEx.DeleteIfExists(Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova", updatee.Name));
+            DirectoryEx.DeleteIfExists(
+                Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "Onova", updatee.Name)
+            );
 
             var availableVersions = new[]
             {
@@ -71,7 +76,8 @@ namespace Onova.Tests
             using var updateManager = new UpdateManager(
                 updatee,
                 new FakePackageResolver(availableVersions),
-                new FakePackageExtractor());
+                new FakePackageExtractor()
+            );
 
             // Act
             var result = await updateManager.CheckForUpdatesAsync();
@@ -89,16 +95,19 @@ namespace Onova.Tests
             var updatee = new AssemblyMetadata("TestUpdatee", Version.Parse("1.0"), "");
 
             // Cleanup storage directory (TODO: move this to API)
-            DirectoryEx.DeleteIfExists(Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova", updatee.Name));
+            DirectoryEx.DeleteIfExists(
+                Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "Onova", updatee.Name)
+            );
 
             var availableVersions = Array.Empty<Version>();
 
             using var updateManager = new UpdateManager(
                 updatee,
                 new FakePackageResolver(availableVersions),
-                new FakePackageExtractor());
+                new FakePackageExtractor()
+            );
 
             // Act
             var result = await updateManager.CheckForUpdatesAsync();
@@ -116,9 +125,11 @@ namespace Onova.Tests
             var updatee = new AssemblyMetadata("TestUpdatee", Version.Parse("1.0"), "");
 
             // Cleanup storage directory (TODO: move this to API)
-            DirectoryEx.DeleteIfExists(Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova", updatee.Name));
+            DirectoryEx.DeleteIfExists(
+                Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "Onova", updatee.Name)
+            );
 
             var availableVersions = new[]
             {
@@ -130,7 +141,8 @@ namespace Onova.Tests
             using var updateManager = new UpdateManager(
                 updatee,
                 new FakePackageResolver(availableVersions),
-                new FakePackageExtractor());
+                new FakePackageExtractor()
+            );
 
             var version = Version.Parse("2.0");
 
@@ -148,9 +160,11 @@ namespace Onova.Tests
             var updatee = new AssemblyMetadata("TestUpdatee", Version.Parse("1.0"), "");
 
             // Cleanup storage directory (TODO: move this to API)
-            DirectoryEx.DeleteIfExists(Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova", updatee.Name));
+            DirectoryEx.DeleteIfExists(
+                Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "Onova", updatee.Name)
+            );
 
             var availableVersions = new[]
             {
@@ -162,7 +176,8 @@ namespace Onova.Tests
             using var manager = new UpdateManager(
                 updatee,
                 new FakePackageResolver(availableVersions),
-                new FakePackageExtractor());
+                new FakePackageExtractor()
+            );
 
             var expectedPreparedUpdateVersions = new[]
             {
@@ -237,7 +252,8 @@ namespace Onova.Tests
             // Wait until updatee has been ran a second time (we don't control this)
             SpinWait.SpinUntil(() =>
                 !dummy.IsRunning() &&
-                dummy.GetLastRunArguments(expectedFinalVersion).Any());
+                dummy.GetLastRunArguments(expectedFinalVersion).Any()
+            );
 
             // Assert
             dummy.GetLastRunArguments(expectedFinalVersion).Should().BeEquivalentTo(args);

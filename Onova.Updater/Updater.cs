@@ -14,9 +14,15 @@ namespace Onova.Updater
         private readonly bool _restartUpdatee;
         private readonly string _routedArgs;
 
-        private readonly TextWriter _log = File.CreateText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log.txt"));
+        private readonly TextWriter _log = File.CreateText(
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log.txt")
+        );
 
-        public Updater(string updateeFilePath, string packageContentDirPath, bool restartUpdatee, string routedArgs)
+        public Updater(
+            string updateeFilePath,
+            string packageContentDirPath,
+            bool restartUpdatee,
+            string routedArgs)
         {
             _updateeFilePath = updateeFilePath;
             _packageContentDirPath = packageContentDirPath;
@@ -90,12 +96,14 @@ namespace Onova.Updater
         public void Run()
         {
             var updaterVersion = Assembly.GetExecutingAssembly().GetName().Version;
+
             WriteLog(
                 $"Onova Updater v{updaterVersion} started with the following arguments:" + Environment.NewLine +
                 $"  UpdateeFilePath = {_updateeFilePath}" + Environment.NewLine +
                 $"  PackageContentDirPath = {_packageContentDirPath}" + Environment.NewLine +
                 $"  RestartUpdatee = {_restartUpdatee}" + Environment.NewLine +
-                $"  RoutedArgs = {_routedArgs}");
+                $"  RoutedArgs = {_routedArgs}"
+            );
 
             try
             {

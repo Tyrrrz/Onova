@@ -16,7 +16,7 @@ namespace Onova.Exceptions
         /// Initializes an instance of <see cref="UpdateNotPreparedException"/>.
         /// </summary>
         public UpdateNotPreparedException(Version version)
-            : base($"Update to version [{version}] is not prepared. Please prepare an update before applying it.")
+            : base($"Update to version '{version}' is not prepared. Please prepare an update before applying it.")
         {
             Version = version;
         }

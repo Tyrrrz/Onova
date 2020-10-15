@@ -48,7 +48,9 @@ namespace Onova
             // Set storage directory path
             _storageDirPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova", updatee.Name);
+                "Onova",
+                updatee.Name
+            );
 
             // Set updater executable file path
             _updaterFilePath = Path.Combine(_storageDirPath, $"{updatee.Name}.Updater.exe");
@@ -178,7 +180,9 @@ namespace Onova
             EnsureUpdaterNotLaunched();
 
             // Set up progress mixer
-            var progressMixer = progress != null ? new ProgressMixer(progress) : null;
+            var progressMixer = progress != null
+                ? new ProgressMixer(progress)
+                : null;
 
             // Get package file path and content directory path
             var packageFilePath = GetPackageFilePath(version);
@@ -190,7 +194,8 @@ namespace Onova
             // Download package
             await _resolver.DownloadPackageAsync(version, packageFilePath,
                 progressMixer?.Split(0.9), // 0% -> 90%
-                cancellationToken);
+                cancellationToken
+            );
 
             // Ensure package content directory exists and is empty
             DirectoryEx.Reset(packageContentDirPath);
@@ -198,7 +203,8 @@ namespace Onova
             // Extract package contents
             await _extractor.ExtractPackageAsync(packageFilePath, packageContentDirPath,
                 progressMixer?.Split(0.1), // 90% -> 100%
-                cancellationToken);
+                cancellationToken
+            );
 
             // Delete package
             File.Delete(packageFilePath);
@@ -227,7 +233,10 @@ namespace Onova
 
             // Decide if updater needs to be elevated
             var updateeDirPath = Path.GetDirectoryName(Updatee.FilePath);
-            var isUpdaterElevated = !string.IsNullOrWhiteSpace(updateeDirPath) && !DirectoryEx.CheckWriteAccess(updateeDirPath);
+
+            var updaterNeedsElevation =
+                !string.IsNullOrWhiteSpace(updateeDirPath) &&
+                !DirectoryEx.CheckWriteAccess(updateeDirPath);
 
             // Create updater process start info
             var updaterStartInfo = new ProcessStartInfo
@@ -239,7 +248,7 @@ namespace Onova
             };
 
             // If updater needs to be elevated - use shell execute with "runas"
-            if (isUpdaterElevated)
+            if (updaterNeedsElevation)
             {
                 updaterStartInfo.Verb = "runas";
                 updaterStartInfo.UseShellExecute = true;

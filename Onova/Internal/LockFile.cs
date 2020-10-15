@@ -7,10 +7,8 @@ namespace Onova.Internal
     {
         private readonly FileStream _fileStream;
 
-        public LockFile(FileStream fileStream)
-        {
+        public LockFile(FileStream fileStream) =>
             _fileStream = fileStream;
-        }
 
         public void Dispose() => _fileStream.Dispose();
     }

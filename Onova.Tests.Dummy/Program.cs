@@ -13,8 +13,11 @@ namespace Onova.Tests.Dummy
     public static class Program
     {
         private static Version Version => Assembly.GetExecutingAssembly().GetName().Version!;
+
         private static string AssemblyDirPath => AppDomain.CurrentDomain.BaseDirectory!;
+
         private static string LastRunFilePath => Path.Combine(AssemblyDirPath, $"lastrun-{Version}.txt");
+
         private static string PackagesDirPath => Path.Combine(AssemblyDirPath, "Packages");
 
         private static readonly IUpdateManager UpdateManager = new UpdateManager(

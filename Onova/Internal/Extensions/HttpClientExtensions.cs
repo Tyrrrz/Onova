@@ -9,46 +9,64 @@ namespace Onova.Internal.Extensions
 {
     internal static class HttpClientExtensions
     {
-        public static async Task<string> GetStringAsync(this HttpClient client, string requestUri,
+        public static async Task<string> GetStringAsync(
+            this HttpClient client,
+            string requestUri,
             CancellationToken cancellationToken = default)
         {
-            using var response = await client.GetAsync(requestUri, HttpCompletionOption.ResponseContentRead, cancellationToken);
+            using var response = await client.GetAsync(
+                requestUri,
+                HttpCompletionOption.ResponseContentRead,
+                cancellationToken
+            );
+
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsStringAsync();
         }
 
-        public static async Task<JsonElement> ReadAsJsonAsync(this HttpContent content,
+        public static async Task<JsonElement> ReadAsJsonAsync(
+            this HttpContent content,
             CancellationToken cancellationToken = default)
         {
             using var stream = await content.ReadAsStreamAsync();
-            using var document = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
+            using var document = await JsonDocument.ParseAsync(stream, default, cancellationToken);
 
             return document.RootElement.Clone();
         }
 
-        public static async Task<JsonElement> GetJsonAsync(this HttpClient client, string requestUri,
+        public static async Task<JsonElement> GetJsonAsync(
+            this HttpClient client,
+            string requestUri,
             CancellationToken cancellationToken = default)
         {
-            using var response = await client.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            using var response = await client.GetAsync(
+                requestUri,
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken
+            );
+
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsJsonAsync(cancellationToken);
         }
 
-        public static async Task CopyToStreamAsync(this HttpContent content, Stream destination,
-            IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+        public static async Task CopyToStreamAsync(
+            this HttpContent content,
+            Stream destination,
+            IProgress<double>? progress = null,
+            CancellationToken cancellationToken = default)
         {
+            var length = content.Headers.ContentLength;
             using var source = await content.ReadAsStreamAsync();
 
-            var length = content.Headers.ContentLength;
+            using var buffer = new PooledBuffer<byte>(81920);
 
-            var buffer = new byte[81920];
             var totalBytesCopied = 0L;
             int bytesCopied;
             do
             {
-                bytesCopied = await source.CopyBufferedToAsync(destination, buffer, cancellationToken);
+                bytesCopied = await source.CopyBufferedToAsync(destination, buffer.Array, cancellationToken);
                 totalBytesCopied += bytesCopied;
 
                 if (length != null)

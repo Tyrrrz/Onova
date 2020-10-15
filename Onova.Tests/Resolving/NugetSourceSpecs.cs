@@ -11,7 +11,9 @@ namespace Onova.Tests.Resolving
 {
     public class NugetSourceSpecs : IDisposable
     {
-        private string TempDirPath { get; } = Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(NugetSourceSpecs)}_{Guid.NewGuid()}");
+        private string TempDirPath { get; } = Path.Combine(
+            Directory.GetCurrentDirectory(), $"{nameof(NugetSourceSpecs)}_{Guid.NewGuid()}"
+        );
 
         public NugetSourceSpecs() => DirectoryEx.Reset(TempDirPath);
 
@@ -34,7 +36,7 @@ namespace Onova.Tests.Resolving
             await resolver.DownloadPackageAsync(version, destFilePath);
 
             using var zip = ZipFile.OpenRead(destFilePath);
-            var content = zip.GetEntry("Files/Content.txt").ReadAllText();
+            var content = zip.GetEntry("Files/Content.txt")?.ReadAllText();
 
             // Assert
             content.Should().Be("Hello world");
@@ -53,7 +55,8 @@ namespace Onova.Tests.Resolving
             versions.Should().BeEquivalentTo(
                 Version.Parse("1.0.0"),
                 Version.Parse("2.0.0"),
-                Version.Parse("3.0.0"));
+                Version.Parse("3.0.0")
+            );
         }
     }
 }

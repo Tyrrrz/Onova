@@ -12,7 +12,9 @@ namespace Onova.Tests.Extracting
 {
     public class NugetPackageSpecs : IDisposable
     {
-        private string TempDirPath { get; } = Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(NugetPackageSpecs)}_{Guid.NewGuid()}");
+        private string TempDirPath { get; } = Path.Combine(
+            Directory.GetCurrentDirectory(), $"{nameof(NugetPackageSpecs)}_{Guid.NewGuid()}"
+        );
 
         public NugetPackageSpecs() => DirectoryEx.Reset(TempDirPath);
 
@@ -61,7 +63,8 @@ namespace Onova.Tests.Extracting
                 }
                 else
                 {
-                    File.ReadAllBytes(destEntryPath).Should().BeEquivalentTo(expectedData);
+                    var data = await File.ReadAllBytesAsync(destEntryPath);
+                    data.Should().BeEquivalentTo(expectedData);
                 }
             }
         }

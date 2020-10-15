@@ -9,14 +9,18 @@ namespace Onova.Internal.Extensions
             StringComparison comparison = StringComparison.Ordinal)
         {
             var index = s.IndexOf(sub, comparison);
-            return index < 0 ? s : s.Substring(0, index);
+            return index >= 0
+                ? s.Substring(0, index)
+                : s;
         }
 
         public static string SubstringAfter(this string s, string sub,
             StringComparison comparison = StringComparison.Ordinal)
         {
             var index = s.IndexOf(sub, comparison);
-            return index < 0 ? string.Empty : s.Substring(index + sub.Length, s.Length - index - sub.Length);
+            return index >= 0
+                ? s.Substring(index + sub.Length, s.Length - index - sub.Length)
+                : string.Empty;
         }
 
         public static byte[] GetBytes(this string input, Encoding encoding) => encoding.GetBytes(input);

@@ -33,8 +33,12 @@ namespace Onova.Services
         /// <summary>
         /// Initializes an instance of <see cref="GithubPackageResolver"/>.
         /// </summary>
-        public GithubPackageResolver(HttpClient httpClient, string apiBaseAddress, string repositoryOwner,
-            string repositoryName, string assetNamePattern)
+        public GithubPackageResolver(
+            HttpClient httpClient,
+            string apiBaseAddress,
+            string repositoryOwner,
+            string repositoryName,
+            string assetNamePattern)
         {
             _httpClient = httpClient;
             _apiBaseAddress = apiBaseAddress;
@@ -46,7 +50,10 @@ namespace Onova.Services
         /// <summary>
         /// Initializes an instance of <see cref="GithubPackageResolver"/>.
         /// </summary>
-        public GithubPackageResolver(HttpClient httpClient, string repositoryOwner, string repositoryName,
+        public GithubPackageResolver(
+            HttpClient httpClient,
+            string repositoryOwner,
+            string repositoryName,
             string assetNamePattern)
             : this(httpClient, "https://api.github.com", repositoryOwner, repositoryName, assetNamePattern)
         {
@@ -55,7 +62,10 @@ namespace Onova.Services
         /// <summary>
         /// Initializes an instance of <see cref="GithubPackageResolver"/>.
         /// </summary>
-        public GithubPackageResolver(string apiBaseAddress, string repositoryOwner, string repositoryName,
+        public GithubPackageResolver(
+            string apiBaseAddress,
+            string repositoryOwner,
+            string repositoryName,
             string assetNamePattern)
             : this(Singleton.HttpClient, apiBaseAddress, repositoryOwner, repositoryName, assetNamePattern)
         {
@@ -64,7 +74,10 @@ namespace Onova.Services
         /// <summary>
         /// Initializes an instance of <see cref="GithubPackageResolver"/>.
         /// </summary>
-        public GithubPackageResolver(string repositoryOwner, string repositoryName, string assetNamePattern)
+        public GithubPackageResolver(
+            string repositoryOwner,
+            string repositoryName,
+            string assetNamePattern)
             : this(Singleton.HttpClient, repositoryOwner, repositoryName, assetNamePattern)
         {
         }

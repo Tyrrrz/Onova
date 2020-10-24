@@ -4,9 +4,9 @@ using System.Net.Http;
 
 namespace Onova.Internal
 {
-    internal static class Singleton
+    internal static class Http
     {
-        private static readonly Lazy<HttpClient> LazyHttpClient = new Lazy<HttpClient>(() =>
+        private static readonly Lazy<HttpClient> ClientLazy = new Lazy<HttpClient>(() =>
         {
             var handler = new HttpClientHandler();
 
@@ -21,6 +21,6 @@ namespace Onova.Internal
             return httpClient;
         });
 
-        public static HttpClient HttpClient => LazyHttpClient.Value;
+        public static HttpClient Client => ClientLazy.Value;
     }
 }

@@ -67,7 +67,7 @@ namespace Onova.Services
             string repositoryOwner,
             string repositoryName,
             string assetNamePattern)
-            : this(Singleton.HttpClient, apiBaseAddress, repositoryOwner, repositoryName, assetNamePattern)
+            : this(Http.Client, apiBaseAddress, repositoryOwner, repositoryName, assetNamePattern)
         {
         }
 
@@ -78,7 +78,7 @@ namespace Onova.Services
             string repositoryOwner,
             string repositoryName,
             string assetNamePattern)
-            : this(Singleton.HttpClient, repositoryOwner, repositoryName, assetNamePattern)
+            : this(Http.Client, repositoryOwner, repositoryName, assetNamePattern)
         {
         }
 

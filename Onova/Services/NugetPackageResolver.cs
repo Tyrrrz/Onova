@@ -37,7 +37,7 @@ namespace Onova.Services
         /// Initializes an instance of <see cref="NugetPackageResolver"/>.
         /// </summary>
         public NugetPackageResolver(string serviceIndexUrl, string packageId)
-            : this(Singleton.HttpClient, serviceIndexUrl, packageId)
+            : this(Http.Client, serviceIndexUrl, packageId)
         {
         }
 

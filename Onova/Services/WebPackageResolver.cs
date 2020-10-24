@@ -33,7 +33,7 @@ namespace Onova.Services
         /// Initializes an instance of <see cref="WebPackageResolver"/>.
         /// </summary>
         public WebPackageResolver(string manifestUrl)
-            : this(Singleton.HttpClient, manifestUrl)
+            : this(Http.Client, manifestUrl)
         {
         }
 

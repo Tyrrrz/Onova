@@ -44,7 +44,7 @@ namespace Onova.Services
                 using var input = entry.Open();
                 using var output = File.Create(entryDestFilePath);
 
-                using var buffer = new PooledBuffer<byte>(81920);
+                using var buffer = PooledBuffer.ForStream();
                 int bytesCopied;
                 do
                 {

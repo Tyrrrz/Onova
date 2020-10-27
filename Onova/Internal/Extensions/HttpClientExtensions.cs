@@ -60,7 +60,7 @@ namespace Onova.Internal.Extensions
             var length = content.Headers.ContentLength;
             using var source = await content.ReadAsStreamAsync();
 
-            using var buffer = new PooledBuffer<byte>(81920);
+            using var buffer = PooledBuffer.ForStream();
 
             var totalBytesCopied = 0L;
             int bytesCopied;

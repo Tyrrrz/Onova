@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using Onova.Updater.Internal;
 
 namespace Onova.Updater
@@ -13,6 +15,7 @@ namespace Onova.Updater
         private readonly string _packageContentDirPath;
         private readonly bool _restartUpdatee;
         private readonly string _routedArgs;
+        private readonly string[] _aditionalExecutables;
 
         private readonly TextWriter _log = File.CreateText(
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log.txt")
@@ -22,12 +25,14 @@ namespace Onova.Updater
             string updateeFilePath,
             string packageContentDirPath,
             bool restartUpdatee,
-            string routedArgs)
+            string routedArgs,
+            string[] additionalExecutables)
         {
             _updateeFilePath = updateeFilePath;
             _packageContentDirPath = packageContentDirPath;
             _restartUpdatee = restartUpdatee;
             _routedArgs = routedArgs;
+            _aditionalExecutables = additionalExecutables;
         }
 
         private void WriteLog(string content)
@@ -43,8 +48,13 @@ namespace Onova.Updater
 
             // Wait until updatee is writable to ensure all running instances have exited
             WriteLog("Waiting for all running updatee instances to exit...");
-            while (!FileEx.CheckWriteAccess(_updateeFilePath))
-                Thread.Sleep(100);
+            //while (!FileEx.CheckWriteAccess(_updateeFilePath))
+            //    Thread.Sleep(100);
+
+            var executables = new[] { _updateeFilePath }
+                .Concat(_aditionalExecutables)
+                .Select(exe => FileEx.CheckWriteAccessAsync(exe));
+            Task.WhenAll(executables).Wait();
 
             // Copy over the package contents
             WriteLog("Copying package contents from storage to updatee's directory...");

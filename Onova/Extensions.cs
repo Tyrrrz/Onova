@@ -15,8 +15,8 @@ namespace Onova
         /// The updater can be instructed to also restart the application after it's updated.
         /// If the application is to be restarted, it will receive the same command line arguments as it did initially.
         /// </summary>
-        public static void LaunchUpdater(this IUpdateManager manager, Version version, bool restart = true) =>
-            manager.LaunchUpdater(version, restart, EnvironmentEx.GetCommandLineWithoutExecutable());
+        public static void LaunchUpdater(this IUpdateManager manager, Version version, bool restart = true, string[]? additonalExecutables = null) =>
+            manager.LaunchUpdater(version, restart, EnvironmentEx.GetCommandLineWithoutExecutable(), additonalExecutables);
 
         /// <summary>
         /// Checks for new version and performs an update if available.

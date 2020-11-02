@@ -214,7 +214,7 @@ namespace Onova
         }
 
         /// <inheritdoc />
-        public void LaunchUpdater(Version version, bool restart, string restartArguments)
+        public void LaunchUpdater(Version version, bool restart, string restartArguments, string[]? additonalExecutables = null)
         {
             // Ensure that the current state is valid for this operation
             EnsureNotDisposed();
@@ -222,17 +222,23 @@ namespace Onova
             EnsureUpdaterNotLaunched();
             EnsureUpdatePrepared(version);
 
+            var updateeDirPath = Path.GetDirectoryName(Updatee.FilePath);
+
             // Get package content directory path
             var packageContentDirPath = GetPackageContentDirPath(version);
 
             // Get original command line arguments and encode them to avoid issues with quotes
             var routedArgs = restartArguments.GetBytes().ToBase64();
 
+            // get absolute paths to additional executables
+            var addExePaths = (additonalExecutables ?? Array.Empty<string>())
+                .Select(exe => Path.Combine(updateeDirPath!, exe));
+            var addExes = string.Join(";", addExePaths).GetBytes().ToBase64();
+
             // Prepare arguments
-            var updaterArgs = $"\"{Updatee.FilePath}\" \"{packageContentDirPath}\" \"{restart}\" \"{routedArgs}\"";
+            var updaterArgs = $"\"{Updatee.FilePath}\" \"{packageContentDirPath}\" \"{restart}\" \"{routedArgs}\" \"{addExes}\"";
 
             // Decide if updater needs to be elevated
-            var updateeDirPath = Path.GetDirectoryName(Updatee.FilePath);
 
             var updaterNeedsElevation =
                 !string.IsNullOrWhiteSpace(updateeDirPath) &&

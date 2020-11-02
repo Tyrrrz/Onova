@@ -1,4 +1,4 @@
-﻿using Onova.Updater.Internal;
+using Onova.Updater.Internal;
 
 namespace Onova.Updater
 {
@@ -13,8 +13,11 @@ namespace Onova.Updater
             var packageContentDirPath = args[1];
             var restartUpdatee = bool.Parse(args[2]);
             var routedArgs = args[3].FromBase64().GetString();
+            // Base64 encoded semicolon delimited list of paths to executables to wait for
+            // before installing the application
+            var additionalExecutables = args[4].FromBase64().GetString().Split(';');
 
-            using var updater = new Updater(updateeFilePath, packageContentDirPath, restartUpdatee, routedArgs);
+            using var updater = new Updater(updateeFilePath, packageContentDirPath, restartUpdatee, routedArgs, additionalExecutables);
             updater.Run();
         }
     }

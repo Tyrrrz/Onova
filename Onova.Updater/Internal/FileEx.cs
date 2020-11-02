@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Onova.Updater.Internal
 {
@@ -20,6 +21,16 @@ namespace Onova.Updater.Internal
             {
                 return false;
             }
+        }
+
+        public static async Task<bool> CheckWriteAccessAsync(string filePath)
+        {
+            while (!CheckWriteAccess(filePath))
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1));
+            }
+
+            return true;
         }
     }
 }

@@ -1,9 +1,8 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using Onova.Updater.Internal;
 
@@ -42,7 +41,7 @@ namespace Onova.Updater
             _log.Flush();
         }
 
-        private void RunCore()
+        private async Task RunCore()
         {
             var updateeDirPath = Path.GetDirectoryName(_updateeFilePath);
 
@@ -54,7 +53,7 @@ namespace Onova.Updater
             var executables = new[] { _updateeFilePath }
                 .Concat(_aditionalExecutables.Where(exe => File.Exists(exe)))
                 .Select(exe => FileEx.CheckWriteAccessAsync(exe));
-            Task.WhenAll(executables).Wait();
+            await Task.WhenAll(executables);
 
             // Copy over the package contents
             WriteLog("Copying package contents from storage to updatee's directory...");
@@ -103,7 +102,7 @@ namespace Onova.Updater
             Directory.Delete(_packageContentDirPath, true);
         }
 
-        public void Run()
+        public async Task Run()
         {
             var updaterVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
@@ -117,7 +116,7 @@ namespace Onova.Updater
 
             try
             {
-                RunCore();
+                await RunCore();
             }
             catch (Exception ex)
             {

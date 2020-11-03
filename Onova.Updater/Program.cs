@@ -1,3 +1,4 @@
+﻿using System.Threading.Tasks;
 using Onova.Updater.Internal;
 
 namespace Onova.Updater
@@ -7,7 +8,7 @@ namespace Onova.Updater
 
     public static class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var updateeFilePath = args[0];
             var packageContentDirPath = args[1];
@@ -18,7 +19,7 @@ namespace Onova.Updater
             var additionalExecutables = args[4].FromBase64().GetString().Split(';');
 
             using var updater = new Updater(updateeFilePath, packageContentDirPath, restartUpdatee, routedArgs, additionalExecutables);
-            updater.Run();
+            await updater.Run();
         }
     }
 }

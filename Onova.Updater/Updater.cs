@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -52,7 +52,7 @@ namespace Onova.Updater
             //    Thread.Sleep(100);
 
             var executables = new[] { _updateeFilePath }
-                .Concat(_aditionalExecutables)
+                .Concat(_aditionalExecutables.Where(exe => File.Exists(exe)))
                 .Select(exe => FileEx.CheckWriteAccessAsync(exe));
             Task.WhenAll(executables).Wait();
 

@@ -262,3 +262,6 @@ __pycache__/
 
 # Ignore Updater.exe in Onova
 Onova/Updater.exe
+
+# Coverage
+*.opencover.xml

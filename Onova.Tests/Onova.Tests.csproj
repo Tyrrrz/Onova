@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Onova.props" />
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -10,10 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CliWrap" Version="3.2.2" />
+    <PackageReference Include="CliWrap" Version="3.2.4" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="GitHubActionsTestLogger" Version="1.1.2" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
     <PackageReference Include="Mono.Cecil" Version="0.11.3" />
     <PackageReference Include="Polly" Version="7.2.1" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -34,7 +33,7 @@
     <None Include="../Onova.Tests.Dummy/bin/$(Configuration)/$(TargetFramework)/Onova.Tests.Dummy.runtimeconfig.json">
       <Link>Onova.Tests.Dummy.runtimeconfig.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>False</Visible>
+      <Visible>false</Visible>
     </None>
   </ItemGroup>
 

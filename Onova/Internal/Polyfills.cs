@@ -3,33 +3,29 @@
 // Polyfills to bridge the missing APIs in older versions of the framework/standard.
 
 #if NETSTANDARD2_0 || NET461
-namespace System
+using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+
+internal static partial class PolyfillExtensions
 {
-    internal static class Extensions
-    {
-        public static string[] Split(this string input, params string[] separators) =>
-            input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-    }
+    public static string[] Split(this string input, params string[] separators) =>
+        input.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+}
+
+internal static partial class PolyfillExtensions
+{
+    public static async Task<int> ReadAsync(this Stream stream, byte[] buffer, CancellationToken cancellationToken) =>
+        await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
 }
 
 namespace System.Collections.Generic
 {
-    internal static class Extensions
+    internal static class PolyfillExtensions
     {
         public static TValue GetValueOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dic, TKey key) =>
-            dic.TryGetValue(key, out var result) ? result! : default!;
-    }
-}
-
-namespace System.IO
-{
-    using Threading;
-    using Threading.Tasks;
-
-    internal static class Extensions
-    {
-        public static async Task<int> ReadAsync(this Stream stream, byte[] buffer, CancellationToken cancellationToken) =>
-            await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+            dic.TryGetValue(key!, out var result) ? result! : default!;
     }
 }
 #endif

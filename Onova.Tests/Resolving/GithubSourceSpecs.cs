@@ -20,7 +20,7 @@ namespace Onova.Tests.Resolving
 
         // https://github.com/Tyrrrz/OnovaTestRepo
         private GithubPackageResolver CreateGithubPackageResolver() =>
-            new GithubPackageResolver("Tyrrrz", "OnovaTestRepo", "*.onv");
+            new("Tyrrrz", "OnovaTestRepo", "*.onv");
 
         [Fact]
         public async Task I_can_use_a_GitHub_repository_as_a_package_source()

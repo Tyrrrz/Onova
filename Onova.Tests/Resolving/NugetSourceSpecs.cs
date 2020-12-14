@@ -21,7 +21,7 @@ namespace Onova.Tests.Resolving
 
         // https://myget.org/feed/tyrrrz-test/package/nuget/OnovaTest
         private static NugetPackageResolver CreateNugetPackageResolver() =>
-            new NugetPackageResolver("https://myget.org/F/tyrrrz-test/api/v3/index.json", "OnovaTest");
+            new("https://myget.org/F/tyrrrz-test/api/v3/index.json", "OnovaTest");
 
         [Fact]
         public async Task I_can_use_a_NuGet_repository_as_a_package_source()

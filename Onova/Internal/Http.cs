@@ -6,7 +6,7 @@ namespace Onova.Internal
 {
     internal static class Http
     {
-        private static readonly Lazy<HttpClient> ClientLazy = new Lazy<HttpClient>(() =>
+        private static readonly Lazy<HttpClient> ClientLazy = new(() =>
         {
             var handler = new HttpClientHandler();
 

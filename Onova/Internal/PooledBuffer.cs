@@ -16,6 +16,6 @@ namespace Onova.Internal
 
     internal static class PooledBuffer
     {
-        public static PooledBuffer<byte> ForStream() => new PooledBuffer<byte>(81920);
+        public static PooledBuffer<byte> ForStream() => new(81920);
     }
 }

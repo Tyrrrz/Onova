@@ -19,7 +19,7 @@ namespace Onova.Tests.Resolving
         public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
 
         private WebPackageResolver CreateWebPackageResolver() =>
-            new WebPackageResolver("https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt");
+            new("https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt");
 
         [Fact]
         public async Task I_can_use_a_custom_web_server_as_a_package_source()

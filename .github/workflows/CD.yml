@@ -20,6 +20,7 @@ jobs:
 
       - name: Pack
         run: |
+          dotnet nuget locals all --clear
           dotnet build --configuration Release
           dotnet pack Onova --configuration Release --no-build
 

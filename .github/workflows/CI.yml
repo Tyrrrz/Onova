@@ -17,6 +17,7 @@ jobs:
 
       - name: Build & test
         run: |
+          dotnet nuget locals all --clear
           dotnet build --configuration Release
           dotnet test --configuration Release --no-build --logger GitHubActions
 

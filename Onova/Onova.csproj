@@ -7,6 +7,7 @@
     <PackageTags>auto update</PackageTags>
     <PackageProjectUrl>https://github.com/Tyrrrz/Onova</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/Tyrrrz/Onova/blob/master/Changelog.md</PackageReleaseNotes>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageIcon>favicon.png</PackageIcon>
     <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -17,7 +18,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="../favicon.png" Pack="true" PackagePath="" />
+    <None Include="../Readme.md" Pack="true" PackagePath="" Visible="false" />
+    <None Include="../favicon.png" Pack="true" PackagePath="" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>

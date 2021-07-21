@@ -10,6 +10,8 @@
 
 Onova is a lightweight auto-update framework for desktop applications. It was primarily designed for updating portable applications that are distributed using archive files, but can be extended for other use cases. Downloaded updates are installed using an embedded external executable, by overwriting files when the application exits. The library requires minimal configuration, doesn't impose any changes to the CI/CD process, and doesn't affect the application's life cycle.
 
+> ✨ Also check out community-made [Onova.Publisher](https://github.com/dady8889/Onova.Publisher) which provides an integrated installation experience based on Onova
+
 ## Download
 
 - [NuGet](https://nuget.org/packages/Onova): `dotnet add package Onova`

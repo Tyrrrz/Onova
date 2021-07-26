@@ -4,13 +4,16 @@
 [![Coverage](https://codecov.io/gh/Tyrrrz/Onova/branch/master/graph/badge.svg)](https://codecov.io/gh/Tyrrrz/Onova)
 [![Version](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
 [![Downloads](https://img.shields.io/nuget/dt/Onova.svg)](https://nuget.org/packages/Onova)
+[![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
 [![Donate](https://img.shields.io/badge/donate-$$$-purple.svg)](https://tyrrrz.me/donate)
 
 ⚠️ **Project status: maintenance mode** (bug fixes only).
 
 Onova is a lightweight auto-update framework for desktop applications. It was primarily designed for updating portable applications that are distributed using archive files, but can be extended for other use cases. Downloaded updates are installed using an embedded external executable, by overwriting files when the application exits. The library requires minimal configuration, doesn't impose any changes to the CI/CD process, and doesn't affect the application's life cycle.
 
-> ✨ See also: [Onova.Publisher](https://github.com/dady8889/Onova.Publisher) -- community project which provides an integrated installation experience based on Onova
+> ✨ See also: [Onova.Publisher](https://github.com/dady8889/Onova.Publisher) -- community project which provides an integrated installation experience based on Onova.
+
+💬 **If you want to chat, join my [Discord server](https://discord.gg/2SUWKFnHSm)**.
 
 ## Download
 

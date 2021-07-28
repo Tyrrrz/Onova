@@ -32,6 +32,6 @@ jobs:
            -Uri "${{ secrets.DISCORD_WEBHOOK }}" `
            -Method "POST" `
            -ContentType "application/json; charset=UTF-8" `
-           -Body "{`"content`":`"[**Onova** ver. ${{ github.ref }} released](https://github.com/Tyrrrz/Onova/releases/latest)`"}" `
+           -Body '{"content":"**Onova** new version released!\nRef: `${{ github.ref }}`\nChangelog: <https://github.com/Tyrrrz/Onova/blob/${{ github.sha }}/Changelog.md>"}' `
            -UseBasicParsing
         shell: pwsh

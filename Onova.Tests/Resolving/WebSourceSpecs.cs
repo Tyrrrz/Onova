@@ -47,11 +47,12 @@ namespace Onova.Tests.Resolving
             var versions = await resolver.GetPackageVersionsAsync();
 
             // Assert
-            versions.Should().BeEquivalentTo(
+            versions.Should().BeEquivalentTo(new[]
+            {
                 Version.Parse("1.0"),
                 Version.Parse("2.0"),
                 Version.Parse("3.0")
-            );
+            });
         }
     }
 }

@@ -9,79 +9,78 @@ using Onova.Exceptions;
 using Onova.Internal;
 using Onova.Internal.Extensions;
 
-namespace Onova.Services
+namespace Onova.Services;
+
+/// <summary>
+/// Resolves packages from a local repository.
+/// Package file names should contain package versions (e.g. "MyProject-v1.8.3.onv").
+/// </summary>
+public class LocalPackageResolver : IPackageResolver
 {
+    private readonly string _repositoryDirPath;
+    private readonly string _fileNamePattern;
+
     /// <summary>
-    /// Resolves packages from a local repository.
-    /// Package file names should contain package versions (e.g. "MyProject-v1.8.3.onv").
+    /// Initializes an instance of <see cref="LocalPackageResolver"/>.
     /// </summary>
-    public class LocalPackageResolver : IPackageResolver
+    public LocalPackageResolver(string repositoryDirPath, string fileNamePattern = "*")
     {
-        private readonly string _repositoryDirPath;
-        private readonly string _fileNamePattern;
+        _repositoryDirPath = repositoryDirPath;
+        _fileNamePattern = fileNamePattern;
+    }
 
-        /// <summary>
-        /// Initializes an instance of <see cref="LocalPackageResolver"/>.
-        /// </summary>
-        public LocalPackageResolver(string repositoryDirPath, string fileNamePattern = "*")
-        {
-            _repositoryDirPath = repositoryDirPath;
-            _fileNamePattern = fileNamePattern;
-        }
+    private IReadOnlyDictionary<Version, string> GetPackageVersionFilePathMap()
+    {
+        var map = new Dictionary<Version, string>();
 
-        private IReadOnlyDictionary<Version, string> GetPackageVersionFilePathMap()
-        {
-            var map = new Dictionary<Version, string>();
-
-            // Check if repository directory exists
-            if (!Directory.Exists(_repositoryDirPath))
-                return map;
-
-            // Enumerate files in repository directory
-            foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath))
-            {
-                // See if name matches
-                var fileName = Path.GetFileName(filePath);
-                if (!WildcardPattern.IsMatch(fileName, _fileNamePattern))
-                    continue;
-
-                // Try to parse version
-                var fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath) ?? "";
-                var versionText = Regex.Match(fileNameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
-                if (!Version.TryParse(versionText, out var version))
-                    continue;
-
-                // Add to dictionary
-                map[version] = filePath;
-            }
-
+        // Check if repository directory exists
+        if (!Directory.Exists(_repositoryDirPath))
             return map;
-        }
 
-        /// <inheritdoc />
-        public Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default)
+        // Enumerate files in repository directory
+        foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath))
         {
-            var versions = GetPackageVersionFilePathMap().Keys.ToArray();
-            return Task.FromResult((IReadOnlyList<Version>) versions);
+            // See if name matches
+            var fileName = Path.GetFileName(filePath);
+            if (!WildcardPattern.IsMatch(fileName, _fileNamePattern))
+                continue;
+
+            // Try to parse version
+            var fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath) ?? "";
+            var versionText = Regex.Match(fileNameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
+            if (!Version.TryParse(versionText, out var version))
+                continue;
+
+            // Add to dictionary
+            map[version] = filePath;
         }
 
-        /// <inheritdoc />
-        public async Task DownloadPackageAsync(Version version, string destFilePath,
-            IProgress<double>? progress = null, CancellationToken cancellationToken = default)
-        {
-            // Get map
-            var map = GetPackageVersionFilePathMap();
+        return map;
+    }
 
-            // Try to get package file path
-            var sourceFilePath = map.GetValueOrDefault(version);
-            if (string.IsNullOrWhiteSpace(sourceFilePath))
-                throw new PackageNotFoundException(version);
+    /// <inheritdoc />
+    public Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default)
+    {
+        var versions = GetPackageVersionFilePathMap().Keys.ToArray();
+        return Task.FromResult((IReadOnlyList<Version>) versions);
+    }
 
-            // Copy file
-            using var input = File.OpenRead(sourceFilePath);
-            using var output = File.Create(destFilePath);
+    /// <inheritdoc />
+    public async Task DownloadPackageAsync(Version version, string destFilePath,
+        IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+    {
+        // Get map
+        var map = GetPackageVersionFilePathMap();
 
-            await input.CopyToAsync(output, progress, cancellationToken);
-        }
+        // Try to get package file path
+        var sourceFilePath = map.GetValueOrDefault(version);
+        if (string.IsNullOrWhiteSpace(sourceFilePath))
+            throw new PackageNotFoundException(version);
+
+        // Copy file
+        using var input = File.OpenRead(sourceFilePath);
+        using var output = File.Create(destFilePath);
+
+        await input.CopyToAsync(output, progress, cancellationToken);
     }
 }

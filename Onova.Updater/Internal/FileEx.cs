@@ -1,25 +1,24 @@
 ﻿using System;
 using System.IO;
 
-namespace Onova.Updater.Internal
+namespace Onova.Updater.Internal;
+
+internal static class FileEx
 {
-    internal static class FileEx
+    public static bool CheckWriteAccess(string filePath)
     {
-        public static bool CheckWriteAccess(string filePath)
+        try
         {
-            try
-            {
-                File.Open(filePath, FileMode.Open, FileAccess.Write).Dispose();
-                return true;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return false;
-            }
-            catch (IOException)
-            {
-                return false;
-            }
+            File.Open(filePath, FileMode.Open, FileAccess.Write).Dispose();
+            return true;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return false;
+        }
+        catch (IOException)
+        {
+            return false;
         }
     }
 }

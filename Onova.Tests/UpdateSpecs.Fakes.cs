@@ -5,41 +5,40 @@ using System.Threading;
 using System.Threading.Tasks;
 using Onova.Services;
 
-namespace Onova.Tests
+namespace Onova.Tests;
+
+public partial class UpdateSpecs
 {
-    public partial class UpdateSpecs
+    private class FakePackageResolver : IPackageResolver
     {
-        private class FakePackageResolver : IPackageResolver
+        private readonly IReadOnlyList<Version> _versions;
+
+        public FakePackageResolver(IReadOnlyList<Version> versions)
         {
-            private readonly IReadOnlyList<Version> _versions;
-
-            public FakePackageResolver(IReadOnlyList<Version> versions)
-            {
-                _versions = versions;
-            }
-
-            public Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default) =>
-                Task.FromResult(_versions);
-
-            public Task DownloadPackageAsync(Version version, string destFilePath,
-                IProgress<double>? progress = null, CancellationToken cancellationToken = default)
-            {
-                File.WriteAllText(destFilePath, version.ToString());
-
-                return Task.CompletedTask;
-            }
+            _versions = versions;
         }
 
-        private class FakePackageExtractor : IPackageExtractor
-        {
-            public Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
-                IProgress<double>? progress = null, CancellationToken cancellationToken = default)
-            {
-                var sourceFileName = Path.GetFileName(sourceFilePath)!;
-                File.Copy(sourceFilePath, Path.Combine(destDirPath, sourceFileName));
+        public Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default) =>
+            Task.FromResult(_versions);
 
-                return Task.CompletedTask;
-            }
+        public Task DownloadPackageAsync(Version version, string destFilePath,
+            IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+        {
+            File.WriteAllText(destFilePath, version.ToString());
+
+            return Task.CompletedTask;
+        }
+    }
+
+    private class FakePackageExtractor : IPackageExtractor
+    {
+        public Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
+            IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+        {
+            var sourceFileName = Path.GetFileName(sourceFilePath)!;
+            File.Copy(sourceFilePath, Path.Combine(destDirPath, sourceFileName));
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Onova.Services
+namespace Onova.Services;
+
+/// <summary>
+/// Provider for resolving packages.
+/// </summary>
+public interface IPackageResolver
 {
     /// <summary>
-    /// Provider for resolving packages.
+    /// Gets all available package versions.
     /// </summary>
-    public interface IPackageResolver
-    {
-        /// <summary>
-        /// Gets all available package versions.
-        /// </summary>
-        Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Downloads given package version.
-        /// </summary>
-        Task DownloadPackageAsync(Version version, string destFilePath,
-            IProgress<double>? progress = null, CancellationToken cancellationToken = default);
-    }
+    /// <summary>
+    /// Downloads given package version.
+    /// </summary>
+    Task DownloadPackageAsync(Version version, string destFilePath,
+        IProgress<double>? progress = null, CancellationToken cancellationToken = default);
 }

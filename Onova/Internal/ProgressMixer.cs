@@ -2,32 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Onova.Internal
+namespace Onova.Internal;
+
+internal class ProgressMixer
 {
-    internal class ProgressMixer
+    private readonly IProgress<double> _output;
+    private readonly Dictionary<int, double> _splitTotals;
+
+    private int _splitCount;
+
+    public ProgressMixer(IProgress<double> output)
     {
-        private readonly IProgress<double> _output;
-        private readonly Dictionary<int, double> _splitTotals;
+        _output = output;
+        _splitTotals = new Dictionary<int, double>();
+    }
 
-        private int _splitCount;
-
-        public ProgressMixer(IProgress<double> output)
+    public IProgress<double> Split(double multiplier)
+    {
+        var index = _splitCount++;
+        return new Progress<double>(p =>
         {
-            _output = output;
-            _splitTotals = new Dictionary<int, double>();
-        }
-
-        public IProgress<double> Split(double multiplier)
-        {
-            var index = _splitCount++;
-            return new Progress<double>(p =>
+            lock (_splitTotals)
             {
-                lock (_splitTotals)
-                {
-                    _splitTotals[index] = multiplier * p;
-                    _output.Report(_splitTotals.Values.Sum());
-                }
-            });
-        }
+                _splitTotals[index] = multiplier * p;
+                _output.Report(_splitTotals.Values.Sum());
+            }
+        });
     }
 }

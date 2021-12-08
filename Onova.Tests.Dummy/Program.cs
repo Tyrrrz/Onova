@@ -5,47 +5,45 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Onova.Services;
 
-namespace Onova.Tests.Dummy
+namespace Onova.Tests.Dummy;
+// This executable is used as dummy for end-to-end testing.
+// It can print its current version and use Onova to update.
+
+public static class Program
 {
-    // This executable is used as dummy for end-to-end testing.
-    // It can print its current version and use Onova to update.
+    private static Version Version => Assembly.GetExecutingAssembly().GetName().Version!;
 
-    public static class Program
+    private static string AssemblyDirPath => AppDomain.CurrentDomain.BaseDirectory!;
+
+    private static string LastRunFilePath => Path.Combine(AssemblyDirPath, $"lastrun-{Version}.txt");
+
+    private static string PackagesDirPath => Path.Combine(AssemblyDirPath, "Packages");
+
+    private static readonly IUpdateManager UpdateManager = new UpdateManager(
+        new LocalPackageResolver(PackagesDirPath, "*.onv"),
+        new ZipPackageExtractor());
+
+    public static async Task Main(string[] args)
     {
-        private static Version Version => Assembly.GetExecutingAssembly().GetName().Version!;
+        // Dump arguments to file.
+        // This is only accurate enough for simple inputs.
+        File.WriteAllLines(LastRunFilePath, args);
 
-        private static string AssemblyDirPath => AppDomain.CurrentDomain.BaseDirectory!;
+        // Get command name
+        var command = args.FirstOrDefault();
 
-        private static string LastRunFilePath => Path.Combine(AssemblyDirPath, $"lastrun-{Version}.txt");
-
-        private static string PackagesDirPath => Path.Combine(AssemblyDirPath, "Packages");
-
-        private static readonly IUpdateManager UpdateManager = new UpdateManager(
-            new LocalPackageResolver(PackagesDirPath, "*.onv"),
-            new ZipPackageExtractor());
-
-        public static async Task Main(string[] args)
+        // Print current assembly version
+        if (command == "version" || command == null)
         {
-            // Dump arguments to file.
-            // This is only accurate enough for simple inputs.
-            File.WriteAllLines(LastRunFilePath, args);
+            Console.WriteLine(Version);
+        }
+        // Update to latest version
+        else if (command == "update" || command == "update-and-restart")
+        {
+            var restart = command == "update-and-restart";
+            var progressHandler = new Progress<double>(p => Console.WriteLine($"Progress: {p:P0}"));
 
-            // Get command name
-            var command = args.FirstOrDefault();
-
-            // Print current assembly version
-            if (command == "version" || command == null)
-            {
-                Console.WriteLine(Version);
-            }
-            // Update to latest version
-            else if (command == "update" || command == "update-and-restart")
-            {
-                var restart = command == "update-and-restart";
-                var progressHandler = new Progress<double>(p => Console.WriteLine($"Progress: {p:P0}"));
-
-                await UpdateManager.CheckPerformUpdateAsync(restart, progressHandler);
-            }
+            await UpdateManager.CheckPerformUpdateAsync(restart, progressHandler);
         }
     }
 }

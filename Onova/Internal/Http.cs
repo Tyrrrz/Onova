@@ -2,25 +2,24 @@
 using System.Net;
 using System.Net.Http;
 
-namespace Onova.Internal
+namespace Onova.Internal;
+
+internal static class Http
 {
-    internal static class Http
+    private static readonly Lazy<HttpClient> ClientLazy = new(() =>
     {
-        private static readonly Lazy<HttpClient> ClientLazy = new(() =>
-        {
-            var handler = new HttpClientHandler();
+        var handler = new HttpClientHandler();
 
-            if (handler.SupportsAutomaticDecompression)
-                handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+        if (handler.SupportsAutomaticDecompression)
+            handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
-            handler.UseCookies = false;
+        handler.UseCookies = false;
 
-            var httpClient = new HttpClient(handler, true);
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Onova (github.com/Tyrrrz/Onova)");
+        var httpClient = new HttpClient(handler, true);
+        httpClient.DefaultRequestHeaders.Add("User-Agent", "Onova (github.com/Tyrrrz/Onova)");
 
-            return httpClient;
-        });
+        return httpClient;
+    });
 
-        public static HttpClient Client => ClientLazy.Value;
-    }
+    public static HttpClient Client => ClientLazy.Value;
 }

@@ -7,70 +7,69 @@ using System.Threading.Tasks;
 using Onova.Internal;
 using Onova.Internal.Extensions;
 
-namespace Onova.Services
+namespace Onova.Services;
+
+/// <summary>
+/// Extracts files from NuGet packages.
+/// </summary>
+public class NugetPackageExtractor : IPackageExtractor
 {
+    private readonly string _rootDirPath;
+
     /// <summary>
-    /// Extracts files from NuGet packages.
+    /// Initializes an instance of <see cref="NugetPackageExtractor"/>.
     /// </summary>
-    public class NugetPackageExtractor : IPackageExtractor
+    public NugetPackageExtractor(string rootDirPath)
     {
-        private readonly string _rootDirPath;
+        _rootDirPath = rootDirPath;
+    }
 
-        /// <summary>
-        /// Initializes an instance of <see cref="NugetPackageExtractor"/>.
-        /// </summary>
-        public NugetPackageExtractor(string rootDirPath)
+    /// <inheritdoc />
+    public async Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
+        IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+    {
+        // Read the zip
+        using var archive = ZipFile.OpenRead(sourceFilePath);
+
+        // Get entries in the content directory
+        var entries = archive.Entries
+            .Where(e => e.FullName.StartsWith(_rootDirPath, StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+
+        // For progress reporting
+        var totalBytes = entries.Sum(e => e.Length);
+        var totalBytesCopied = 0L;
+
+        // Loop through entries
+        foreach (var entry in entries)
         {
-            _rootDirPath = rootDirPath;
-        }
+            // Get relative entry path
+            var relativeEntryPath = entry.FullName.Substring(_rootDirPath.Length).TrimStart('/', '\\');
 
-        /// <inheritdoc />
-        public async Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
-            IProgress<double>? progress = null, CancellationToken cancellationToken = default)
-        {
-            // Read the zip
-            using var archive = ZipFile.OpenRead(sourceFilePath);
+            // Get destination paths
+            var entryDestFilePath = Path.Combine(destDirPath, relativeEntryPath);
+            var entryDestDirPath = Path.GetDirectoryName(entryDestFilePath);
 
-            // Get entries in the content directory
-            var entries = archive.Entries
-                .Where(e => e.FullName.StartsWith(_rootDirPath, StringComparison.OrdinalIgnoreCase))
-                .ToArray();
+            // Create directory
+            if (!string.IsNullOrWhiteSpace(entryDestDirPath))
+                Directory.CreateDirectory(entryDestDirPath);
 
-            // For progress reporting
-            var totalBytes = entries.Sum(e => e.Length);
-            var totalBytesCopied = 0L;
+            // If the entry is a directory - continue
+            if (entry.FullName.Last() == Path.DirectorySeparatorChar || entry.FullName.Last() == Path.AltDirectorySeparatorChar)
+                continue;
 
-            // Loop through entries
-            foreach (var entry in entries)
+            // Extract entry
+            using var input = entry.Open();
+            using var output = File.Create(entryDestFilePath);
+
+            using var buffer = PooledBuffer.ForStream();
+            int bytesCopied;
+            do
             {
-                // Get relative entry path
-                var relativeEntryPath = entry.FullName.Substring(_rootDirPath.Length).TrimStart('/', '\\');
-
-                // Get destination paths
-                var entryDestFilePath = Path.Combine(destDirPath, relativeEntryPath);
-                var entryDestDirPath = Path.GetDirectoryName(entryDestFilePath);
-
-                // Create directory
-                if (!string.IsNullOrWhiteSpace(entryDestDirPath))
-                    Directory.CreateDirectory(entryDestDirPath);
-
-                // If the entry is a directory - continue
-                if (entry.FullName.Last() == Path.DirectorySeparatorChar || entry.FullName.Last() == Path.AltDirectorySeparatorChar)
-                    continue;
-
-                // Extract entry
-                using var input = entry.Open();
-                using var output = File.Create(entryDestFilePath);
-
-                using var buffer = PooledBuffer.ForStream();
-                int bytesCopied;
-                do
-                {
-                    bytesCopied = await input.CopyBufferedToAsync(output, buffer.Array, cancellationToken);
-                    totalBytesCopied += bytesCopied;
-                    progress?.Report(1.0 * totalBytesCopied / totalBytes);
-                } while (bytesCopied > 0);
-            }
+                bytesCopied = await input.CopyBufferedToAsync(output, buffer.Array, cancellationToken);
+                totalBytesCopied += bytesCopied;
+                progress?.Report(1.0 * totalBytesCopied / totalBytes);
+            } while (bytesCopied > 0);
         }
     }
 }

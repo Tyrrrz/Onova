@@ -8,64 +8,63 @@ using Onova.Services;
 using Onova.Tests.Internal;
 using Xunit;
 
-namespace Onova.Tests.Extracting
+namespace Onova.Tests.Extracting;
+
+public class NugetPackageSpecs : IDisposable
 {
-    public class NugetPackageSpecs : IDisposable
+    private string TempDirPath { get; } = Path.Combine(
+        Directory.GetCurrentDirectory(), $"{nameof(NugetPackageSpecs)}_{Guid.NewGuid()}"
+    );
+
+    public NugetPackageSpecs() => DirectoryEx.Reset(TempDirPath);
+
+    public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
+
+    private void CreateNugetPackage(string filePath, string rootDirPath, IReadOnlyDictionary<string, byte[]> entries)
     {
-        private string TempDirPath { get; } = Path.Combine(
-            Directory.GetCurrentDirectory(), $"{nameof(NugetPackageSpecs)}_{Guid.NewGuid()}"
-        );
+        using var zip = ZipFile.Open(filePath, ZipArchiveMode.Create);
 
-        public NugetPackageSpecs() => DirectoryEx.Reset(TempDirPath);
+        foreach (var (path, data) in entries)
+            zip.CreateEntry($"{rootDirPath}/{path}").WriteAllBytes(data);
+    }
 
-        public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
-
-        private void CreateNugetPackage(string filePath, string rootDirPath, IReadOnlyDictionary<string, byte[]> entries)
+    [Fact]
+    public async Task ExtractPackageAsync_Test()
+    {
+        // Arrange
+        var entries = new Dictionary<string, byte[]>
         {
-            using var zip = ZipFile.Open(filePath, ZipArchiveMode.Create);
+            ["File1.bin"] = new byte[] {1, 2, 3},
+            ["File2.bin"] = new byte[] {4, 5, 6},
+            ["SubDir1/"] = new byte[0],
+            ["SubDir1/File3.bin"] = new byte[] {7, 8, 9},
+            ["SubDir1/SubDir2/"] = new byte[0],
+            ["SubDir1/SubDir2/File4.bin"] = new byte[] {10, 11, 12}
+        };
 
-            foreach (var (path, data) in entries)
-                zip.CreateEntry($"{rootDirPath}/{path}").WriteAllBytes(data);
-        }
+        var packageFilePath = Path.Combine(TempDirPath, "Package.nupkg");
+        CreateNugetPackage(packageFilePath, "Files", entries);
 
-        [Fact]
-        public async Task ExtractPackageAsync_Test()
+        var extractor = new NugetPackageExtractor("Files");
+
+        var destDirPath = Path.Combine(TempDirPath, "Output");
+
+        // Act
+        await extractor.ExtractPackageAsync(packageFilePath, destDirPath);
+
+        // Assert
+        foreach (var (path, expectedData) in entries)
         {
-            // Arrange
-            var entries = new Dictionary<string, byte[]>
+            var destEntryPath = Path.Combine(destDirPath, path);
+
+            if (path.EndsWith("/"))
             {
-                ["File1.bin"] = new byte[] {1, 2, 3},
-                ["File2.bin"] = new byte[] {4, 5, 6},
-                ["SubDir1/"] = new byte[0],
-                ["SubDir1/File3.bin"] = new byte[] {7, 8, 9},
-                ["SubDir1/SubDir2/"] = new byte[0],
-                ["SubDir1/SubDir2/File4.bin"] = new byte[] {10, 11, 12}
-            };
-
-            var packageFilePath = Path.Combine(TempDirPath, "Package.nupkg");
-            CreateNugetPackage(packageFilePath, "Files", entries);
-
-            var extractor = new NugetPackageExtractor("Files");
-
-            var destDirPath = Path.Combine(TempDirPath, "Output");
-
-            // Act
-            await extractor.ExtractPackageAsync(packageFilePath, destDirPath);
-
-            // Assert
-            foreach (var (path, expectedData) in entries)
+                Directory.Exists(destEntryPath).Should().BeTrue();
+            }
+            else
             {
-                var destEntryPath = Path.Combine(destDirPath, path);
-
-                if (path.EndsWith("/"))
-                {
-                    Directory.Exists(destEntryPath).Should().BeTrue();
-                }
-                else
-                {
-                    var data = await File.ReadAllBytesAsync(destEntryPath);
-                    data.Should().BeEquivalentTo(expectedData);
-                }
+                var data = await File.ReadAllBytesAsync(destEntryPath);
+                data.Should().BeEquivalentTo(expectedData);
             }
         }
     }

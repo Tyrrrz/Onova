@@ -1,33 +1,32 @@
 ﻿using System;
 using System.IO;
 
-namespace Onova.Internal
+namespace Onova.Internal;
+
+internal static class DirectoryEx
 {
-    internal static class DirectoryEx
+    public static bool CheckWriteAccess(string dirPath)
     {
-        public static bool CheckWriteAccess(string dirPath)
+        var testFilePath = Path.Combine(dirPath, $"{Guid.NewGuid()}");
+
+        try
         {
-            var testFilePath = Path.Combine(dirPath, $"{Guid.NewGuid()}");
+            File.WriteAllText(testFilePath, "");
+            File.Delete(testFilePath);
 
-            try
-            {
-                File.WriteAllText(testFilePath, "");
-                File.Delete(testFilePath);
-
-                return true;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return false;
-            }
+            return true;
         }
-
-        public static void Reset(string dirPath)
+        catch (UnauthorizedAccessException)
         {
-            if (Directory.Exists(dirPath))
-                Directory.Delete(dirPath, true);
-
-            Directory.CreateDirectory(dirPath);
+            return false;
         }
+    }
+
+    public static void Reset(string dirPath)
+    {
+        if (Directory.Exists(dirPath))
+            Directory.Delete(dirPath, true);
+
+        Directory.CreateDirectory(dirPath);
     }
 }

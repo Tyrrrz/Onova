@@ -1,6 +1,6 @@
 # Onova
 
-[![Build](https://github.com/Tyrrrz/Onova/workflows/CI/badge.svg?branch=master)](https://github.com/Tyrrrz/Onova/actions)
+[![Build](https://github.com/Tyrrrz/Onova/workflows/main/badge.svg?branch=master)](https://github.com/Tyrrrz/Onova/actions)
 [![Coverage](https://codecov.io/gh/Tyrrrz/Onova/branch/master/graph/badge.svg)](https://codecov.io/gh/Tyrrrz/Onova)
 [![Version](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
 [![Downloads](https://img.shields.io/nuget/dt/Onova.svg)](https://nuget.org/packages/Onova)

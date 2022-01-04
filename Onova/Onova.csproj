@@ -4,6 +4,7 @@
     <TargetFrameworks>netstandard2.0;net461;netcoreapp3.0</TargetFrameworks>
     <Authors>$(Company)</Authors>
     <Description>Compact and extensible auto-update library</Description>
+    <IsPackable>true</IsPackable>
     <PackageTags>auto update</PackageTags>
     <PackageProjectUrl>https://github.com/Tyrrrz/Onova</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/Tyrrrz/Onova/blob/master/Changelog.md</PackageReleaseNotes>

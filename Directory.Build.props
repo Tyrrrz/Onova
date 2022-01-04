@@ -7,13 +7,12 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <!-- Disable nullability warnings on older frameworks because there is no nullability info for BCL -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net461'">
     <Nullable>annotations</Nullable>
   </PropertyGroup>
-
-  <!-- Note: ContinuousIntegrationBuild is not enabled because it breaks coverage reporting -->
 
 </Project>

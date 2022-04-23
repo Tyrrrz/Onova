@@ -11,7 +11,10 @@
 
 > 🟡 **Project status**: maintenance mode<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)</sup>
 
-**Onova** is a lightweight auto-update framework for desktop applications. It was primarily designed for updating portable applications that are distributed using archive files, but can be extended for other use cases. Downloaded updates are installed using an embedded external executable, by overwriting files when the application exits. The library requires minimal configuration, doesn't impose any changes to the CI/CD process, and doesn't affect the application's life cycle.
+**Onova** is a lightweight auto-update framework for desktop applications.
+It was primarily designed for updating portable applications that are distributed using archive files, but can be extended for other use cases.
+Downloaded updates are installed out-of-process by overwriting files when the application exits.
+The library requires minimal configuration, doesn't impose any changes to the CI/CD process, and doesn't affect the application's life cycle.
 
 ✨ See also [Onova.Publisher](https://github.com/dady8889/Onova.Publisher) — community project that provides an integrated installation experience based on **Onova**.
 

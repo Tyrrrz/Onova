@@ -18,7 +18,7 @@ The library requires minimal configuration, doesn't impose any changes to the CI
 
 ✨ See also [Onova.Publisher](https://github.com/dady8889/Onova.Publisher) — community project that provides an integrated installation experience based on **Onova**.
 
-## Terms of use
+## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
 
 By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
 

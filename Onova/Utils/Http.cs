@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http;
 
-namespace Onova.Internal;
+namespace Onova.Utils;
 
 internal static class Http
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Buffers;
 
-namespace Onova.Internal;
+namespace Onova.Utils;
 
 internal readonly struct PooledBuffer<T> : IDisposable
 {

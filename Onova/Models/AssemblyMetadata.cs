@@ -24,7 +24,7 @@ public partial class AssemblyMetadata
     public string FilePath { get; }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="AssemblyMetadata"/>.
+    /// Initializes a new instance of <see cref="AssemblyMetadata" />.
     /// </summary>
     public AssemblyMetadata(string name, Version version, string filePath)
     {
@@ -40,26 +40,23 @@ public partial class AssemblyMetadata
     /// Extracts assembly metadata from given assembly.
     /// The specified path is used to override the executable file path in case the assembly is not meant to run directly.
     /// </summary>
-    public static AssemblyMetadata FromAssembly(Assembly assembly, string assemblyFilePath)
-    {
-        var name = assembly.GetName().Name!;
-        var version = assembly.GetName().Version!;
-        var filePath = assemblyFilePath;
-
-        return new AssemblyMetadata(name, version, filePath);
-    }
+    public static AssemblyMetadata FromAssembly(Assembly assembly, string assemblyFilePath) => new(
+        assembly.GetName().Name!,
+        assembly.GetName().Version!,
+        assemblyFilePath
+    );
 
     /// <summary>
     /// Extracts assembly metadata from given assembly.
     /// </summary>
-    public static AssemblyMetadata FromAssembly(Assembly assembly) => FromAssembly(assembly, assembly.Location);
+    public static AssemblyMetadata FromAssembly(Assembly assembly) =>
+        FromAssembly(assembly, assembly.Location);
 
     /// <summary>
     /// Extracts assembly metadata from entry assembly.
     /// </summary>
-    public static AssemblyMetadata FromEntryAssembly()
-    {
-        var assembly = Assembly.GetEntryAssembly() ?? throw new InvalidOperationException("Can't get entry assembly.");
-        return FromAssembly(assembly);
-    }
+    public static AssemblyMetadata FromEntryAssembly() => FromAssembly(
+        Assembly.GetEntryAssembly() ??
+        throw new InvalidOperationException("Can't get entry assembly.")
+    );
 }

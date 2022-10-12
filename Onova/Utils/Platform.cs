@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Onova.Internal;
+namespace Onova.Utils;
 
 internal static class Platform
 {

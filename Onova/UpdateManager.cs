@@ -7,10 +7,10 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
-using Onova.Internal;
-using Onova.Internal.Extensions;
 using Onova.Models;
 using Onova.Services;
+using Onova.Utils;
+using Onova.Utils.Extensions;
 
 namespace Onova;
 
@@ -35,7 +35,7 @@ public class UpdateManager : IUpdateManager
     public AssemblyMetadata Updatee { get; }
 
     /// <summary>
-    /// Initializes an instance of <see cref="UpdateManager"/>.
+    /// Initializes an instance of <see cref="UpdateManager" />.
     /// </summary>
     public UpdateManager(AssemblyMetadata updatee, IPackageResolver resolver, IPackageExtractor extractor)
     {
@@ -60,7 +60,7 @@ public class UpdateManager : IUpdateManager
     }
 
     /// <summary>
-    /// Initializes an instance of <see cref="UpdateManager"/> on the entry assembly.
+    /// Initializes an instance of <see cref="UpdateManager" /> on the entry assembly.
     /// </summary>
     public UpdateManager(IPackageResolver resolver, IPackageExtractor extractor)
         : this(AssemblyMetadata.FromEntryAssembly(), resolver, extractor)
@@ -246,6 +246,10 @@ public class UpdateManager : IUpdateManager
             CreateNoWindow = true,
             UseShellExecute = false
         };
+
+        // Configure framework rollover for the updater (allows a .NET 3.5 EXE to run against .NET 4.x CLR)
+        // https://gist.github.com/MichalStrehovsky/d6bc5e4d459c23d0cf3bd17af9a1bcf5
+        updaterStartInfo.Environment["COMPLUS_OnlyUseLatestCLR"] = "1";
 
         // If updater needs to be elevated - use shell execute with "runas"
         if (updaterNeedsElevation)

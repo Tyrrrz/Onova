@@ -6,8 +6,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
-using Onova.Internal;
-using Onova.Internal.Extensions;
+using Onova.Utils;
+using Onova.Utils.Extensions;
 
 namespace Onova.Services;
 
@@ -21,7 +21,7 @@ public class LocalPackageResolver : IPackageResolver
     private readonly string _fileNamePattern;
 
     /// <summary>
-    /// Initializes an instance of <see cref="LocalPackageResolver"/>.
+    /// Initializes an instance of <see cref="LocalPackageResolver" />.
     /// </summary>
     public LocalPackageResolver(string repositoryDirPath, string fileNamePattern = "*")
     {

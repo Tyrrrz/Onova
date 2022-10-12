@@ -4,8 +4,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Onova.Internal;
-using Onova.Internal.Extensions;
+using Onova.Utils;
+using Onova.Utils.Extensions;
 
 namespace Onova.Services;
 

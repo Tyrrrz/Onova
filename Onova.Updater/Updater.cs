@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using Onova.Updater.Internal;
+using Onova.Updater.Utils;
 
 namespace Onova.Updater;
 

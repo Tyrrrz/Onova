@@ -6,8 +6,8 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
-using Onova.Internal;
-using Onova.Internal.Extensions;
+using Onova.Utils;
+using Onova.Utils.Extensions;
 
 namespace Onova.Services;
 
@@ -21,7 +21,7 @@ public class WebPackageResolver : IPackageResolver
     private readonly string _manifestUrl;
 
     /// <summary>
-    /// Initializes an instance of <see cref="WebPackageResolver"/>.
+    /// Initializes an instance of <see cref="WebPackageResolver" />.
     /// </summary>
     public WebPackageResolver(HttpClient httpClient, string manifestUrl)
     {
@@ -30,7 +30,7 @@ public class WebPackageResolver : IPackageResolver
     }
 
     /// <summary>
-    /// Initializes an instance of <see cref="WebPackageResolver"/>.
+    /// Initializes an instance of <see cref="WebPackageResolver" />.
     /// </summary>
     public WebPackageResolver(string manifestUrl)
         : this(Http.Client, manifestUrl)

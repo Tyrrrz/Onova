@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Onova.Internal.Extensions;
+namespace Onova.Utils.Extensions;
 
 internal static class StreamExtensions
 {

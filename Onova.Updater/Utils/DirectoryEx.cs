@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Onova.Updater.Internal;
+namespace Onova.Updater.Utils;
 
 internal static class DirectoryEx
 {
@@ -9,7 +9,7 @@ internal static class DirectoryEx
         Directory.CreateDirectory(destDirPath);
 
         // Get all files in source directory
-        var sourceFilePaths = Directory.EnumerateFiles(sourceDirPath);
+        var sourceFilePaths = Directory.GetFiles(sourceDirPath);
 
         // Copy them
         foreach (var sourceFilePath in sourceFilePaths)
@@ -21,7 +21,7 @@ internal static class DirectoryEx
         }
 
         // Get all subdirectories in source directory
-        var sourceSubDirPaths = Directory.EnumerateDirectories(sourceDirPath);
+        var sourceSubDirPaths = Directory.GetDirectories(sourceDirPath);
 
         // Recursively copy them
         foreach (var sourceSubDirPath in sourceSubDirPaths)

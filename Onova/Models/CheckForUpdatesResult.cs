@@ -25,7 +25,7 @@ public class CheckForUpdatesResult
     public bool CanUpdate { get; }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="CheckForUpdatesResult"/>.
+    /// Initializes a new instance of <see cref="CheckForUpdatesResult" />.
     /// </summary>
     public CheckForUpdatesResult(IReadOnlyList<Version> versions, Version? lastVersion, bool canUpdate)
     {

@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Onova.Internal.Extensions;
+namespace Onova.Utils.Extensions;
 
 internal static class HttpClientExtensions
 {

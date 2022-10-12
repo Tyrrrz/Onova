@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Onova.Internal;
+using Onova.Utils;
 
 namespace Onova;
 
 /// <summary>
-/// Extensions for <see cref="Onova"/>.
+/// Extensions for <see cref="Onova" />.
 /// </summary>
 public static class Extensions
 {

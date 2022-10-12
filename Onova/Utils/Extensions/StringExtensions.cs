@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Onova.Internal.Extensions;
+namespace Onova.Utils.Extensions;
 
 internal static class StringExtensions
 {

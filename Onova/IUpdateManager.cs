@@ -7,7 +7,7 @@ using Onova.Models;
 namespace Onova;
 
 /// <summary>
-/// Interface for <see cref="UpdateManager"/>.
+/// Interface for <see cref="UpdateManager" />.
 /// </summary>
 public interface IUpdateManager : IDisposable
 {

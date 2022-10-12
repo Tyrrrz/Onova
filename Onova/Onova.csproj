@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="../Onova.Updater/bin/$(Configuration)/net46/Onova.Updater.exe">
+    <EmbeddedResource Include="../Onova.Updater/bin/$(Configuration)/net35/Onova.Updater.exe">
       <Link>Updater.exe</Link>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <Visible>false</Visible>

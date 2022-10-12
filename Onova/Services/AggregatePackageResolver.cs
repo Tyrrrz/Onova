@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
-using Onova.Internal.Extensions;
+using Onova.Utils.Extensions;
 
 namespace Onova.Services;
 
@@ -16,7 +16,7 @@ public class AggregatePackageResolver : IPackageResolver
     private readonly IReadOnlyList<IPackageResolver> _resolvers;
 
     /// <summary>
-    /// Initializes an instance of <see cref="AggregatePackageResolver"/>.
+    /// Initializes an instance of <see cref="AggregatePackageResolver" />.
     /// </summary>
     public AggregatePackageResolver(IReadOnlyList<IPackageResolver> resolvers)
     {
@@ -24,7 +24,7 @@ public class AggregatePackageResolver : IPackageResolver
     }
 
     /// <summary>
-    /// Initializes an instance of <see cref="AggregatePackageResolver"/>.
+    /// Initializes an instance of <see cref="AggregatePackageResolver" />.
     /// </summary>
     public AggregatePackageResolver(params IPackageResolver[] resolvers)
         : this((IReadOnlyList<IPackageResolver>) resolvers)

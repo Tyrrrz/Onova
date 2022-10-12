@@ -8,7 +8,7 @@ namespace Onova.Exceptions;
 public class LockFileNotAcquiredException : Exception
 {
     /// <summary>
-    /// Initializes an instance of <see cref="LockFileNotAcquiredException"/>.
+    /// Initializes an instance of <see cref="LockFileNotAcquiredException" />.
     /// </summary>
     public LockFileNotAcquiredException()
         : base("Could not acquire a lock file. Most likely, another instance of this application currently owns the lock file.")

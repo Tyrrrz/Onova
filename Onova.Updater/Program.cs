@@ -1,4 +1,4 @@
-﻿using Onova.Updater.Internal;
+﻿using Onova.Updater.Utils;
 
 namespace Onova.Updater;
 // This executable applies the update by copying over new files.

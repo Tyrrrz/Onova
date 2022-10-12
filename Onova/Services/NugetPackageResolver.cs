@@ -7,8 +7,8 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
-using Onova.Internal;
-using Onova.Internal.Extensions;
+using Onova.Utils;
+using Onova.Utils.Extensions;
 
 namespace Onova.Services;
 
@@ -24,7 +24,7 @@ public class NugetPackageResolver : IPackageResolver
     private string PackageIdNormalized => _packageId.ToLowerInvariant();
 
     /// <summary>
-    /// Initializes an instance of <see cref="NugetPackageResolver"/>.
+    /// Initializes an instance of <see cref="NugetPackageResolver" />.
     /// </summary>
     public NugetPackageResolver(HttpClient httpClient, string serviceIndexUrl, string packageId)
     {
@@ -34,7 +34,7 @@ public class NugetPackageResolver : IPackageResolver
     }
 
     /// <summary>
-    /// Initializes an instance of <see cref="NugetPackageResolver"/>.
+    /// Initializes an instance of <see cref="NugetPackageResolver" />.
     /// </summary>
     public NugetPackageResolver(string serviceIndexUrl, string packageId)
         : this(Http.Client, serviceIndexUrl, packageId)

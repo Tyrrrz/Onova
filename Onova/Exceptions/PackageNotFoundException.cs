@@ -13,7 +13,7 @@ public class PackageNotFoundException : Exception
     public Version Version { get; }
 
     /// <summary>
-    /// Initializes an instance of <see cref="PackageNotFoundException"/>.
+    /// Initializes an instance of <see cref="PackageNotFoundException" />.
     /// </summary>
     public PackageNotFoundException(Version version)
         : base($"Package version '{version}' was not found by the configured package resolver.")

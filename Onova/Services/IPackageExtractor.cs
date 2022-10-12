@@ -12,6 +12,10 @@ public interface IPackageExtractor
     /// <summary>
     /// Extracts contents of the given package to the given output directory.
     /// </summary>
-    Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
-        IProgress<double>? progress = null, CancellationToken cancellationToken = default);
+    Task ExtractPackageAsync(
+        string sourceFilePath,
+        string destDirPath,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default
+    );
 }

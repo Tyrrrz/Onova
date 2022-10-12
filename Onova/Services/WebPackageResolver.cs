@@ -45,7 +45,8 @@ public class WebPackageResolver : IPackageResolver
         return uri.ToString();
     }
 
-    private async Task<IReadOnlyDictionary<Version, string>> GetPackageVersionUrlMapAsync(CancellationToken cancellationToken)
+    private async Task<IReadOnlyDictionary<Version, string>> GetPackageVersionUrlMapAsync(
+        CancellationToken cancellationToken)
     {
         var map = new Dictionary<Version, string>();
 
@@ -84,8 +85,11 @@ public class WebPackageResolver : IPackageResolver
     }
 
     /// <inheritdoc />
-    public async Task DownloadPackageAsync(Version version, string destFilePath,
-        IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+    public async Task DownloadPackageAsync(
+        Version version,
+        string destFilePath,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         // Get map
         var map = await GetPackageVersionUrlMapAsync(cancellationToken);
@@ -96,7 +100,12 @@ public class WebPackageResolver : IPackageResolver
             throw new PackageNotFoundException(version);
 
         // Download
-        using var response = await _httpClient.GetAsync(packageUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        using var response = await _httpClient.GetAsync(
+            packageUrl,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken
+        );
+
         response.EnsureSuccessStatusCode();
 
         using var output = File.Create(destFilePath);

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text;
 
-namespace Onova.Updater.Utils;
+namespace Onova.Updater.Utils.Extensions;
 
-internal static class Extensions
+internal static class BinaryExtensions
 {
     public static string GetString(this byte[] data, Encoding encoding) => encoding.GetString(data);
 

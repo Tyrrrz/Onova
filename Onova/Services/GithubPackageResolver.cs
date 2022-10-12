@@ -89,16 +89,15 @@ public class GithubPackageResolver : IPackageResolver
         foreach (var releaseJson in releasesJson.EnumerateArray())
         {
             // Get release name
-            var releaseTitle = releaseJson.GetProperty("name").GetString();
+            var releaseName =
+                releaseJson.GetProperty("name").GetString() ??
+                releaseJson.GetProperty("tag_name").GetString();
 
-            // In case property name is null, empty or whitespace then in web version of GitHub it is replaced by a property "tag_name"
-            if (string.IsNullOrWhiteSpace(releaseTitle))
-            {
-                releaseTitle = releaseJson.GetProperty("tag_name").GetString();
-            }
+            if (string.IsNullOrWhiteSpace(releaseName))
+                continue;
 
             // Try to parse version
-            var versionText = Regex.Match(releaseTitle, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
+            var versionText = Regex.Match(releaseName, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
             if (!Version.TryParse(versionText, out var version))
                 continue;
 
@@ -115,7 +114,7 @@ public class GithubPackageResolver : IPackageResolver
                 var assetUrl = assetJson.GetProperty("url").GetString();
 
                 // See if name matches
-                if (!WildcardPattern.IsMatch(assetName, _assetNamePattern))
+                if (string.IsNullOrWhiteSpace(assetName) || !WildcardPattern.IsMatch(assetName, _assetNamePattern))
                     continue;
 
                 // Add to dictionary
@@ -126,7 +125,8 @@ public class GithubPackageResolver : IPackageResolver
         return map;
     }
 
-    private async Task<IReadOnlyDictionary<Version, string>> GetPackageVersionUrlMapAsync(CancellationToken cancellationToken)
+    private async Task<IReadOnlyDictionary<Version, string>> GetPackageVersionUrlMapAsync(
+        CancellationToken cancellationToken)
     {
         // Get releases
         var url = $"{_apiBaseAddress}/repos/{_repositoryOwner}/{_repositoryName}/releases";
@@ -137,7 +137,11 @@ public class GithubPackageResolver : IPackageResolver
             request.Headers.IfNoneMatch.Add(_cachedPackageVersionUrlMapETag);
 
         // Get response
-        using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        using var response = await _httpClient.SendAsync(
+            request,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken
+        );
 
         // If not modified - return cached
         if (response.StatusCode == HttpStatusCode.NotModified)
@@ -181,7 +185,12 @@ public class GithubPackageResolver : IPackageResolver
         using var request = new HttpRequestMessage(HttpMethod.Get, packageUrl);
         request.Headers.Add("Accept", "application/octet-stream"); // required
 
-        using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        using var response = await _httpClient.SendAsync(
+            request,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken
+        );
+
         response.EnsureSuccessStatusCode();
 
         using var output = File.Create(destFilePath);

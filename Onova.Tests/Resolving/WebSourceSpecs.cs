@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using Onova.Tests.Internal;
+using Onova.Tests.Utils;
 using Xunit;
 
 namespace Onova.Tests.Resolving;

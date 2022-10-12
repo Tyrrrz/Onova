@@ -40,7 +40,7 @@ public class LocalPackageResolver : IPackageResolver
         // Enumerate files in repository directory
         foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath))
         {
-            // See if name matches
+            // See if the name matches
             var fileName = Path.GetFileName(filePath);
             if (!WildcardPattern.IsMatch(fileName, _fileNamePattern))
                 continue;
@@ -69,15 +69,12 @@ public class LocalPackageResolver : IPackageResolver
     public async Task DownloadPackageAsync(Version version, string destFilePath,
         IProgress<double>? progress = null, CancellationToken cancellationToken = default)
     {
-        // Get map
         var map = GetPackageVersionFilePathMap();
 
-        // Try to get package file path
         var sourceFilePath = map.GetValueOrDefault(version);
         if (string.IsNullOrWhiteSpace(sourceFilePath))
             throw new PackageNotFoundException(version);
 
-        // Copy file
         using var input = File.OpenRead(sourceFilePath);
         using var output = File.Create(destFilePath);
 

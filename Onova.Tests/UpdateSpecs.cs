@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Models;
-using Onova.Tests.Internal;
+using Onova.Tests.Utils;
 using Xunit;
 
 namespace Onova.Tests;

@@ -25,8 +25,11 @@ public class NugetPackageExtractor : IPackageExtractor
     }
 
     /// <inheritdoc />
-    public async Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
-        IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+    public async Task ExtractPackageAsync(
+        string sourceFilePath,
+        string destDirPath,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         // Read the zip
         using var archive = ZipFile.OpenRead(sourceFilePath);

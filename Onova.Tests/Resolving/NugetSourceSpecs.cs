@@ -4,7 +4,8 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using Onova.Tests.Internal;
+using Onova.Tests.Utils;
+using Onova.Tests.Utils.Extensions;
 using Xunit;
 
 namespace Onova.Tests.Resolving;

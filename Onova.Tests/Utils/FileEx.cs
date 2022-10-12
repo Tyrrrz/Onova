@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Onova.Tests.Internal;
+namespace Onova.Tests.Utils;
 
 internal static class FileEx
 {

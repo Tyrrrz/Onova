@@ -22,7 +22,8 @@ internal partial class LockFile
             var fileStream = File.Open(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
             return new LockFile(fileStream);
         }
-        catch (IOException) // This is the most specific exception for "access denied"
+        // This is the most specific exception for "access denied"
+        catch (IOException)
         {
             return null;
         }

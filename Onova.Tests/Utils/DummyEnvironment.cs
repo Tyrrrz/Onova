@@ -9,7 +9,7 @@ using CliWrap.Buffered;
 using Mono.Cecil;
 using Polly;
 
-namespace Onova.Tests.Internal;
+namespace Onova.Tests.Utils;
 
 internal class DummyEnvironment : IDisposable
 {

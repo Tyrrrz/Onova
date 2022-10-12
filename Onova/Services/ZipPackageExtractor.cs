@@ -15,8 +15,11 @@ namespace Onova.Services;
 public class ZipPackageExtractor : IPackageExtractor
 {
     /// <inheritdoc />
-    public async Task ExtractPackageAsync(string sourceFilePath, string destDirPath,
-        IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+    public async Task ExtractPackageAsync(
+        string sourceFilePath,
+        string destDirPath,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         // Read the zip
         using var archive = ZipFile.OpenRead(sourceFilePath);
@@ -37,7 +40,8 @@ public class ZipPackageExtractor : IPackageExtractor
                 Directory.CreateDirectory(entryDestDirPath);
 
             // If the entry is a directory - continue
-            if (entry.FullName.Last() == Path.DirectorySeparatorChar || entry.FullName.Last() == Path.AltDirectorySeparatorChar)
+            if (entry.FullName.Last() == Path.DirectorySeparatorChar ||
+                entry.FullName.Last() == Path.AltDirectorySeparatorChar)
                 continue;
 
             // Extract entry

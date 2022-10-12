@@ -7,7 +7,9 @@ namespace Onova.Utils.Extensions;
 
 internal static class ReflectionExtensions
 {
-    public static async Task ExtractManifestResourceAsync(this Assembly assembly, string resourceName,
+    public static async Task ExtractManifestResourceAsync(
+        this Assembly assembly,
+        string resourceName,
         string destFilePath)
     {
         var input =

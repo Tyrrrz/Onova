@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.IO.Compression;
 
-namespace Onova.Tests.Internal;
+namespace Onova.Tests.Utils.Extensions;
 
-internal static class Extensions
+internal static class ZipExtensions
 {
     public static void WriteAllBytes(this ZipArchiveEntry entry, byte[] content)
     {

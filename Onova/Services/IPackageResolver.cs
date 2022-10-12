@@ -18,6 +18,10 @@ public interface IPackageResolver
     /// <summary>
     /// Downloads given package version.
     /// </summary>
-    Task DownloadPackageAsync(Version version, string destFilePath,
-        IProgress<double>? progress = null, CancellationToken cancellationToken = default);
+    Task DownloadPackageAsync(
+        Version version,
+        string destFilePath,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default
+    );
 }

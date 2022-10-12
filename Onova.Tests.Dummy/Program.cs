@@ -21,7 +21,8 @@ public static class Program
 
     private static readonly IUpdateManager UpdateManager = new UpdateManager(
         new LocalPackageResolver(PackagesDirPath, "*.onv"),
-        new ZipPackageExtractor());
+        new ZipPackageExtractor()
+    );
 
     public static async Task Main(string[] args)
     {
@@ -33,12 +34,12 @@ public static class Program
         var command = args.FirstOrDefault();
 
         // Print current assembly version
-        if (command == "version" || command == null)
+        if (command is null or "version")
         {
             Console.WriteLine(Version);
         }
         // Update to latest version
-        else if (command == "update" || command == "update-and-restart")
+        else if (command is "update" or "update-and-restart")
         {
             var restart = command == "update-and-restart";
             var progressHandler = new Progress<double>(p => Console.WriteLine($"Progress: {p:P0}"));

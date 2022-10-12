@@ -63,8 +63,11 @@ public class AggregatePackageResolver : IPackageResolver
     }
 
     /// <inheritdoc />
-    public async Task DownloadPackageAsync(Version version, string destFilePath,
-        IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+    public async Task DownloadPackageAsync(
+        Version version,
+        string destFilePath,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         // Find a resolver that has this package version
         var resolver =

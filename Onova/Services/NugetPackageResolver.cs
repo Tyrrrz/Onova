@@ -84,8 +84,11 @@ public class NugetPackageResolver : IPackageResolver
     }
 
     /// <inheritdoc />
-    public async Task DownloadPackageAsync(Version version, string destFilePath,
-        IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+    public async Task DownloadPackageAsync(
+        Version version,
+        string destFilePath,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default)
     {
         // Get package base address resource URL
         var resourceUrl = await GetPackageBaseAddressResourceUrlAsync(cancellationToken);

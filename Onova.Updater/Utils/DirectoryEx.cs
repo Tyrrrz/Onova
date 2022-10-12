@@ -8,23 +8,16 @@ internal static class DirectoryEx
     {
         Directory.CreateDirectory(destDirPath);
 
-        // Get all files in source directory
-        var sourceFilePaths = Directory.GetFiles(sourceDirPath);
-
-        // Copy them
-        foreach (var sourceFilePath in sourceFilePaths)
+        // Copy files
+        foreach (var sourceFilePath in Directory.GetFiles(sourceDirPath))
         {
-            // Get destination file path
             var destFileName = Path.GetFileName(sourceFilePath);
             var destFilePath = Path.Combine(destDirPath, destFileName);
             File.Copy(sourceFilePath, destFilePath, overwrite);
         }
 
-        // Get all subdirectories in source directory
-        var sourceSubDirPaths = Directory.GetDirectories(sourceDirPath);
-
-        // Recursively copy them
-        foreach (var sourceSubDirPath in sourceSubDirPaths)
+        // Copy subdirectories recursively
+        foreach (var sourceSubDirPath in Directory.GetDirectories(sourceDirPath))
         {
             var destSubDirName = Path.GetFileName(sourceSubDirPath);
             var destSubDirPath = Path.Combine(destDirPath, destSubDirName);

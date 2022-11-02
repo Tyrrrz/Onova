@@ -6,14 +6,14 @@
 
   <ItemGroup>
     <PackageReference Include="CliWrap" Version="3.5.0" />
-    <PackageReference Include="FluentAssertions" Version="6.7.0" />
+    <PackageReference Include="FluentAssertions" Version="6.8.0" />
     <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="Mono.Cecil" Version="0.11.4" />
     <PackageReference Include="Polly" Version="7.2.3" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" PrivateAssets="all" />
-    <PackageReference Include="coverlet.collector" Version="3.1.2" PrivateAssets="all" />
+    <PackageReference Include="coverlet.collector" Version="3.2.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,14 +23,6 @@
 
   <ItemGroup>
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="../Onova.Tests.Dummy/bin/$(Configuration)/$(TargetFramework)/Onova.Tests.Dummy.runtimeconfig.json">
-      <Link>Onova.Tests.Dummy.runtimeconfig.json</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </None>
   </ItemGroup>
 
 </Project>

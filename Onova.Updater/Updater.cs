@@ -98,11 +98,13 @@ public class Updater : IDisposable
         var updaterVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
         WriteLog(
-            $"Onova Updater v{updaterVersion} started with the following arguments:" + Environment.NewLine +
-            $"  UpdateeFilePath = {_updateeFilePath}" + Environment.NewLine +
-            $"  PackageContentDirPath = {_packageContentDirPath}" + Environment.NewLine +
-            $"  RestartUpdatee = {_restartUpdatee}" + Environment.NewLine +
-            $"  RoutedArgs = {_routedArgs}"
+            $"""
+            Onova Updater v{updaterVersion} started with the following arguments:
+              UpdateeFilePath = {_updateeFilePath}
+              PackageContentDirPath = {_packageContentDirPath}
+              RestartUpdatee = {_restartUpdatee}
+              RoutedArgs = {_routedArgs}
+            """
         );
 
         try

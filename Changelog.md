@@ -1,3 +1,8 @@
+### v2.6.3 (08-Dec-2022)
+
+- Fixed an issue where the HTTP response wasn't checked for a successful status code in `GithubPackageResolver` and `WebPackageResolver`.
+- Fixed an issue where the updater executable failed to run on outdated versions of Windows 7. The executable now targets net35 with framework rollover that ensures it can run on any build of Windows 7 and above.
+
 ### v2.6.2 (17-Sep-2020)
 
 - Fixed an issue in `GithubPackageResolver` which prevented it from working properly with private repositories. (Thanks [@derech1e](https://github.com/derech1e))

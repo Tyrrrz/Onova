@@ -10,7 +10,7 @@ internal static class StringExtensions
     {
         var index = s.IndexOf(sub, comparison);
         return index >= 0
-            ? s.Substring(0, index)
+            ? s[..index]
             : s;
     }
 

@@ -47,7 +47,7 @@ public class NugetPackageExtractor : IPackageExtractor
         foreach (var entry in entries)
         {
             // Get relative entry path
-            var relativeEntryPath = entry.FullName.Substring(_rootDirPath.Length).TrimStart('/', '\\');
+            var relativeEntryPath = entry.FullName[_rootDirPath.Length..].TrimStart('/', '\\');
 
             // Get destination paths
             var entryDestFilePath = Path.Combine(destDirPath, relativeEntryPath);

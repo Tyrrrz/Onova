@@ -13,11 +13,11 @@ internal static class EnvironmentEx
 
         // Remove the quoted executable name from command line and return it
         if (Environment.CommandLine.StartsWith(quotedExeName, StringComparison.OrdinalIgnoreCase))
-            return Environment.CommandLine.Substring(quotedExeName.Length).Trim();
+            return Environment.CommandLine[quotedExeName.Length..].Trim();
 
         // Remove the unquoted executable name from command line and return it
         if (Environment.CommandLine.StartsWith(exeName, StringComparison.OrdinalIgnoreCase))
-            return Environment.CommandLine.Substring(exeName.Length).Trim();
+            return Environment.CommandLine[exeName.Length..].Trim();
 
         // Safe guard, shouldn't reach here
         return Environment.CommandLine;

@@ -1,7 +1,7 @@
 # Onova
 
 [![Made in Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://vshymanskyy.github.io/StandWithUkraine)
-[![Build](https://img.shields.io/github/workflow/status/Tyrrrz/Onova/CI/master)](https://github.com/Tyrrrz/Onova/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/Tyrrrz/Onova/main.yml?branch=master)](https://github.com/Tyrrrz/Onova/actions)
 [![Coverage](https://img.shields.io/codecov/c/github/Tyrrrz/Onova/master)](https://codecov.io/gh/Tyrrrz/Onova)
 [![Version](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
 [![Downloads](https://img.shields.io/nuget/dt/Onova.svg)](https://nuget.org/packages/Onova)

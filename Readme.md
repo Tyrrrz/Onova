@@ -1,6 +1,6 @@
 # Onova
 
-[![Made in Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://vshymanskyy.github.io/StandWithUkraine)
+[![Made in Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://tyrrrz.me/ukraine)
 [![Build](https://img.shields.io/github/actions/workflow/status/Tyrrrz/Onova/main.yml?branch=master)](https://github.com/Tyrrrz/Onova/actions)
 [![Coverage](https://img.shields.io/codecov/c/github/Tyrrrz/Onova/master)](https://codecov.io/gh/Tyrrrz/Onova)
 [![Version](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
@@ -74,6 +74,7 @@ Since .NET assemblies do not support semantic versions, pre-releases are ignored
 #### `WebPackageResolver`
 
 This implementation requests a version manifest using the specified URL. The server is expected to respond with a plain-text list of package versions and their URLs, separated by space, one line per package. E.g.:
+
 ```
 1.0 https://my.server.com/1.0.zip
 2.0 https://my.server.com/2.0.zip

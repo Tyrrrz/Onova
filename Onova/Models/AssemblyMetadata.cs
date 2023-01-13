@@ -54,9 +54,12 @@ public partial class AssemblyMetadata
     {
         if (string.IsNullOrEmpty(assembly.Location))
         {
-            throw new InvalidOperationException($"The location of assembly {assembly.GetName().FullName} could not be determined. " +
-                                                "Use AssemblyMetadata.FromAssembly(Assembly assembly, string assemblyFilePath) method instead");
+            throw new InvalidOperationException(
+                $"The location of assembly {assembly.GetName().FullName} could not be determined. " +
+                "Use the `AssemblyMetadata.FromAssembly(Assembly assembly, string assemblyFilePath)` method to provide it explicitly."
+            );
         }
+
         return FromAssembly(assembly, assembly.Location);
     }
 
@@ -65,14 +68,19 @@ public partial class AssemblyMetadata
     /// </summary>
     public static AssemblyMetadata FromEntryAssembly()
     {
-        var assembly = Assembly.GetEntryAssembly() ?? throw new InvalidOperationException("Can't get entry assembly.");
-        if (string.IsNullOrEmpty(assembly.Location))
-        {
-            // The assembly was published as a [single executable](https://learn.microsoft.com/en-us/dotnet/core/deploying/single-file/overview)
-            // Location returning an empty string is [documented](https://learn.microsoft.com/en-us/dotnet/api/System.Reflection.Assembly.Location#remarks)
-            // > In .NET 5 and later versions, for bundled assemblies, the value returned is an empty string.
-            return FromAssembly(assembly, Process.GetCurrentProcess().MainModule?.FileName ?? throw new InvalidOperationException("Can't get current process main module."));
-        }
-        return FromAssembly(assembly, assembly.Location);
+        // For regular applications, the entry assembly is the entry point
+        var assembly =
+            Assembly.GetEntryAssembly() ??
+            throw new InvalidOperationException("Can't get entry assembly.");
+
+        if (!string.IsNullOrWhiteSpace(assembly.Location))
+            return FromAssembly(assembly, assembly.Location);
+
+        // For self-contained applications, the entry point is the executable
+        var filePath =
+            Process.GetCurrentProcess().MainModule?.FileName ??
+            throw new InvalidOperationException("Can't get current process main module.");
+
+        return FromAssembly(assembly, filePath);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Onova.Models;
@@ -49,14 +50,29 @@ public partial class AssemblyMetadata
     /// <summary>
     /// Extracts assembly metadata from given assembly.
     /// </summary>
-    public static AssemblyMetadata FromAssembly(Assembly assembly) =>
-        FromAssembly(assembly, assembly.Location);
+    public static AssemblyMetadata FromAssembly(Assembly assembly)
+    {
+        if (string.IsNullOrEmpty(assembly.Location))
+        {
+            throw new InvalidOperationException($"The location of assembly {assembly.GetName().FullName} could not be determined. " +
+                                                "Use AssemblyMetadata.FromAssembly(Assembly assembly, string assemblyFilePath) method instead");
+        }
+        return FromAssembly(assembly, assembly.Location);
+    }
 
     /// <summary>
     /// Extracts assembly metadata from entry assembly.
     /// </summary>
-    public static AssemblyMetadata FromEntryAssembly() => FromAssembly(
-        Assembly.GetEntryAssembly() ??
-        throw new InvalidOperationException("Can't get entry assembly.")
-    );
+    public static AssemblyMetadata FromEntryAssembly()
+    {
+        var assembly = Assembly.GetEntryAssembly() ?? throw new InvalidOperationException("Can't get entry assembly.");
+        if (string.IsNullOrEmpty(assembly.Location))
+        {
+            // The assembly was published as a [single executable](https://learn.microsoft.com/en-us/dotnet/core/deploying/single-file/overview)
+            // Location returning an empty string is [documented](https://learn.microsoft.com/en-us/dotnet/api/System.Reflection.Assembly.Location#remarks)
+            // > In .NET 5 and later versions, for bundled assemblies, the value returned is an empty string.
+            return FromAssembly(assembly, Process.GetCurrentProcess().MainModule?.FileName ?? throw new InvalidOperationException("Can't get current process main module."));
+        }
+        return FromAssembly(assembly, assembly.Location);
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Onova.Models;
@@ -49,14 +50,37 @@ public partial class AssemblyMetadata
     /// <summary>
     /// Extracts assembly metadata from given assembly.
     /// </summary>
-    public static AssemblyMetadata FromAssembly(Assembly assembly) =>
-        FromAssembly(assembly, assembly.Location);
+    public static AssemblyMetadata FromAssembly(Assembly assembly)
+    {
+        if (string.IsNullOrEmpty(assembly.Location))
+        {
+            throw new InvalidOperationException(
+                $"The location of assembly {assembly.GetName().FullName} could not be determined. " +
+                "Use the `AssemblyMetadata.FromAssembly(Assembly assembly, string assemblyFilePath)` method to provide it explicitly."
+            );
+        }
+
+        return FromAssembly(assembly, assembly.Location);
+    }
 
     /// <summary>
     /// Extracts assembly metadata from entry assembly.
     /// </summary>
-    public static AssemblyMetadata FromEntryAssembly() => FromAssembly(
-        Assembly.GetEntryAssembly() ??
-        throw new InvalidOperationException("Can't get entry assembly.")
-    );
+    public static AssemblyMetadata FromEntryAssembly()
+    {
+        // For regular applications, the entry assembly is the entry point
+        var assembly =
+            Assembly.GetEntryAssembly() ??
+            throw new InvalidOperationException("Can't get entry assembly.");
+
+        if (!string.IsNullOrWhiteSpace(assembly.Location))
+            return FromAssembly(assembly, assembly.Location);
+
+        // For single-file applications, the executable is the entry point
+        var filePath =
+            Process.GetCurrentProcess().MainModule?.FileName ??
+            throw new InvalidOperationException("Can't get current process main module.");
+
+        return FromAssembly(assembly, filePath);
+    }
 }

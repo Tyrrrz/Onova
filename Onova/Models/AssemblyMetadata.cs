@@ -76,7 +76,7 @@ public partial class AssemblyMetadata
         if (!string.IsNullOrWhiteSpace(assembly.Location))
             return FromAssembly(assembly, assembly.Location);
 
-        // For self-contained applications, the entry point is the executable
+        // For single-file applications, the executable is the entry point
         var filePath =
             Process.GetCurrentProcess().MainModule?.FileName ??
             throw new InvalidOperationException("Can't get current process main module.");

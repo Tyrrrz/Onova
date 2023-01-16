@@ -1,3 +1,8 @@
+### v2.6.4 (16-Jan-2023)
+
+- Fixed an issue that prevented from using Onova with single-file application distributions. (Thanks [@0xced](https://github.com/0xced))
+- Removed support for .NET Framework 4.6.1 and replaced it with .NET Framework 4.6.2. This was necessary because some of the official packages that Onova relies on have also dropped support for .NET Framework 4.6.1.
+
 ### v2.6.3 (08-Dec-2022)
 
 - Fixed an issue where the HTTP response wasn't checked for a successful status code in `GithubPackageResolver` and `WebPackageResolver`.

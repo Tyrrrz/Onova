@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
@@ -39,8 +40,6 @@ public class UpdateManager : IUpdateManager
     /// </summary>
     public UpdateManager(AssemblyMetadata updatee, IPackageResolver resolver, IPackageExtractor extractor)
     {
-        Platform.EnsureWindows();
-
         Updatee = updatee;
         _resolver = resolver;
         _extractor = extractor;
@@ -238,11 +237,13 @@ public class UpdateManager : IUpdateManager
             !string.IsNullOrWhiteSpace(updateeDirPath) &&
             !DirectoryEx.CheckWriteAccess(updateeDirPath);
 
+        var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
         // Create updater process start info
         var updaterStartInfo = new ProcessStartInfo
         {
-            FileName = _updaterFilePath,
-            Arguments = updaterArgs,
+            FileName = isWindows ? _updaterFilePath : "mono",
+            Arguments = isWindows ? updaterArgs : $"\"{_updaterFilePath}\" {updaterArgs}",
             CreateNoWindow = true,
             UseShellExecute = false
         };

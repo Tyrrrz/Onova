@@ -238,6 +238,7 @@ public class UpdateManager : IUpdateManager
             !DirectoryEx.CheckWriteAccess(updateeDirPath);
 
         var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
         // Create updater process start info
         var updaterStartInfo = new ProcessStartInfo
         {

@@ -6,7 +6,6 @@ jobs:
   main:
     uses: Tyrrrz/.github/.github/workflows/nuget.yml@master
     with:
-      windows-only: true
       dotnet-version: 7.0.x
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

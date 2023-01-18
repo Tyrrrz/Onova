@@ -11,5 +11,5 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      ENVIRONMENT: |
+      DYNAMIC: |
         TEST_GITHUB_TOKEN=${{ secrets.TEST_GITHUB_TOKEN }}

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
@@ -18,9 +20,21 @@ public class GithubSourceSpecs : IDisposable
 
     public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
 
-    // https://github.com/Tyrrrz/OnovaTestRepo
-    private GithubPackageResolver CreateGithubPackageResolver() =>
-        new("Tyrrrz", "OnovaTestRepo", "*.onv");
+    private GithubPackageResolver CreateGithubPackageResolver()
+    {
+        var httpClient = new HttpClient();
+
+        httpClient.DefaultRequestHeaders.Add("User-Agent", "Onova Tests (github.com/Tyrrrz/Onova)");
+
+        // Prefer authenticated requests to avoid rate limiting
+        var accessToken = Environment.GetEnvironmentVariable("TEST_GITHUB_TOKEN");
+        if (!string.IsNullOrWhiteSpace(accessToken))
+        {
+            httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(accessToken);
+        }
+
+        return new GithubPackageResolver(httpClient, "Tyrrrz", "OnovaTestRepo", "*.onv");
+    }
 
     [Fact]
     public async Task I_can_use_a_GitHub_repository_as_a_package_source()

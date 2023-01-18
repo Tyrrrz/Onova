@@ -2,6 +2,9 @@ name: main
 
 on: [push, pull_request]
 
+env:
+  TEST_GITHUB_TOKEN: ${{ secrets.TEST_GITHUB_TOKEN }}
+
 jobs:
   main:
     uses: Tyrrrz/.github/.github/workflows/nuget.yml@master

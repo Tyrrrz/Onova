@@ -22,7 +22,7 @@ public interface IUpdateManager : IDisposable
     Task<CheckForUpdatesResult> CheckForUpdatesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Checks whether an update to given version has been prepared.
+    /// Checks whether an update to the specified version has been prepared.
     /// </summary>
     bool IsUpdatePrepared(Version version);
 
@@ -32,13 +32,16 @@ public interface IUpdateManager : IDisposable
     IReadOnlyList<Version> GetPreparedUpdates();
 
     /// <summary>
-    /// Prepares an update to specified version.
+    /// Prepares an update to the specified version.
     /// </summary>
-    Task PrepareUpdateAsync(Version version,
-        IProgress<double>? progress = null, CancellationToken cancellationToken = default);
+    Task PrepareUpdateAsync(
+        Version version,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default
+    );
 
     /// <summary>
-    /// Launches an external executable that will apply an update to given version, once this application exits.
+    /// Launches an external executable that will apply an update to the specified version, once this application exits.
     /// The updater can be instructed to also restart the application after it's updated.
     /// </summary>
     void LaunchUpdater(Version version, bool restart, string restartArguments);

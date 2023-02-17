@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.6.6 (17-Feb-2023)
+
+- Fixed an issue that prevented the updater executable from running with elevated privileges. Again.
+
 ## v2.6.5 (17-Feb-2023)
 
 - Fixed an issue that prevented the updater executable from running with elevated privileges.

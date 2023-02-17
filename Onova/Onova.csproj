@@ -63,6 +63,11 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <Visible>false</Visible>
     </EmbeddedResource>
+    <EmbeddedResource Include="../Onova.Updater/bin/$(Configuration)/net35/Onova.Updater.exe.config">
+      <Link>Updater.exe.config</Link>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

@@ -208,8 +208,17 @@ public class UpdateManager : IUpdateManager
         // Delete package
         File.Delete(packageFilePath);
 
-        // Extract updater
-        await Assembly.GetExecutingAssembly().ExtractManifestResourceAsync(UpdaterResourceName, _updaterFilePath);
+        // Extract the updater
+        await Assembly.GetExecutingAssembly().ExtractManifestResourceAsync(
+            UpdaterResourceName,
+            _updaterFilePath
+        );
+
+        // Extract the updater runtime config
+        await Assembly.GetExecutingAssembly().ExtractManifestResourceAsync(
+            UpdaterResourceName + ".config",
+            _updaterFilePath + ".config"
+        );
     }
 
     /// <inheritdoc />
@@ -250,21 +259,6 @@ public class UpdateManager : IUpdateManager
         {
             updaterProcess.StartInfo.Verb = "runas";
             updaterProcess.StartInfo.UseShellExecute = true;
-        }
-
-        // Configure framework rollover for the updater (allows a .NET 3.5 EXE to run against .NET 4.x CLR)
-        // https://gist.github.com/MichalStrehovsky/d6bc5e4d459c23d0cf3bd17af9a1bcf5
-        if (!updaterProcess.StartInfo.UseShellExecute)
-        {
-            updaterProcess.StartInfo.Environment["COMPLUS_OnlyUseLatestCLR"] = "1";
-        }
-        else
-        {
-            // When using shell execute, environment variables cannot be set on the child process.
-            // To work around it, we set the environment variable on the current process, which should
-            // be inherited by the child process.
-            // Affecting global state is not ideal, but this variable is unlikely to be used by anything else.
-            Environment.SetEnvironmentVariable("COMPLUS_OnlyUseLatestCLR", "1");
         }
 
         updaterProcess.Start();

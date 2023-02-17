@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.6.5 (17-Feb-2023)
+
+- Fixed an issue that prevented the updater executable from running with elevated privileges.
+
 ## v2.6.4 (16-Jan-2023)
 
 - Fixed an issue that prevented from using Onova with single-file application distributions. (Thanks [@0xced](https://github.com/0xced))

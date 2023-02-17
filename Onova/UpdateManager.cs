@@ -221,48 +221,53 @@ public class UpdateManager : IUpdateManager
         EnsureUpdaterNotLaunched();
         EnsureUpdatePrepared(version);
 
-        // Get package content directory path
+        // Get package content directory
         var packageContentDirPath = GetPackageContentDirPath(version);
 
-        // Get original command line arguments and encode them to avoid issues with quotes
+        // Get original command line arguments and encode them to avoid escaping issues
         var routedArgs = restartArguments.GetBytes().ToBase64();
 
-        // Prepare arguments
+        // If we don't have write access to the target directory, the child process needs to be elevated
+        var isElevated = !DirectoryEx.CheckWriteAccess(Updatee.DirPath);
+
+        // Create the updater process
+        var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         var updaterArgs = $"\"{Updatee.FilePath}\" \"{packageContentDirPath}\" \"{restart}\" \"{routedArgs}\"";
 
-        // Decide if updater needs to be elevated
-        var updateeDirPath = Path.GetDirectoryName(Updatee.FilePath);
-
-        var updaterNeedsElevation =
-            !string.IsNullOrWhiteSpace(updateeDirPath) &&
-            !DirectoryEx.CheckWriteAccess(updateeDirPath);
-
-        var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-
-        // Create updater process start info
-        var updaterStartInfo = new ProcessStartInfo
+        using var updaterProcess = new Process
         {
-            FileName = isWindows ? _updaterFilePath : "mono",
-            Arguments = isWindows ? updaterArgs : $"\"{_updaterFilePath}\" {updaterArgs}",
-            CreateNoWindow = true,
-            UseShellExecute = false
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = isWindows ? _updaterFilePath : "mono",
+                Arguments = isWindows ? updaterArgs : $"\"{_updaterFilePath}\" {updaterArgs}",
+                CreateNoWindow = true,
+                UseShellExecute = false
+            }
         };
+
+        // If updater needs to be elevated, use shell execute with "runas"
+        if (isElevated)
+        {
+            updaterProcess.StartInfo.Verb = "runas";
+            updaterProcess.StartInfo.UseShellExecute = true;
+        }
 
         // Configure framework rollover for the updater (allows a .NET 3.5 EXE to run against .NET 4.x CLR)
         // https://gist.github.com/MichalStrehovsky/d6bc5e4d459c23d0cf3bd17af9a1bcf5
-        updaterStartInfo.Environment["COMPLUS_OnlyUseLatestCLR"] = "1";
-
-        // If updater needs to be elevated - use shell execute with "runas"
-        if (updaterNeedsElevation)
+        if (!updaterProcess.StartInfo.UseShellExecute)
         {
-            updaterStartInfo.Verb = "runas";
-            updaterStartInfo.UseShellExecute = true;
+            updaterProcess.StartInfo.Environment["COMPLUS_OnlyUseLatestCLR"] = "1";
+        }
+        else
+        {
+            // When using shell execute, environment variables cannot be set on the child process.
+            // To work around it, we set the environment variable on the current process, which should
+            // be inherited by the child process.
+            // Affecting global state is not ideal, but this variable is unlikely to be used by anything else.
+            Environment.SetEnvironmentVariable("COMPLUS_OnlyUseLatestCLR", "1");
         }
 
-        // Create and start updater process
-        var updaterProcess = new Process {StartInfo = updaterStartInfo};
-        using (updaterProcess)
-            updaterProcess.Start();
+        updaterProcess.Start();
     }
 
     /// <inheritdoc />

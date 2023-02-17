@@ -48,7 +48,7 @@ public class Updater : IDisposable
 
         // Copy over the package contents
         WriteLog("Copying package contents from storage to updatee's directory...");
-        DirectoryEx.Copy(_packageContentDirPath, updateeDirPath);
+        DirectoryEx.Copy(_packageContentDirPath, updateeDirPath!);
 
         // Restart updatee if requested
         if (_restartUpdatee)

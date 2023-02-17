@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 
 namespace Onova.Models;
@@ -23,6 +24,8 @@ public partial class AssemblyMetadata
     /// Assembly file path.
     /// </summary>
     public string FilePath { get; }
+
+    internal string DirPath => Path.GetDirectoryName(FilePath)!;
 
     /// <summary>
     /// Initializes a new instance of <see cref="AssemblyMetadata" />.

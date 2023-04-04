@@ -53,7 +53,7 @@ public class WebPackageResolver : IPackageResolver
         // Get manifest
         var response = await _httpClient.GetStringAsync(_manifestUrl, cancellationToken);
 
-        foreach (var line in response.Split("\n"))
+        foreach (var line in response.Split('\n'))
         {
             // Get package version and URL
             var versionText = line.SubstringUntil(" ").Trim();

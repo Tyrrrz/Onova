@@ -9,22 +9,6 @@ namespace Onova.Utils.Extensions;
 
 internal static class HttpClientExtensions
 {
-    public static async Task<string> GetStringAsync(
-        this HttpClient client,
-        string requestUri,
-        CancellationToken cancellationToken = default)
-    {
-        using var response = await client.GetAsync(
-            requestUri,
-            HttpCompletionOption.ResponseContentRead,
-            cancellationToken
-        );
-
-        response.EnsureSuccessStatusCode();
-
-        return await response.Content.ReadAsStringAsync();
-    }
-
     public static async Task<JsonElement> ReadAsJsonAsync(
         this HttpContent content,
         CancellationToken cancellationToken = default)

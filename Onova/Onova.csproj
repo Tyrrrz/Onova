@@ -11,7 +11,6 @@
     <PackageTags>auto update</PackageTags>
     <PackageProjectUrl>https://github.com/Tyrrrz/Onova</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/Tyrrrz/Onova/blob/master/Changelog.md</PackageReleaseNotes>
-    <PackageReadmeFile>Readme.md</PackageReadmeFile>
     <PackageIcon>favicon.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -21,16 +20,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="../Readme.md" Pack="true" PackagePath="" Visible="false" />
     <None Include="../favicon.png" Pack="true" PackagePath="" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigureAwait.Fody" Version="3.3.1" PrivateAssets="all" />
-    <PackageReference Include="Fody" Version="6.6.4" PrivateAssets="all" />
+    <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets="all" />
+    <PackageReference Include="Fody" Version="6.7.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
-    <PackageReference Include="PolyShim" Version="1.0.0" PrivateAssets="all" />
-    <PackageReference Include="System.Text.Json" Version="7.0.0" Condition="'$(TargetFramework)' != 'netcoreapp3.0'" />
+    <PackageReference Include="PolyShim" Version="1.2.0" PrivateAssets="all" />
+    <PackageReference Include="System.Text.Json" Version="7.0.2" Condition="'$(TargetFramework)' != 'netcoreapp3.0'" />
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" Condition="'$(TargetFramework)' == 'net462'" />
   </ItemGroup>
 

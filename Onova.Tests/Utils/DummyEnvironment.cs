@@ -110,6 +110,18 @@ internal class DummyEnvironment : IDisposable
         return File.Exists(filePath) ? File.ReadAllLines(filePath) : Array.Empty<string>();
     }
 
+    public string GetLastUpdaterLogs()
+    {
+        var filePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Onova",
+            DummyAssembly.GetName().Name!,
+            "Log.txt"
+        );
+
+        return File.Exists(filePath) ? File.ReadAllText(filePath) : "";
+    }
+
     public bool IsRunning() => !FileEx.CheckWriteAccess(DummyFilePath);
 
     public async Task<string> RunDummyAsync(params string[] arguments)

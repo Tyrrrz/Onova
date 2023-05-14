@@ -7,17 +7,25 @@ using FluentAssertions;
 using Onova.Models;
 using Onova.Tests.Utils;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Onova.Tests;
 
 public partial class UpdateSpecs : IDisposable
 {
+    private readonly ITestOutputHelper _testOutput;
+
     private string TempDirPath { get; } = Path.Combine(
         Directory.GetCurrentDirectory(),
         $"{nameof(UpdateSpecs)}_{Guid.NewGuid()}"
     );
 
-    public UpdateSpecs() => DirectoryEx.Reset(TempDirPath);
+    public UpdateSpecs(ITestOutputHelper testOutput)
+    {
+        _testOutput = testOutput;
+
+        DirectoryEx.Reset(TempDirPath);
+    }
 
     public void Dispose()
     {
@@ -237,6 +245,7 @@ public partial class UpdateSpecs : IDisposable
 
         // Act
         await dummy.RunDummyAsync("update");
+        _testOutput.WriteLine(dummy.GetLastUpdaterLogs());
 
         // Assert (version after update)
         var newVersion = Version.Parse(await dummy.RunDummyAsync("version"));
@@ -265,6 +274,7 @@ public partial class UpdateSpecs : IDisposable
         // Act
         var args = new[] {"update-and-restart", "with", "extra", "arguments"};
         await dummy.RunDummyAsync(args);
+        _testOutput.WriteLine(dummy.GetLastUpdaterLogs());
 
         // Wait until updatee has been ran a second time (we don't control this)
         while (dummy.IsRunning() || !dummy.GetLastRunArguments(expectedFinalVersion).Any())

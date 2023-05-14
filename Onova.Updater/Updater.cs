@@ -132,6 +132,8 @@ public class Updater : IDisposable
 
             if (_restartUpdatee)
                 StartUpdatee();
+
+            WriteLog("Update completed successfully.");
         }
         catch (Exception ex)
         {

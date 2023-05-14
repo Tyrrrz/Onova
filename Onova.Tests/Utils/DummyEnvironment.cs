@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using CliWrap;
 using CliWrap.Buffered;
 using Mono.Cecil;
-using Polly;
 
 namespace Onova.Tests.Utils;
 
@@ -80,9 +80,18 @@ internal class DummyEnvironment : IDisposable
     {
         // Sometimes this fails for some reason, even when dummy has already exited.
         // Use a retry policy to circumvent that.
-        var policy = Policy.Handle<UnauthorizedAccessException>().WaitAndRetry(5, _ => TimeSpan.FromSeconds(1));
-
-        policy.Execute(() => DirectoryEx.DeleteIfExists(_rootDirPath));
+        for (var retriesRemaining = 5;; retriesRemaining--)
+        {
+            try
+            {
+                DirectoryEx.DeleteIfExists(_rootDirPath);
+                break;
+            }
+            catch (UnauthorizedAccessException) when (retriesRemaining > 0)
+            {
+                Thread.Sleep(1000);
+            }
+        }
     }
 
     public void Setup(Version baseVersion, IReadOnlyList<Version> availableVersions)

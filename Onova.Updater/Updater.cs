@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -18,6 +20,8 @@ public class Updater : IDisposable
         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log.txt")
     );
 
+    private IDisposable? _updateeDirLock;
+
     public Updater(
         string updateeFilePath,
         string packageContentDirPath,
@@ -32,12 +36,29 @@ public class Updater : IDisposable
 
     private void WriteLog(string content)
     {
-        var date = DateTimeOffset.Now;
-        _log.WriteLine($"{date:dd-MMM-yyyy HH:mm:ss.fff}> {content}");
+        var date = DateTimeOffset.Now.ToString("dd-MMM-yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture);
+        _log.WriteLine($"{date}> {content}");
         _log.Flush();
     }
 
-    private void CopyFiles()
+    private void AcquireLock()
+    {
+        WriteLog("Locking the updatee directory...");
+        for (var retriesRemaining = 10;; retriesRemaining--)
+        {
+            try
+            {
+                _updateeDirLock = DirectoryEx.Lock(Path.GetDirectoryName(_updateeFilePath)!);
+                break;
+            }
+            catch (Win32Exception) when (retriesRemaining > 0)
+            {
+                Thread.Sleep(1000);
+            }
+        }
+    }
+
+    private void ApplyUpdate()
     {
         WriteLog("Copying package contents from storage to the updatee directory...");
         DirectoryEx.Copy(_packageContentDirPath, Path.GetDirectoryName(_updateeFilePath)!);
@@ -62,7 +83,7 @@ public class Updater : IDisposable
             {
                 WorkingDirectory = Path.GetDirectoryName(_updateeFilePath),
                 Arguments = _routedArgs,
-                // Avoid sharing console window with the updatee
+                // Don't let the child process inherited the current console window
                 UseShellExecute = true
             }
         };
@@ -87,7 +108,7 @@ public class Updater : IDisposable
 
         WriteLog($"Restarting updatee [{process.StartInfo.FileName} {process.StartInfo.Arguments}]...");
         process.Start();
-        WriteLog($"Restarted as pid:{process.Id}.");
+        WriteLog($"Restarted with process ID: {process.Id}.");
     }
 
     public void Run()
@@ -106,11 +127,8 @@ public class Updater : IDisposable
                 """
             );
 
-            WriteLog("Waiting for all running updatee instances to exit...");
-            while (!FileEx.CheckWriteAccess(_updateeFilePath))
-                Thread.Sleep(100);
-
-            CopyFiles();
+            AcquireLock();
+            ApplyUpdate();
 
             if (_restartUpdatee)
                 StartUpdatee();
@@ -121,5 +139,9 @@ public class Updater : IDisposable
         }
     }
 
-    public void Dispose() => _log.Dispose();
+    public void Dispose()
+    {
+        _log.Dispose();
+        _updateeDirLock?.Dispose();
+    }
 }

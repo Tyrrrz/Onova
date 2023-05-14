@@ -13,7 +13,8 @@ namespace Onova.Tests.Resolving;
 public class LocalSourceSpecs : IDisposable
 {
     private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(), $"{nameof(LocalSourceSpecs)}_{Guid.NewGuid()}"
+        Directory.GetCurrentDirectory(),
+        $"{nameof(LocalSourceSpecs)}_{Guid.NewGuid()}"
     );
 
     public LocalSourceSpecs() => DirectoryEx.Reset(TempDirPath);

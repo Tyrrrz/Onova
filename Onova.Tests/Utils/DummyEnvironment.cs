@@ -14,7 +14,7 @@ namespace Onova.Tests.Utils;
 internal class DummyEnvironment : IDisposable
 {
     private static readonly Assembly DummyAssembly = typeof(Dummy.Program).Assembly;
-    private static readonly string DummyAssemblyFileName = Path.GetFileName(DummyAssembly.Location)!;
+    private static readonly string DummyAssemblyFileName = Path.GetFileName(DummyAssembly.Location);
     private static readonly string DummyAssemblyDirPath = Path.GetDirectoryName(DummyAssembly.Location)!;
 
     private readonly string _rootDirPath;

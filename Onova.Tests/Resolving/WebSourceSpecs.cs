@@ -11,7 +11,8 @@ namespace Onova.Tests.Resolving;
 public class WebSourceSpecs : IDisposable
 {
     private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(), $"{nameof(WebSourceSpecs)}_{Guid.NewGuid()}"
+        Directory.GetCurrentDirectory(),
+        $"{nameof(WebSourceSpecs)}_{Guid.NewGuid()}"
     );
 
     public WebSourceSpecs() => DirectoryEx.Reset(TempDirPath);

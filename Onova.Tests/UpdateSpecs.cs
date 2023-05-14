@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Models;
@@ -12,7 +11,10 @@ namespace Onova.Tests;
 
 public partial class UpdateSpecs : IDisposable
 {
-    private string TempDirPath { get; } = Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(UpdateSpecs)}_{Guid.NewGuid()}");
+    private string TempDirPath { get; } = Path.Combine(
+        Directory.GetCurrentDirectory(),
+        $"{nameof(UpdateSpecs)}_{Guid.NewGuid()}"
+    );
 
     public UpdateSpecs() => DirectoryEx.Reset(TempDirPath);
 
@@ -250,10 +252,8 @@ public partial class UpdateSpecs : IDisposable
         await dummy.RunDummyAsync(args);
 
         // Wait until updatee has been ran a second time (we don't control this)
-        SpinWait.SpinUntil(() =>
-            !dummy.IsRunning() &&
-            dummy.GetLastRunArguments(expectedFinalVersion).Any()
-        );
+        while (dummy.IsRunning() || !dummy.GetLastRunArguments(expectedFinalVersion).Any())
+            await Task.Delay(100);
 
         // Assert
         dummy.GetLastRunArguments(expectedFinalVersion).Should().BeEquivalentTo(args);

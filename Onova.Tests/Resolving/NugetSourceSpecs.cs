@@ -13,7 +13,8 @@ namespace Onova.Tests.Resolving;
 public class NugetSourceSpecs : IDisposable
 {
     private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(), $"{nameof(NugetSourceSpecs)}_{Guid.NewGuid()}"
+        Directory.GetCurrentDirectory(),
+        $"{nameof(NugetSourceSpecs)}_{Guid.NewGuid()}"
     );
 
     public NugetSourceSpecs() => DirectoryEx.Reset(TempDirPath);

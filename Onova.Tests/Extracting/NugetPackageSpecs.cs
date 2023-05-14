@@ -14,7 +14,8 @@ namespace Onova.Tests.Extracting;
 public class NugetPackageSpecs : IDisposable
 {
     private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(), $"{nameof(NugetPackageSpecs)}_{Guid.NewGuid()}"
+        Directory.GetCurrentDirectory(),
+        $"{nameof(NugetPackageSpecs)}_{Guid.NewGuid()}"
     );
 
     public NugetPackageSpecs() => DirectoryEx.Reset(TempDirPath);

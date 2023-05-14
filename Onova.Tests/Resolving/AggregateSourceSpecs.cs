@@ -13,7 +13,8 @@ namespace Onova.Tests.Resolving;
 public class AggregateSourceSpecs : IDisposable
 {
     private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(), $"{nameof(AggregateSourceSpecs)}_{Guid.NewGuid()}"
+        Directory.GetCurrentDirectory(),
+        $"{nameof(AggregateSourceSpecs)}_{Guid.NewGuid()}"
     );
 
     public AggregateSourceSpecs() => DirectoryEx.Reset(TempDirPath);

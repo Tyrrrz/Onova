@@ -14,7 +14,8 @@ namespace Onova.Tests.Extracting;
 public class ZipPackageSpecs : IDisposable
 {
     private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(), $"{nameof(ZipPackageSpecs)}_{Guid.NewGuid()}"
+        Directory.GetCurrentDirectory(),
+        $"{nameof(ZipPackageSpecs)}_{Guid.NewGuid()}"
     );
 
     public ZipPackageSpecs() => DirectoryEx.Reset(TempDirPath);

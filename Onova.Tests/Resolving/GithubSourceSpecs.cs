@@ -13,7 +13,8 @@ namespace Onova.Tests.Resolving;
 public class GithubSourceSpecs : IDisposable
 {
     private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(), $"{nameof(GithubSourceSpecs)}_{Guid.NewGuid()}"
+        Directory.GetCurrentDirectory(),
+        $"{nameof(GithubSourceSpecs)}_{Guid.NewGuid()}"
     );
 
     public GithubSourceSpecs() => DirectoryEx.Reset(TempDirPath);

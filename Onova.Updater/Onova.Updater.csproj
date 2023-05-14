@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="PolyShim" Version="1.2.0" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

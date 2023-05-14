@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.InteropServices;
 using Onova.Updater.Native;
 
 namespace Onova.Updater.Utils;
@@ -12,6 +13,9 @@ internal static class DirectoryEx
         FileAccess access = FileAccess.ReadWrite,
         FileShare share = FileShare.None)
     {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return Disposable.Null;
+
         var handle = NativeMethods.CreateFile(
             dirPath,
             access,

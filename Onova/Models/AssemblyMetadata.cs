@@ -71,7 +71,7 @@ public partial class AssemblyMetadata
     /// </summary>
     public static AssemblyMetadata FromEntryAssembly()
     {
-        // For regular applications, the entry assembly is the entry point
+        // For most applications, the entry assembly is the entry point
         var assembly =
             Assembly.GetEntryAssembly() ??
             throw new InvalidOperationException("Can't get entry assembly.");
@@ -79,7 +79,7 @@ public partial class AssemblyMetadata
         if (!string.IsNullOrWhiteSpace(assembly.Location))
             return FromAssembly(assembly, assembly.Location);
 
-        // For single-file applications, the executable is the entry point
+        // For self-contained applications, the executable is the entry point
         var filePath =
             Process.GetCurrentProcess().MainModule?.FileName ??
             throw new InvalidOperationException("Can't get current process main module.");

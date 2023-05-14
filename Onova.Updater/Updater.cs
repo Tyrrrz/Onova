@@ -37,79 +37,83 @@ public class Updater : IDisposable
         _log.Flush();
     }
 
-    private void RunCore()
+    private void CopyFiles()
     {
-        var updateeDirPath = Path.GetDirectoryName(_updateeFilePath);
+        WriteLog("Copying package contents from storage to the updatee directory...");
+        DirectoryEx.Copy(_packageContentDirPath, Path.GetDirectoryName(_updateeFilePath)!);
 
-        // Wait until updatee is writable to ensure all running instances have exited
-        WriteLog("Waiting for all running updatee instances to exit...");
-        while (!FileEx.CheckWriteAccess(_updateeFilePath))
-            Thread.Sleep(100);
-
-        // Copy over the package contents
-        WriteLog("Copying package contents from storage to updatee's directory...");
-        DirectoryEx.Copy(_packageContentDirPath, updateeDirPath!);
-
-        // Restart updatee if requested
-        if (_restartUpdatee)
+        try
         {
-            var startInfo = new ProcessStartInfo
+            WriteLog("Deleting package contents from storage...");
+            Directory.Delete(_packageContentDirPath, true);
+        }
+        catch (Exception ex)
+        {
+            // Not a critical error
+            WriteLog($"Failed to delete package contents from storage: {ex}");
+        }
+    }
+
+    private void StartUpdatee()
+    {
+        using var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
             {
-                WorkingDirectory = updateeDirPath,
+                WorkingDirectory = Path.GetDirectoryName(_updateeFilePath),
                 Arguments = _routedArgs,
-                UseShellExecute = true // avoid sharing console window with updatee
-            };
-
-            // If updatee is an .exe file - start it directly
-            if (string.Equals(Path.GetExtension(_updateeFilePath), ".exe", StringComparison.OrdinalIgnoreCase))
-            {
-                startInfo.FileName = _updateeFilePath;
+                // Avoid sharing console window with the updatee
+                UseShellExecute = true
             }
-            // If not - figure out what to do with it
-            else
-            {
-                // If there's an .exe file with same name - start it instead
-                // Security vulnerability?
-                if (File.Exists(Path.ChangeExtension(_updateeFilePath, ".exe")))
-                {
-                    startInfo.FileName = Path.ChangeExtension(_updateeFilePath, ".exe");
-                }
-                // Otherwise - start the updatee using dotnet SDK
-                else
-                {
-                    startInfo.FileName = "dotnet";
-                    startInfo.Arguments = $"{_updateeFilePath} {_routedArgs}";
-                }
-            }
+        };
 
-            WriteLog($"Restarting updatee [{startInfo.FileName} {startInfo.Arguments}]...");
-
-            using var restartedUpdateeProcess = Process.Start(startInfo);
-            WriteLog($"Restarted as pid:{restartedUpdateeProcess?.Id}.");
+        // If the updatee is an .exe file, start it directly.
+        // This covers self-contained .NET Core apps and legacy .NET Framework apps.
+        if (string.Equals(Path.GetExtension(_updateeFilePath), ".exe", StringComparison.OrdinalIgnoreCase))
+        {
+            process.StartInfo.FileName = _updateeFilePath;
+        }
+        // Otherwise, locate the apphost by looking for the .exe file with same name.
+        // This covers framework-dependent .NET Core apps.
+        else if (File.Exists(Path.ChangeExtension(_updateeFilePath, ".exe")))
+        {
+            process.StartInfo.FileName = Path.ChangeExtension(_updateeFilePath, ".exe");
+        }
+        // As fallback, try to run the updatee through the .NET CLI
+        {
+            process.StartInfo.FileName = "dotnet";
+            process.StartInfo.Arguments = $"{_updateeFilePath} {_routedArgs}";
         }
 
-        // Delete package content directory
-        WriteLog("Deleting package contents from storage...");
-        Directory.Delete(_packageContentDirPath, true);
+        WriteLog($"Restarting updatee [{process.StartInfo.FileName} {process.StartInfo.Arguments}]...");
+        process.Start();
+        WriteLog($"Restarted as pid:{process.Id}.");
     }
 
     public void Run()
     {
-        var updaterVersion = Assembly.GetExecutingAssembly().GetName().Version;
-
-        WriteLog(
-            $"""
-            Onova Updater v{updaterVersion} started with the following arguments:
-              UpdateeFilePath = {_updateeFilePath}
-              PackageContentDirPath = {_packageContentDirPath}
-              RestartUpdatee = {_restartUpdatee}
-              RoutedArgs = {_routedArgs}
-            """
-        );
-
         try
         {
-            RunCore();
+            var updaterVersion = Assembly.GetExecutingAssembly().GetName().Version;
+
+            WriteLog(
+                $"""
+                Onova Updater v{updaterVersion} started with the following arguments:
+                - UpdateeFilePath = {_updateeFilePath}
+                - PackageContentDirPath = {_packageContentDirPath}
+                - RestartUpdatee = {_restartUpdatee}
+                - RoutedArgs = {_routedArgs}
+                """
+            );
+
+            WriteLog("Waiting for all running updatee instances to exit...");
+            while (!FileEx.CheckWriteAccess(_updateeFilePath))
+                Thread.Sleep(100);
+
+            CopyFiles();
+
+            if (_restartUpdatee)
+                StartUpdatee();
         }
         catch (Exception ex)
         {

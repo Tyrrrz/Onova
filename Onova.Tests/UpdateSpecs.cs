@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Models;
@@ -18,7 +19,21 @@ public partial class UpdateSpecs : IDisposable
 
     public UpdateSpecs() => DirectoryEx.Reset(TempDirPath);
 
-    public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
+    public void Dispose()
+    {
+        for (var retriesRemaining = 5;; retriesRemaining--)
+        {
+            try
+            {
+                DirectoryEx.DeleteIfExists(TempDirPath);
+                break;
+            }
+            catch (UnauthorizedAccessException) when (retriesRemaining > 0)
+            {
+                Thread.Sleep(1000);
+            }
+        }
+    }
 
     [Fact]
     public async Task I_can_check_for_updates_and_get_a_higher_version_if_it_is_available()

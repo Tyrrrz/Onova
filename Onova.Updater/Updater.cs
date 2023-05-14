@@ -44,7 +44,7 @@ public class Updater : IDisposable
     private void AcquireLock()
     {
         WriteLog("Locking the updatee directory...");
-        for (var retriesRemaining = 10;; retriesRemaining--)
+        for (var retriesRemaining = 5;; retriesRemaining--)
         {
             try
             {

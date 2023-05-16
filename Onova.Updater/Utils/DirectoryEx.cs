@@ -20,10 +20,10 @@ internal static class DirectoryEx
             dirPath,
             access,
             share,
-            IntPtr.Zero,
+            0,
             FileMode.Open,
             (FileAttributes)0x02000000,
-            IntPtr.Zero
+            0
         );
 
         if (handle.IsInvalid)

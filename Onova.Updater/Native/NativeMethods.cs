@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
@@ -12,9 +11,9 @@ internal static class NativeMethods
         string lpFileName,
         FileAccess dwDesiredAccess,
         FileShare dwShareMode,
-        IntPtr lpSecurityAttributes,
+        nint lpSecurityAttributes,
         FileMode dwCreationDisposition,
         FileAttributes dwFlagsAndAttributes,
-        IntPtr hTemplateFile
+        nint hTemplateFile
     );
 }

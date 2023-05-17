@@ -66,13 +66,15 @@ public class NugetPackageExtractor : IPackageExtractor
             using var output = File.Create(entryDestFilePath);
 
             using var buffer = PooledBuffer.ForStream();
-            int bytesCopied;
-            do
+            while (true)
             {
-                bytesCopied = await input.CopyBufferedToAsync(output, buffer.Array, cancellationToken);
+                var bytesCopied = await input.CopyBufferedToAsync(output, buffer.Array, cancellationToken);
+                if (bytesCopied <= 0)
+                    break;
+
                 totalBytesCopied += bytesCopied;
                 progress?.Report(1.0 * totalBytesCopied / totalBytes);
-            } while (bytesCopied > 0);
+            }
         }
     }
 }

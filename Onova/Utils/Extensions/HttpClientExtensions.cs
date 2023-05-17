@@ -47,14 +47,16 @@ internal static class HttpClientExtensions
         using var buffer = PooledBuffer.ForStream();
 
         var totalBytesCopied = 0L;
-        int bytesCopied;
-        do
+        while (true)
         {
-            bytesCopied = await source.CopyBufferedToAsync(destination, buffer.Array, cancellationToken);
+            var bytesCopied = await source.CopyBufferedToAsync(destination, buffer.Array, cancellationToken);
+            if (bytesCopied <= 0)
+                break;
+
             totalBytesCopied += bytesCopied;
 
             if (length != null)
                 progress?.Report(1.0 * totalBytesCopied / length.Value);
-        } while (bytesCopied > 0);
+        }
     }
 }

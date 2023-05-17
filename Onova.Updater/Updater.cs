@@ -90,15 +90,20 @@ public class Updater : IDisposable
 
         // If the updatee is an .exe file, start it directly.
         // This covers self-contained .NET Core apps and legacy .NET Framework apps.
-        if (string.Equals(Path.GetExtension(_updateeFilePath), ".exe", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(Path.GetExtension(_updateeFilePath), "exe", StringComparison.OrdinalIgnoreCase))
         {
             process.StartInfo.FileName = _updateeFilePath;
         }
         // Otherwise, locate the apphost by looking for the .exe file with same name.
         // This covers framework-dependent .NET Core apps.
-        else if (File.Exists(Path.ChangeExtension(_updateeFilePath, ".exe")))
+        else if (File.Exists(Path.ChangeExtension(_updateeFilePath, "exe")))
         {
-            process.StartInfo.FileName = Path.ChangeExtension(_updateeFilePath, ".exe");
+            process.StartInfo.FileName = Path.ChangeExtension(_updateeFilePath, "exe");
+        }
+        // Same for Unix executables
+        else if (File.Exists(Path.GetFileNameWithoutExtension(_updateeFilePath)))
+        {
+            process.StartInfo.FileName = Path.GetFileNameWithoutExtension(_updateeFilePath);
         }
         // As fallback, try to run the updatee through the .NET CLI
         {

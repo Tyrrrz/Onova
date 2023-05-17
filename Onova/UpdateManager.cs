@@ -213,12 +213,6 @@ public class UpdateManager : IUpdateManager
             UpdaterResourceName,
             _updaterFilePath
         );
-
-        // Extract the updater runtime config
-        await Assembly.GetExecutingAssembly().ExtractManifestResourceAsync(
-            UpdaterResourceName + ".config",
-            _updaterFilePath + ".config"
-        );
     }
 
     /// <inheritdoc />
@@ -240,15 +234,14 @@ public class UpdateManager : IUpdateManager
         var isElevated = !DirectoryEx.CheckWriteAccess(Updatee.DirPath);
 
         // Create the updater process
-        var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         var updaterArgs = $"\"{Updatee.FilePath}\" \"{packageContentDirPath}\" \"{restart}\" \"{routedArgs}\"";
 
         using var updaterProcess = new Process
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = isWindows ? _updaterFilePath : "mono",
-                Arguments = isWindows ? updaterArgs : $"\"{_updaterFilePath}\" {updaterArgs}",
+                FileName = _updaterFilePath,
+                Arguments = updaterArgs,
                 CreateNoWindow = true,
                 UseShellExecute = false
             }

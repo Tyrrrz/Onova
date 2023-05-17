@@ -49,14 +49,13 @@
   </ItemGroup>
 
   <!-- Embed the updater executable -->
+  <Target Name="CopyUpdater" BeforeTargets="PreBuildEvent;PrepareForPublish">
+    <Exec Command="dotnet publish ../Onova.Updater/Onova.Updater.csproj -c $(Configuration) -r win-x64" />
+  </Target>
+
   <ItemGroup>
-    <EmbeddedResource Include="../Onova.Updater/bin/$(Configuration)/net35/Onova.Updater.exe">
+    <EmbeddedResource Include="../Onova.Updater/bin/$(Configuration)/net7.0/win-x64/publish/Onova.Updater.exe">
       <Link>Updater.exe</Link>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </EmbeddedResource>
-    <EmbeddedResource Include="../Onova.Updater/bin/$(Configuration)/net35/Onova.Updater.exe.config">
-      <Link>Updater.exe.config</Link>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <Visible>false</Visible>
     </EmbeddedResource>

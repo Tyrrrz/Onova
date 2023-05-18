@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.6.8 (18-May-2023)
+
+- Changed the way the updater executable applies the update. Now, instead of waiting for the updatee to exit and obtaining a lock on the entry assembly file, it obtains a lock on the entire directory. This should help prevent issues where multiple processes attempted to modify target files, resulting in a corrupted state.
+
 ## v2.6.7 (27-Apr-2023)
 
 - Improved support for older target frameworks via polyfills.

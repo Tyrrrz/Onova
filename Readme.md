@@ -11,6 +11,10 @@
 
 > 🟡 **Project status**: maintenance mode<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)</sup>
 
+<p align="center">
+    <img src="favicon.png" alt="Icon" />
+</p>
+
 **Onova** is a lightweight auto-update framework for desktop applications.
 It's primarily designed for performing in-place updates for portable applications distributed via archive files (as opposed to installers or packages).
 The library requires minimal configuration, doesn't impose any changes to the CI/CD process, and doesn't affect the life cycle of your application.

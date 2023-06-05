@@ -96,6 +96,7 @@ public class Updater : IDisposable
             process.StartInfo.FileName = Path.ChangeExtension(_updateeFilePath, ".exe");
         }
         // As a fallback, try to run the updatee through the .NET CLI
+        else
         {
             process.StartInfo.FileName = "dotnet";
             process.StartInfo.Arguments = $"{_updateeFilePath} {_routedArgs}";

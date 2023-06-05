@@ -25,9 +25,7 @@ internal static class DisposableExtensions
 
         if (exceptions?.Any() == true)
         {
-            // TODO: No aggregate exception on .NET 3.5
-            // throw new AggregateException(exceptions);
-            throw new Exception("An error occurred while disposing of one or more objects.", exceptions.First());
+            throw new AggregateException(exceptions);
         }
     }
 }

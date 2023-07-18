@@ -19,30 +19,30 @@ internal static class DirectoryEx
         {
             foreach (var sourceFilePath in Directory.GetFiles(sourceDirPath, "*", SearchOption.AllDirectories))
             {
+                sourceStreams.Add(File.Open(
+                    sourceFilePath,
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.Read
+                ));
+
                 var destFilePath = Path.Combine(
                     destDirPath,
                     PathEx.GetRelativePath(sourceDirPath, sourceFilePath)
                 );
 
-                var sourceStream = File.Open(
-                    sourceFilePath,
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.Read
+                Directory.CreateDirectory(
+                    Path.GetDirectoryName(destFilePath) ?? destDirPath
                 );
 
-                sourceStreams.Add(sourceStream);
-
-                var destStream = File.Open(
+                destStreams.Add(File.Open(
                     destFilePath,
                     overwrite
                         ? FileMode.OpenOrCreate
                         : FileMode.CreateNew,
                     FileAccess.ReadWrite,
                     FileShare.None
-                );
-
-                destStreams.Add(destStream);
+                ));
             }
 
             // Copy data from the source files to the destination files

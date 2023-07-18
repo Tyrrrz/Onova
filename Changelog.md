@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.6.10 (18-Jul-2023)
+
+- Fixed an issue where the updater failed to create subdirectories in the application directory.
+
 ## v2.6.9 (05-Jun-2023)
 
 - Fixed an issue which caused the update process to fail if the application directory was locked by another process in read-only mode.

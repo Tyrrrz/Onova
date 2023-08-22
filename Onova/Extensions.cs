@@ -15,8 +15,11 @@ public static class Extensions
     /// The updater can be instructed to also restart the application after it's updated.
     /// If the application is to be restarted, it will receive the same command line arguments as it did initially.
     /// </summary>
-    public static void LaunchUpdater(this IUpdateManager manager, Version version, bool restart = true) =>
-        manager.LaunchUpdater(version, restart, EnvironmentEx.GetCommandLineWithoutExecutable());
+    public static void LaunchUpdater(
+        this IUpdateManager manager,
+        Version version,
+        bool restart = true
+    ) => manager.LaunchUpdater(version, restart, EnvironmentEx.GetCommandLineWithoutExecutable());
 
     /// <summary>
     /// Checks for new version and performs an update if available.
@@ -25,7 +28,8 @@ public static class Extensions
         this IUpdateManager manager,
         bool restart = true,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         // Check
         var result = await manager.CheckForUpdatesAsync(cancellationToken);

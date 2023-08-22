@@ -23,7 +23,8 @@ public class Updater : IDisposable
         string updateeFilePath,
         string packageContentDirPath,
         bool restartUpdatee,
-        string routedArgs)
+        string routedArgs
+    )
     {
         _updateeFilePath = updateeFilePath;
         _packageContentDirPath = packageContentDirPath;
@@ -33,7 +34,10 @@ public class Updater : IDisposable
 
     private void WriteLog(string content)
     {
-        var date = DateTimeOffset.Now.ToString("dd-MMM-yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture);
+        var date = DateTimeOffset.Now.ToString(
+            "dd-MMM-yyyy HH:mm:ss.fff",
+            CultureInfo.InvariantCulture
+        );
         _log.WriteLine($"{date}> {content}");
         _log.Flush();
     }
@@ -85,7 +89,13 @@ public class Updater : IDisposable
 
         // If the updatee is an .exe file, start it directly.
         // This covers self-contained .NET Core apps and legacy .NET Framework apps.
-        if (string.Equals(Path.GetExtension(_updateeFilePath), ".exe", StringComparison.OrdinalIgnoreCase))
+        if (
+            string.Equals(
+                Path.GetExtension(_updateeFilePath),
+                ".exe",
+                StringComparison.OrdinalIgnoreCase
+            )
+        )
         {
             process.StartInfo.FileName = _updateeFilePath;
         }
@@ -102,7 +112,9 @@ public class Updater : IDisposable
             process.StartInfo.Arguments = $"{_updateeFilePath} {_routedArgs}";
         }
 
-        WriteLog($"Restarting updatee [{process.StartInfo.FileName} {process.StartInfo.Arguments}]...");
+        WriteLog(
+            $"Restarting updatee [{process.StartInfo.FileName} {process.StartInfo.Arguments}]..."
+        );
         process.Start();
         WriteLog($"Restarted with process ID: {process.Id}.");
     }

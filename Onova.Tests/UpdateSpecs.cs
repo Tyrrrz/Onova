@@ -15,10 +15,8 @@ public partial class UpdateSpecs : IDisposable
 {
     private readonly ITestOutputHelper _testOutput;
 
-    private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(),
-        $"{nameof(UpdateSpecs)}_{Guid.NewGuid()}"
-    );
+    private string TempDirPath { get; } =
+        Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(UpdateSpecs)}_{Guid.NewGuid()}");
 
     public UpdateSpecs(ITestOutputHelper testOutput)
     {
@@ -29,7 +27,7 @@ public partial class UpdateSpecs : IDisposable
 
     public void Dispose()
     {
-        for (var retriesRemaining = 5;; retriesRemaining--)
+        for (var retriesRemaining = 5; ; retriesRemaining--)
         {
             try
             {
@@ -53,7 +51,9 @@ public partial class UpdateSpecs : IDisposable
         DirectoryEx.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova", updatee.Name)
+                "Onova",
+                updatee.Name
+            )
         );
 
         var availableVersions = new[]
@@ -88,7 +88,9 @@ public partial class UpdateSpecs : IDisposable
         DirectoryEx.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova", updatee.Name)
+                "Onova",
+                updatee.Name
+            )
         );
 
         var availableVersions = new[]
@@ -123,7 +125,9 @@ public partial class UpdateSpecs : IDisposable
         DirectoryEx.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova", updatee.Name)
+                "Onova",
+                updatee.Name
+            )
         );
 
         var availableVersions = Array.Empty<Version>();
@@ -153,7 +157,9 @@ public partial class UpdateSpecs : IDisposable
         DirectoryEx.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova", updatee.Name)
+                "Onova",
+                updatee.Name
+            )
         );
 
         var availableVersions = new[]
@@ -188,7 +194,9 @@ public partial class UpdateSpecs : IDisposable
         DirectoryEx.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova", updatee.Name)
+                "Onova",
+                updatee.Name
+            )
         );
 
         var availableVersions = new[]
@@ -204,11 +212,7 @@ public partial class UpdateSpecs : IDisposable
             new FakePackageExtractor()
         );
 
-        var expectedPreparedUpdateVersions = new[]
-        {
-            Version.Parse("1.0"),
-            Version.Parse("3.0")
-        };
+        var expectedPreparedUpdateVersions = new[] { Version.Parse("1.0"), Version.Parse("3.0") };
 
         foreach (var version in expectedPreparedUpdateVersions)
             await manager.PrepareUpdateAsync(version);
@@ -272,7 +276,7 @@ public partial class UpdateSpecs : IDisposable
         dummy.Setup(baseVersion, availableVersions);
 
         // Act
-        var args = new[] {"update-and-restart", "with", "extra", "arguments"};
+        var args = new[] { "update-and-restart", "with", "extra", "arguments" };
         await dummy.RunDummyAsync(args);
         _testOutput.WriteLine(dummy.GetLastUpdaterLogs());
 

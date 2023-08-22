@@ -10,9 +10,7 @@ internal static class DirectoryEx
         {
             Directory.Delete(dirPath, recursive);
         }
-        catch (DirectoryNotFoundException)
-        {
-        }
+        catch (DirectoryNotFoundException) { }
     }
 
     public static void Reset(string dirPath)

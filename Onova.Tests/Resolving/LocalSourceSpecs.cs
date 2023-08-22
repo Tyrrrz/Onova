@@ -12,16 +12,19 @@ namespace Onova.Tests.Resolving;
 
 public class LocalSourceSpecs : IDisposable
 {
-    private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(),
-        $"{nameof(LocalSourceSpecs)}_{Guid.NewGuid()}"
-    );
+    private string TempDirPath { get; } =
+        Path.Combine(
+            Directory.GetCurrentDirectory(),
+            $"{nameof(LocalSourceSpecs)}_{Guid.NewGuid()}"
+        );
 
     public LocalSourceSpecs() => DirectoryEx.Reset(TempDirPath);
 
     public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
 
-    private LocalPackageResolver CreateLocalPackageResolver(IReadOnlyDictionary<Version, byte[]> packages)
+    private LocalPackageResolver CreateLocalPackageResolver(
+        IReadOnlyDictionary<Version, byte[]> packages
+    )
     {
         foreach (var (version, data) in packages)
         {
@@ -33,7 +36,9 @@ public class LocalSourceSpecs : IDisposable
     }
 
     private LocalPackageResolver CreateLocalPackageResolver(IReadOnlyList<Version> versions) =>
-        CreateLocalPackageResolver(versions.ToDictionary(v => v, _ => new byte[] {1, 2, 3, 4, 5}));
+        CreateLocalPackageResolver(
+            versions.ToDictionary(v => v, _ => new byte[] { 1, 2, 3, 4, 5 })
+        );
 
     [Fact]
     public async Task I_can_use_a_local_directory_as_a_package_source()
@@ -41,9 +46,9 @@ public class LocalSourceSpecs : IDisposable
         // Arrange
         var availablePackages = new Dictionary<Version, byte[]>
         {
-            [Version.Parse("1.0")] = new byte[] {1, 2, 3},
-            [Version.Parse("2.0")] = new byte[] {4, 5, 6},
-            [Version.Parse("3.0")] = new byte[] {7, 8, 9}
+            [Version.Parse("1.0")] = new byte[] { 1, 2, 3 },
+            [Version.Parse("2.0")] = new byte[] { 4, 5, 6 },
+            [Version.Parse("3.0")] = new byte[] { 7, 8, 9 }
         };
 
         var resolver = CreateLocalPackageResolver(availablePackages);

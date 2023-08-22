@@ -12,10 +12,11 @@ namespace Onova.Tests.Resolving;
 
 public class NugetSourceSpecs : IDisposable
 {
-    private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(),
-        $"{nameof(NugetSourceSpecs)}_{Guid.NewGuid()}"
-    );
+    private string TempDirPath { get; } =
+        Path.Combine(
+            Directory.GetCurrentDirectory(),
+            $"{nameof(NugetSourceSpecs)}_{Guid.NewGuid()}"
+        );
 
     public NugetSourceSpecs() => DirectoryEx.Reset(TempDirPath);
 
@@ -53,11 +54,10 @@ public class NugetSourceSpecs : IDisposable
         var versions = await resolver.GetPackageVersionsAsync();
 
         // Assert
-        versions.Should().BeEquivalentTo(new[]
-        {
-            Version.Parse("1.0.0"),
-            Version.Parse("2.0.0"),
-            Version.Parse("3.0.0")
-        });
+        versions
+            .Should()
+            .BeEquivalentTo(
+                new[] { Version.Parse("1.0.0"), Version.Parse("2.0.0"), Version.Parse("3.0.0") }
+            );
     }
 }

@@ -33,9 +33,7 @@ public class WebPackageResolver : IPackageResolver
     /// Initializes an instance of <see cref="WebPackageResolver" />.
     /// </summary>
     public WebPackageResolver(string manifestUrl)
-        : this(Http.Client, manifestUrl)
-    {
-    }
+        : this(Http.Client, manifestUrl) { }
 
     private string ExpandRelativeUrl(string url)
     {
@@ -46,7 +44,8 @@ public class WebPackageResolver : IPackageResolver
     }
 
     private async Task<IReadOnlyDictionary<Version, string>> GetPackageVersionUrlMapAsync(
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var map = new Dictionary<Version, string>();
 
@@ -78,7 +77,9 @@ public class WebPackageResolver : IPackageResolver
     }
 
     /// <inheritdoc />
-    public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync(
+        CancellationToken cancellationToken = default
+    )
     {
         var versions = await GetPackageVersionUrlMapAsync(cancellationToken);
         return versions.Keys.ToArray();
@@ -89,7 +90,8 @@ public class WebPackageResolver : IPackageResolver
         Version version,
         string destFilePath,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         // Get map
         var map = await GetPackageVersionUrlMapAsync(cancellationToken);

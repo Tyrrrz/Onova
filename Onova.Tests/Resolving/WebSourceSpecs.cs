@@ -10,17 +10,17 @@ namespace Onova.Tests.Resolving;
 
 public class WebSourceSpecs : IDisposable
 {
-    private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(),
-        $"{nameof(WebSourceSpecs)}_{Guid.NewGuid()}"
-    );
+    private string TempDirPath { get; } =
+        Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(WebSourceSpecs)}_{Guid.NewGuid()}");
 
     public WebSourceSpecs() => DirectoryEx.Reset(TempDirPath);
 
     public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
 
     private WebPackageResolver CreateWebPackageResolver() =>
-        new("https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt");
+        new(
+            "https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt"
+        );
 
     [Fact]
     public async Task I_can_use_a_custom_web_server_as_a_package_source()
@@ -48,11 +48,10 @@ public class WebSourceSpecs : IDisposable
         var versions = await resolver.GetPackageVersionsAsync();
 
         // Assert
-        versions.Should().BeEquivalentTo(new[]
-        {
-            Version.Parse("1.0"),
-            Version.Parse("2.0"),
-            Version.Parse("3.0")
-        });
+        versions
+            .Should()
+            .BeEquivalentTo(
+                new[] { Version.Parse("1.0"), Version.Parse("2.0"), Version.Parse("3.0") }
+            );
     }
 }

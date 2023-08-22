@@ -7,14 +7,18 @@ namespace Onova.Updater.Utils;
 
 internal static class PathEx
 {
-    private static readonly StringComparison PathStringComparison =
-        RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-            ? StringComparison.OrdinalIgnoreCase
-            : StringComparison.Ordinal;
+    private static readonly StringComparison PathStringComparison = RuntimeInformation.IsOSPlatform(
+        OSPlatform.Windows
+    )
+        ? StringComparison.OrdinalIgnoreCase
+        : StringComparison.Ordinal;
 
     public static string GetRelativePath(string basePath, string path)
     {
-        var basePathSegments = basePath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var basePathSegments = basePath.Split(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar
+        );
         var pathSegments = path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
         var commonSegmentsCount = 0;

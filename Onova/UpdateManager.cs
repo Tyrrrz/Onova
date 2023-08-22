@@ -38,7 +38,11 @@ public class UpdateManager : IUpdateManager
     /// <summary>
     /// Initializes an instance of <see cref="UpdateManager" />.
     /// </summary>
-    public UpdateManager(AssemblyMetadata updatee, IPackageResolver resolver, IPackageExtractor extractor)
+    public UpdateManager(
+        AssemblyMetadata updatee,
+        IPackageResolver resolver,
+        IPackageExtractor extractor
+    )
     {
         Updatee = updatee;
         _resolver = resolver;
@@ -62,13 +66,13 @@ public class UpdateManager : IUpdateManager
     /// Initializes an instance of <see cref="UpdateManager" /> on the entry assembly.
     /// </summary>
     public UpdateManager(IPackageResolver resolver, IPackageExtractor extractor)
-        : this(AssemblyMetadata.FromEntryAssembly(), resolver, extractor)
-    {
-    }
+        : this(AssemblyMetadata.FromEntryAssembly(), resolver, extractor) { }
 
-    private string GetPackageFilePath(Version version) => Path.Combine(_storageDirPath, $"{version}.onv");
+    private string GetPackageFilePath(Version version) =>
+        Path.Combine(_storageDirPath, $"{version}.onv");
 
-    private string GetPackageContentDirPath(Version version) => Path.Combine(_storageDirPath, $"{version}");
+    private string GetPackageContentDirPath(Version version) =>
+        Path.Combine(_storageDirPath, $"{version}");
 
     private void EnsureNotDisposed()
     {
@@ -104,7 +108,9 @@ public class UpdateManager : IUpdateManager
     }
 
     /// <inheritdoc />
-    public async Task<CheckForUpdatesResult> CheckForUpdatesAsync(CancellationToken cancellationToken = default)
+    public async Task<CheckForUpdatesResult> CheckForUpdatesAsync(
+        CancellationToken cancellationToken = default
+    )
     {
         // Ensure that the current state is valid for this operation
         EnsureNotDisposed();
@@ -130,9 +136,9 @@ public class UpdateManager : IUpdateManager
         // Package content directory should exist
         // Package file should have been deleted after extraction
         // Updater file should exist
-        return !File.Exists(packageFilePath) &&
-               Directory.Exists(packageContentDirPath) &&
-               File.Exists(_updaterFilePath);
+        return !File.Exists(packageFilePath)
+            && Directory.Exists(packageContentDirPath)
+            && File.Exists(_updaterFilePath);
     }
 
     /// <inheritdoc />
@@ -152,8 +158,10 @@ public class UpdateManager : IUpdateManager
                 var packageContentDirName = Path.GetFileName(packageContentDirPath);
 
                 // Try to extract version out of the name
-                if (string.IsNullOrWhiteSpace(packageContentDirName) ||
-                    !Version.TryParse(packageContentDirName, out var version))
+                if (
+                    string.IsNullOrWhiteSpace(packageContentDirName)
+                    || !Version.TryParse(packageContentDirName, out var version)
+                )
                 {
                     continue;
                 }
@@ -170,8 +178,11 @@ public class UpdateManager : IUpdateManager
     }
 
     /// <inheritdoc />
-    public async Task PrepareUpdateAsync(Version version,
-        IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+    public async Task PrepareUpdateAsync(
+        Version version,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default
+    )
     {
         // Ensure that the current state is valid for this operation
         EnsureNotDisposed();
@@ -179,9 +190,7 @@ public class UpdateManager : IUpdateManager
         EnsureUpdaterNotLaunched();
 
         // Set up progress mixer
-        var progressMixer = progress != null
-            ? new ProgressMixer(progress)
-            : null;
+        var progressMixer = progress != null ? new ProgressMixer(progress) : null;
 
         // Get package file path and content directory path
         var packageFilePath = GetPackageFilePath(version);
@@ -191,7 +200,9 @@ public class UpdateManager : IUpdateManager
         Directory.CreateDirectory(_storageDirPath);
 
         // Download package
-        await _resolver.DownloadPackageAsync(version, packageFilePath,
+        await _resolver.DownloadPackageAsync(
+            version,
+            packageFilePath,
             progressMixer?.Split(0.9), // 0% -> 90%
             cancellationToken
         );
@@ -200,7 +211,9 @@ public class UpdateManager : IUpdateManager
         DirectoryEx.Reset(packageContentDirPath);
 
         // Extract package contents
-        await _extractor.ExtractPackageAsync(packageFilePath, packageContentDirPath,
+        await _extractor.ExtractPackageAsync(
+            packageFilePath,
+            packageContentDirPath,
             progressMixer?.Split(0.1), // 90% -> 100%
             cancellationToken
         );
@@ -209,16 +222,17 @@ public class UpdateManager : IUpdateManager
         File.Delete(packageFilePath);
 
         // Extract the updater
-        await Assembly.GetExecutingAssembly().ExtractManifestResourceAsync(
-            UpdaterResourceName,
-            _updaterFilePath
-        );
+        await Assembly
+            .GetExecutingAssembly()
+            .ExtractManifestResourceAsync(UpdaterResourceName, _updaterFilePath);
 
         // Extract the updater runtime config
-        await Assembly.GetExecutingAssembly().ExtractManifestResourceAsync(
-            UpdaterResourceName + ".config",
-            _updaterFilePath + ".config"
-        );
+        await Assembly
+            .GetExecutingAssembly()
+            .ExtractManifestResourceAsync(
+                UpdaterResourceName + ".config",
+                _updaterFilePath + ".config"
+            );
     }
 
     /// <inheritdoc />
@@ -241,7 +255,8 @@ public class UpdateManager : IUpdateManager
 
         // Create the updater process
         var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        var updaterArgs = $"\"{Updatee.FilePath}\" \"{packageContentDirPath}\" \"{restart}\" \"{routedArgs}\"";
+        var updaterArgs =
+            $"\"{Updatee.FilePath}\" \"{packageContentDirPath}\" \"{restart}\" \"{routedArgs}\"";
 
         using var updaterProcess = new Process
         {

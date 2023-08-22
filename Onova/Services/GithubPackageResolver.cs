@@ -38,7 +38,8 @@ public class GithubPackageResolver : IPackageResolver
         string apiBaseAddress,
         string repositoryOwner,
         string repositoryName,
-        string assetNamePattern)
+        string assetNamePattern
+    )
     {
         _httpClient = httpClient;
         _apiBaseAddress = apiBaseAddress;
@@ -54,10 +55,15 @@ public class GithubPackageResolver : IPackageResolver
         HttpClient httpClient,
         string repositoryOwner,
         string repositoryName,
-        string assetNamePattern)
-        : this(httpClient, "https://api.github.com", repositoryOwner, repositoryName, assetNamePattern)
-    {
-    }
+        string assetNamePattern
+    )
+        : this(
+            httpClient,
+            "https://api.github.com",
+            repositoryOwner,
+            repositoryName,
+            assetNamePattern
+        ) { }
 
     /// <summary>
     /// Initializes an instance of <see cref="GithubPackageResolver" />.
@@ -66,10 +72,9 @@ public class GithubPackageResolver : IPackageResolver
         string apiBaseAddress,
         string repositoryOwner,
         string repositoryName,
-        string assetNamePattern)
-        : this(Http.Client, apiBaseAddress, repositoryOwner, repositoryName, assetNamePattern)
-    {
-    }
+        string assetNamePattern
+    )
+        : this(Http.Client, apiBaseAddress, repositoryOwner, repositoryName, assetNamePattern) { }
 
     /// <summary>
     /// Initializes an instance of <see cref="GithubPackageResolver" />.
@@ -77,10 +82,9 @@ public class GithubPackageResolver : IPackageResolver
     public GithubPackageResolver(
         string repositoryOwner,
         string repositoryName,
-        string assetNamePattern)
-        : this(Http.Client, repositoryOwner, repositoryName, assetNamePattern)
-    {
-    }
+        string assetNamePattern
+    )
+        : this(Http.Client, repositoryOwner, repositoryName, assetNamePattern) { }
 
     private IReadOnlyDictionary<Version, string> ParsePackageVersionUrlMap(JsonElement releasesJson)
     {
@@ -90,14 +94,16 @@ public class GithubPackageResolver : IPackageResolver
         {
             // Get release name
             var releaseName =
-                releaseJson.GetProperty("name").GetString() ??
-                releaseJson.GetProperty("tag_name").GetString();
+                releaseJson.GetProperty("name").GetString()
+                ?? releaseJson.GetProperty("tag_name").GetString();
 
             if (string.IsNullOrWhiteSpace(releaseName))
                 continue;
 
             // Try to parse version
-            var versionText = Regex.Match(releaseName, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
+            var versionText = Regex
+                .Match(releaseName, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)")
+                .Groups[1].Value;
             if (!Version.TryParse(versionText, out var version))
                 continue;
 
@@ -114,7 +120,10 @@ public class GithubPackageResolver : IPackageResolver
                 var assetUrl = assetJson.GetProperty("url").GetString();
 
                 // See if name matches
-                if (string.IsNullOrWhiteSpace(assetName) || !WildcardPattern.IsMatch(assetName, _assetNamePattern))
+                if (
+                    string.IsNullOrWhiteSpace(assetName)
+                    || !WildcardPattern.IsMatch(assetName, _assetNamePattern)
+                )
                     continue;
 
                 // Add to dictionary
@@ -126,7 +135,8 @@ public class GithubPackageResolver : IPackageResolver
     }
 
     private async Task<IReadOnlyDictionary<Version, string>> GetPackageVersionUrlMapAsync(
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         // Get releases
         var url = $"{_apiBaseAddress}/repos/{_repositoryOwner}/{_repositoryName}/releases";
@@ -163,15 +173,21 @@ public class GithubPackageResolver : IPackageResolver
     }
 
     /// <inheritdoc />
-    public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync(
+        CancellationToken cancellationToken = default
+    )
     {
         var versions = await GetPackageVersionUrlMapAsync(cancellationToken);
         return versions.Keys.ToArray();
     }
 
     /// <inheritdoc />
-    public async Task DownloadPackageAsync(Version version, string destFilePath,
-        IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+    public async Task DownloadPackageAsync(
+        Version version,
+        string destFilePath,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default
+    )
     {
         // Get map
         var map = await GetPackageVersionUrlMapAsync(cancellationToken);

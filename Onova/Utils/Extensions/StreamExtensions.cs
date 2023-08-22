@@ -11,7 +11,8 @@ internal static class StreamExtensions
         this Stream source,
         Stream destination,
         byte[] buffer,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         var bytesCopied = await source.ReadAsync(buffer, cancellationToken);
         await destination.WriteAsync(buffer, 0, bytesCopied, cancellationToken);
@@ -23,7 +24,8 @@ internal static class StreamExtensions
         this Stream source,
         Stream destination,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         using var buffer = PooledBuffer.ForStream();
 
@@ -31,7 +33,11 @@ internal static class StreamExtensions
         int bytesCopied;
         do
         {
-            bytesCopied = await source.CopyBufferedToAsync(destination, buffer.Array, cancellationToken);
+            bytesCopied = await source.CopyBufferedToAsync(
+                destination,
+                buffer.Array,
+                cancellationToken
+            );
             totalBytesCopied += bytesCopied;
 
             progress?.Report(1.0 * totalBytesCopied / source.Length);

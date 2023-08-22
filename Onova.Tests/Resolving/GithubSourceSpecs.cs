@@ -12,10 +12,11 @@ namespace Onova.Tests.Resolving;
 
 public class GithubSourceSpecs : IDisposable
 {
-    private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(),
-        $"{nameof(GithubSourceSpecs)}_{Guid.NewGuid()}"
-    );
+    private string TempDirPath { get; } =
+        Path.Combine(
+            Directory.GetCurrentDirectory(),
+            $"{nameof(GithubSourceSpecs)}_{Guid.NewGuid()}"
+        );
 
     public GithubSourceSpecs() => DirectoryEx.Reset(TempDirPath);
 
@@ -31,7 +32,9 @@ public class GithubSourceSpecs : IDisposable
         var accessToken = Environment.GetEnvironmentVariable("TEST_GITHUB_TOKEN");
         if (!string.IsNullOrWhiteSpace(accessToken))
         {
-            httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(accessToken);
+            httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(
+                accessToken
+            );
         }
 
         return new GithubPackageResolver(httpClient, "Tyrrrz", "OnovaTestRepo", "*.onv");
@@ -64,11 +67,10 @@ public class GithubSourceSpecs : IDisposable
         var versions = await resolver.GetPackageVersionsAsync();
 
         // Assert
-        versions.Should().BeEquivalentTo(new[]
-        {
-            Version.Parse("1.0"),
-            Version.Parse("2.0"),
-            Version.Parse("3.0")
-        });
+        versions
+            .Should()
+            .BeEquivalentTo(
+                new[] { Version.Parse("1.0"), Version.Parse("2.0"), Version.Parse("3.0") }
+            );
     }
 }

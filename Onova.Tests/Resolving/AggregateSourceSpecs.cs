@@ -12,16 +12,19 @@ namespace Onova.Tests.Resolving;
 
 public class AggregateSourceSpecs : IDisposable
 {
-    private string TempDirPath { get; } = Path.Combine(
-        Directory.GetCurrentDirectory(),
-        $"{nameof(AggregateSourceSpecs)}_{Guid.NewGuid()}"
-    );
+    private string TempDirPath { get; } =
+        Path.Combine(
+            Directory.GetCurrentDirectory(),
+            $"{nameof(AggregateSourceSpecs)}_{Guid.NewGuid()}"
+        );
 
     public AggregateSourceSpecs() => DirectoryEx.Reset(TempDirPath);
 
     public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
 
-    private LocalPackageResolver CreateLocalPackageResolver(IReadOnlyDictionary<Version, byte[]> packages)
+    private LocalPackageResolver CreateLocalPackageResolver(
+        IReadOnlyDictionary<Version, byte[]> packages
+    )
     {
         foreach (var (version, data) in packages)
         {
@@ -32,10 +35,16 @@ public class AggregateSourceSpecs : IDisposable
         return new LocalPackageResolver(TempDirPath, "*.onv");
     }
 
-    private AggregatePackageResolver CreateAggregatePackageResolver(IReadOnlyDictionary<Version, byte[]> packages)
+    private AggregatePackageResolver CreateAggregatePackageResolver(
+        IReadOnlyDictionary<Version, byte[]> packages
+    )
     {
-        var packages1 = packages.Take(packages.Count / 2).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-        var packages2 = packages.Skip(packages.Count / 2).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        var packages1 = packages
+            .Take(packages.Count / 2)
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        var packages2 = packages
+            .Skip(packages.Count / 2)
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
         var repository1DirPath = Path.Combine(TempDirPath, "1");
         var repository2DirPath = Path.Combine(TempDirPath, "2");
@@ -49,8 +58,12 @@ public class AggregateSourceSpecs : IDisposable
         return new AggregatePackageResolver(resolver1, resolver2);
     }
 
-    private AggregatePackageResolver CreateAggregatePackageResolver(IReadOnlyList<Version> versions) =>
-        CreateAggregatePackageResolver(versions.ToDictionary(v => v, _ => new byte[] {1, 2, 3, 4, 5}));
+    private AggregatePackageResolver CreateAggregatePackageResolver(
+        IReadOnlyList<Version> versions
+    ) =>
+        CreateAggregatePackageResolver(
+            versions.ToDictionary(v => v, _ => new byte[] { 1, 2, 3, 4, 5 })
+        );
 
     [Fact]
     public async Task I_can_use_multiple_different_package_sources_at_once()
@@ -58,9 +71,9 @@ public class AggregateSourceSpecs : IDisposable
         // Arrange
         var availablePackages = new Dictionary<Version, byte[]>
         {
-            [Version.Parse("1.0")] = new byte[] {1, 2, 3},
-            [Version.Parse("2.0")] = new byte[] {4, 5, 6},
-            [Version.Parse("3.0")] = new byte[] {7, 8, 9}
+            [Version.Parse("1.0")] = new byte[] { 1, 2, 3 },
+            [Version.Parse("2.0")] = new byte[] { 4, 5, 6 },
+            [Version.Parse("3.0")] = new byte[] { 7, 8, 9 }
         };
 
         var resolver = CreateAggregatePackageResolver(availablePackages);

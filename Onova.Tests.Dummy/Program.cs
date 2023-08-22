@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Onova.Services;
 
 namespace Onova.Tests.Dummy;
+
 // This executable is used as dummy for end-to-end testing.
 // It can print its current version and use Onova to update.
 
@@ -15,7 +16,8 @@ public static class Program
 
     private static string AssemblyDirPath => AppDomain.CurrentDomain.BaseDirectory!;
 
-    private static string LastRunFilePath => Path.Combine(AssemblyDirPath, $"lastrun-{Version}.txt");
+    private static string LastRunFilePath =>
+        Path.Combine(AssemblyDirPath, $"lastrun-{Version}.txt");
 
     private static string PackagesDirPath => Path.Combine(AssemblyDirPath, "Packages");
 

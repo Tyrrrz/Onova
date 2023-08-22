@@ -17,32 +17,33 @@ internal static class DirectoryEx
 
         try
         {
-            foreach (var sourceFilePath in Directory.GetFiles(sourceDirPath, "*", SearchOption.AllDirectories))
+            foreach (
+                var sourceFilePath in Directory.GetFiles(
+                    sourceDirPath,
+                    "*",
+                    SearchOption.AllDirectories
+                )
+            )
             {
-                sourceStreams.Add(File.Open(
-                    sourceFilePath,
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.Read
-                ));
+                sourceStreams.Add(
+                    File.Open(sourceFilePath, FileMode.Open, FileAccess.Read, FileShare.Read)
+                );
 
                 var destFilePath = Path.Combine(
                     destDirPath,
                     PathEx.GetRelativePath(sourceDirPath, sourceFilePath)
                 );
 
-                Directory.CreateDirectory(
-                    Path.GetDirectoryName(destFilePath) ?? destDirPath
-                );
+                Directory.CreateDirectory(Path.GetDirectoryName(destFilePath) ?? destDirPath);
 
-                destStreams.Add(File.Open(
-                    destFilePath,
-                    overwrite
-                        ? FileMode.OpenOrCreate
-                        : FileMode.CreateNew,
-                    FileAccess.ReadWrite,
-                    FileShare.None
-                ));
+                destStreams.Add(
+                    File.Open(
+                        destFilePath,
+                        overwrite ? FileMode.OpenOrCreate : FileMode.CreateNew,
+                        FileAccess.ReadWrite,
+                        FileShare.None
+                    )
+                );
             }
 
             // Copy data from the source files to the destination files

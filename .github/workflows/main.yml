@@ -2,6 +2,9 @@ name: main
 
 on: [push, pull_request]
 
+env:
+  TEST_GITHUB_TOKEN: ${{ secrets.TEST_GITHUB_TOKEN }}
+
 jobs:
   main:
     uses: Tyrrrz/.github/.github/workflows/nuget.yml@master
@@ -11,5 +14,3 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      DYNAMIC: |
-        TEST_GITHUB_TOKEN=${{ secrets.TEST_GITHUB_TOKEN }}

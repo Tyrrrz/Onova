@@ -49,7 +49,8 @@ public class LocalPackageResolver : IPackageResolver
             var fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath) ?? "";
             var versionText = Regex
                 .Match(fileNameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)")
-                .Groups[1].Value;
+                .Groups[1]
+                .Value;
             if (!Version.TryParse(versionText, out var version))
                 continue;
 

@@ -36,7 +36,8 @@ public class NugetPackageExtractor : IPackageExtractor
         using var archive = ZipFile.OpenRead(sourceFilePath);
 
         // Get entries in the content directory
-        var entries = archive.Entries
+        var entries = archive
+            .Entries
             .Where(e => e.FullName.StartsWith(_rootDirPath, StringComparison.OrdinalIgnoreCase))
             .ToArray();
 

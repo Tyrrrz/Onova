@@ -103,7 +103,8 @@ public class GithubPackageResolver : IPackageResolver
             // Try to parse version
             var versionText = Regex
                 .Match(releaseName, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)")
-                .Groups[1].Value;
+                .Groups[1]
+                .Value;
             if (!Version.TryParse(versionText, out var version))
                 continue;
 

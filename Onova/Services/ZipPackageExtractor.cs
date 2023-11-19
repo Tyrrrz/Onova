@@ -19,7 +19,8 @@ public class ZipPackageExtractor : IPackageExtractor
         string sourceFilePath,
         string destDirPath,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         // Read the zip
         using var archive = ZipFile.OpenRead(sourceFilePath);
@@ -40,8 +41,10 @@ public class ZipPackageExtractor : IPackageExtractor
                 Directory.CreateDirectory(entryDestDirPath);
 
             // If the entry is a directory - continue
-            if (entry.FullName.Last() == Path.DirectorySeparatorChar ||
-                entry.FullName.Last() == Path.AltDirectorySeparatorChar)
+            if (
+                entry.FullName.Last() == Path.DirectorySeparatorChar
+                || entry.FullName.Last() == Path.AltDirectorySeparatorChar
+            )
                 continue;
 
             // Extract entry
@@ -49,15 +52,17 @@ public class ZipPackageExtractor : IPackageExtractor
             using var output = File.Create(entryDestFilePath);
 
             using var buffer = PooledBuffer.ForStream();
-            while (true)
+            int bytesCopied;
+            do
             {
-                var bytesCopied = await input.CopyBufferedToAsync(output, buffer.Array, cancellationToken);
-                if (bytesCopied <= 0)
-                    break;
-
+                bytesCopied = await input.CopyBufferedToAsync(
+                    output,
+                    buffer.Array,
+                    cancellationToken
+                );
                 totalBytesCopied += bytesCopied;
                 progress?.Report(1.0 * totalBytesCopied / totalBytes);
-            }
+            } while (bytesCopied > 0);
         }
     }
 }

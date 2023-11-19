@@ -5,17 +5,21 @@ namespace Onova.Utils.Extensions;
 
 internal static class StringExtensions
 {
-    public static string SubstringUntil(this string s, string sub,
-        StringComparison comparison = StringComparison.Ordinal)
+    public static string SubstringUntil(
+        this string s,
+        string sub,
+        StringComparison comparison = StringComparison.Ordinal
+    )
     {
         var index = s.IndexOf(sub, comparison);
-        return index >= 0
-            ? s[..index]
-            : s;
+        return index >= 0 ? s[..index] : s;
     }
 
-    public static string SubstringAfter(this string s, string sub,
-        StringComparison comparison = StringComparison.Ordinal)
+    public static string SubstringAfter(
+        this string s,
+        string sub,
+        StringComparison comparison = StringComparison.Ordinal
+    )
     {
         var index = s.IndexOf(sub, comparison);
         return index >= 0

@@ -13,7 +13,9 @@ public interface IPackageResolver
     /// <summary>
     /// Gets all available package versions.
     /// </summary>
-    Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Version>> GetPackageVersionsAsync(
+        CancellationToken cancellationToken = default
+    );
 
     /// <summary>
     /// Downloads given package version.

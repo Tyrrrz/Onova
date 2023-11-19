@@ -29,13 +29,15 @@ public class NugetPackageExtractor : IPackageExtractor
         string sourceFilePath,
         string destDirPath,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         // Read the zip
         using var archive = ZipFile.OpenRead(sourceFilePath);
 
         // Get entries in the content directory
-        var entries = archive.Entries
+        var entries = archive
+            .Entries
             .Where(e => e.FullName.StartsWith(_rootDirPath, StringComparison.OrdinalIgnoreCase))
             .ToArray();
 
@@ -58,7 +60,10 @@ public class NugetPackageExtractor : IPackageExtractor
                 Directory.CreateDirectory(entryDestDirPath);
 
             // If the entry is a directory - continue
-            if (entry.FullName.Last() == Path.DirectorySeparatorChar || entry.FullName.Last() == Path.AltDirectorySeparatorChar)
+            if (
+                entry.FullName.Last() == Path.DirectorySeparatorChar
+                || entry.FullName.Last() == Path.AltDirectorySeparatorChar
+            )
                 continue;
 
             // Extract entry
@@ -66,15 +71,17 @@ public class NugetPackageExtractor : IPackageExtractor
             using var output = File.Create(entryDestFilePath);
 
             using var buffer = PooledBuffer.ForStream();
-            while (true)
+            int bytesCopied;
+            do
             {
-                var bytesCopied = await input.CopyBufferedToAsync(output, buffer.Array, cancellationToken);
-                if (bytesCopied <= 0)
-                    break;
-
+                bytesCopied = await input.CopyBufferedToAsync(
+                    output,
+                    buffer.Array,
+                    cancellationToken
+                );
                 totalBytesCopied += bytesCopied;
                 progress?.Report(1.0 * totalBytesCopied / totalBytes);
-            }
+            } while (bytesCopied > 0);
         }
     }
 }

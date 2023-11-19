@@ -47,7 +47,10 @@ public class LocalPackageResolver : IPackageResolver
 
             // Try to parse version
             var fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath) ?? "";
-            var versionText = Regex.Match(fileNameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)").Groups[1].Value;
+            var versionText = Regex
+                .Match(fileNameWithoutExt, "(\\d+\\.\\d+(?:\\.\\d+)?(?:\\.\\d+)?)")
+                .Groups[1]
+                .Value;
             if (!Version.TryParse(versionText, out var version))
                 continue;
 
@@ -59,15 +62,21 @@ public class LocalPackageResolver : IPackageResolver
     }
 
     /// <inheritdoc />
-    public Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default)
+    public Task<IReadOnlyList<Version>> GetPackageVersionsAsync(
+        CancellationToken cancellationToken = default
+    )
     {
         var versions = GetPackageVersionFilePathMap().Keys.ToArray();
-        return Task.FromResult((IReadOnlyList<Version>) versions);
+        return Task.FromResult((IReadOnlyList<Version>)versions);
     }
 
     /// <inheritdoc />
-    public async Task DownloadPackageAsync(Version version, string destFilePath,
-        IProgress<double>? progress = null, CancellationToken cancellationToken = default)
+    public async Task DownloadPackageAsync(
+        Version version,
+        string destFilePath,
+        IProgress<double>? progress = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var map = GetPackageVersionFilePathMap();
 

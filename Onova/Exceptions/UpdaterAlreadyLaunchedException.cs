@@ -11,7 +11,7 @@ public class UpdaterAlreadyLaunchedException : Exception
     /// Initializes an instance of <see cref="UpdaterAlreadyLaunchedException" />.
     /// </summary>
     public UpdaterAlreadyLaunchedException()
-        : base("Updater has already been launched, either by this or another instance of the application.")
-    {
-    }
+        : base(
+            "Updater has already been launched, either by this or another instance of the application."
+        ) { }
 }

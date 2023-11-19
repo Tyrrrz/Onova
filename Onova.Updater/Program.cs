@@ -14,7 +14,12 @@ public static class Program
         var restartUpdatee = bool.Parse(args[2]);
         var routedArgs = args[3].FromBase64().GetString();
 
-        using var updater = new Updater(updateeFilePath, packageContentDirPath, restartUpdatee, routedArgs);
+        using var updater = new Updater(
+            updateeFilePath,
+            packageContentDirPath,
+            restartUpdatee,
+            routedArgs
+        );
         updater.Run();
     }
 }

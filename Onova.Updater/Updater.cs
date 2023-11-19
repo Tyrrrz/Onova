@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -20,13 +19,12 @@ public class Updater : IDisposable
         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log.txt")
     );
 
-    private IDisposable? _updateeDirLock;
-
     public Updater(
         string updateeFilePath,
         string packageContentDirPath,
         bool restartUpdatee,
-        string routedArgs)
+        string routedArgs
+    )
     {
         _updateeFilePath = updateeFilePath;
         _packageContentDirPath = packageContentDirPath;
@@ -36,26 +34,26 @@ public class Updater : IDisposable
 
     private void WriteLog(string content)
     {
-        var date = DateTimeOffset.Now.ToString("dd-MMM-yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture);
+        var date = DateTimeOffset
+            .Now
+            .ToString("dd-MMM-yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture);
         _log.WriteLine($"{date}> {content}");
         _log.Flush();
     }
 
-    private void AcquireLock()
+    private void WaitForUpdateeExit()
     {
-        WriteLog("Locking the updatee directory...");
-        for (var retriesRemaining = 5;; retriesRemaining--)
+        WriteLog("Waiting for updatee to exit...");
+
+        for (var retriesRemaining = 15; retriesRemaining > 0; retriesRemaining--)
         {
-            try
-            {
-                _updateeDirLock = DirectoryEx.Lock(Path.GetDirectoryName(_updateeFilePath)!);
-                break;
-            }
-            catch (Win32Exception) when (retriesRemaining > 0)
-            {
-                Thread.Sleep(1000);
-            }
+            if (FileEx.CheckWriteAccess(_updateeFilePath))
+                return;
+
+            Thread.Sleep(1000);
         }
+
+        throw new TimeoutException("Updatee did not exit in time.");
     }
 
     private void ApplyUpdate()
@@ -83,18 +81,24 @@ public class Updater : IDisposable
             {
                 WorkingDirectory = Path.GetDirectoryName(_updateeFilePath),
                 Arguments = _routedArgs,
-                // Don't let the child process inherited the current console window
+                // Don't let the child process inherit the current console window
                 UseShellExecute = true
             }
         };
 
         // If the updatee is an .exe file, start it directly.
         // This covers self-contained .NET Core apps and legacy .NET Framework apps.
-        if (string.Equals(Path.GetExtension(_updateeFilePath), "exe", StringComparison.OrdinalIgnoreCase))
+        if (
+            string.Equals(
+                Path.GetExtension(_updateeFilePath),
+                "exe",
+                StringComparison.OrdinalIgnoreCase
+            )
+        )
         {
             process.StartInfo.FileName = _updateeFilePath;
         }
-        // Otherwise, locate the apphost by looking for the .exe file with same name.
+        // Otherwise, locate the apphost by looking for the .exe file with the same name.
         // This covers framework-dependent .NET Core apps.
         else if (File.Exists(Path.ChangeExtension(_updateeFilePath, "exe")))
         {
@@ -105,13 +109,16 @@ public class Updater : IDisposable
         {
             process.StartInfo.FileName = Path.GetFileNameWithoutExtension(_updateeFilePath);
         }
-        // As fallback, try to run the updatee through the .NET CLI
+        // As a fallback, try to run the updatee through the .NET CLI
+        else
         {
             process.StartInfo.FileName = "dotnet";
             process.StartInfo.Arguments = $"{_updateeFilePath} {_routedArgs}";
         }
 
-        WriteLog($"Restarting updatee [{process.StartInfo.FileName} {process.StartInfo.Arguments}]...");
+        WriteLog(
+            $"Restarting updatee [{process.StartInfo.FileName} {process.StartInfo.Arguments}]..."
+        );
         process.Start();
         WriteLog($"Restarted with process ID: {process.Id}.");
     }
@@ -132,7 +139,7 @@ public class Updater : IDisposable
                 """
             );
 
-            AcquireLock();
+            WaitForUpdateeExit();
             ApplyUpdate();
 
             if (_restartUpdatee)
@@ -149,6 +156,5 @@ public class Updater : IDisposable
     public void Dispose()
     {
         _log.Dispose();
-        _updateeDirLock?.Dispose();
     }
 }

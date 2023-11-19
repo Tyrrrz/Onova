@@ -11,7 +11,8 @@ internal static class HttpClientExtensions
 {
     public static async Task<JsonElement> ReadAsJsonAsync(
         this HttpContent content,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         using var stream = await content.ReadAsStreamAsync();
         using var document = await JsonDocument.ParseAsync(stream, default, cancellationToken);
@@ -22,7 +23,8 @@ internal static class HttpClientExtensions
     public static async Task<JsonElement> GetJsonAsync(
         this HttpClient client,
         string requestUri,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         using var response = await client.GetAsync(
             requestUri,
@@ -39,7 +41,8 @@ internal static class HttpClientExtensions
         this HttpContent content,
         Stream destination,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         var length = content.Headers.ContentLength;
         using var source = await content.ReadAsStreamAsync();
@@ -47,16 +50,18 @@ internal static class HttpClientExtensions
         using var buffer = PooledBuffer.ForStream();
 
         var totalBytesCopied = 0L;
-        while (true)
+        int bytesCopied;
+        do
         {
-            var bytesCopied = await source.CopyBufferedToAsync(destination, buffer.Array, cancellationToken);
-            if (bytesCopied <= 0)
-                break;
-
+            bytesCopied = await source.CopyBufferedToAsync(
+                destination,
+                buffer.Array,
+                cancellationToken
+            );
             totalBytesCopied += bytesCopied;
 
             if (length != null)
                 progress?.Report(1.0 * totalBytesCopied / length.Value);
-        }
+        } while (bytesCopied > 0);
     }
 }

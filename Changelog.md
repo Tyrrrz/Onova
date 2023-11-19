@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.6.10 (18-Jul-2023)
+
+- Fixed an issue where the updater failed to create subdirectories in the application directory.
+
+## v2.6.9 (05-Jun-2023)
+
+- Fixed an issue which caused the update process to fail if the application directory was locked by another process in read-only mode.
+- Fixed an issue where the updatee was restarted using the .NET CLI instead of the apphost.
+
+## v2.6.8 (18-May-2023)
+
+- Changed the way the updater executable applies the update. Now, instead of waiting for the updatee to exit and obtaining a lock on the entry assembly file, it obtains a lock on the entire directory. This should help prevent issues where multiple processes attempted to modify target files, resulting in a corrupted state.
+
 ## v2.6.7 (27-Apr-2023)
 
 - Improved support for older target frameworks via polyfills.

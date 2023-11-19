@@ -7,8 +7,7 @@ internal partial class LockFile : IDisposable
 {
     private readonly FileStream _fileStream;
 
-    public LockFile(FileStream fileStream) =>
-        _fileStream = fileStream;
+    public LockFile(FileStream fileStream) => _fileStream = fileStream;
 
     public void Dispose() => _fileStream.Dispose();
 }
@@ -19,7 +18,12 @@ internal partial class LockFile
     {
         try
         {
-            var fileStream = File.Open(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+            var fileStream = File.Open(
+                filePath,
+                FileMode.Create,
+                FileAccess.ReadWrite,
+                FileShare.None
+            );
             return new LockFile(fileStream);
         }
         // This is the most specific exception for "access denied"

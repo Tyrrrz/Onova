@@ -37,11 +37,11 @@ public class NugetPackageResolver : IPackageResolver
     /// Initializes an instance of <see cref="NugetPackageResolver" />.
     /// </summary>
     public NugetPackageResolver(string serviceIndexUrl, string packageId)
-        : this(Http.Client, serviceIndexUrl, packageId)
-    {
-    }
+        : this(Http.Client, serviceIndexUrl, packageId) { }
 
-    private async Task<string> GetPackageBaseAddressResourceUrlAsync(CancellationToken cancellationToken)
+    private async Task<string> GetPackageBaseAddressResourceUrlAsync(
+        CancellationToken cancellationToken
+    )
     {
         // Get all available resources
         var responseJson = await _httpClient.GetJsonAsync(_serviceIndexUrl, cancellationToken);
@@ -52,7 +52,13 @@ public class NugetPackageResolver : IPackageResolver
         {
             // Check resource type
             var resourceType = resourceJson.GetProperty("@type").GetString();
-            if (string.Equals(resourceType, "PackageBaseAddress/3.0.0", StringComparison.OrdinalIgnoreCase))
+            if (
+                string.Equals(
+                    resourceType,
+                    "PackageBaseAddress/3.0.0",
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
                 return resourceJson.GetProperty("@id").GetString();
         }
 
@@ -61,7 +67,9 @@ public class NugetPackageResolver : IPackageResolver
     }
 
     /// <inheritdoc />
-    public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync(
+        CancellationToken cancellationToken = default
+    )
     {
         // Get package base address resource URL
         var resourceUrl = await GetPackageBaseAddressResourceUrlAsync(cancellationToken);
@@ -88,16 +96,22 @@ public class NugetPackageResolver : IPackageResolver
         Version version,
         string destFilePath,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         // Get package base address resource URL
         var resourceUrl = await GetPackageBaseAddressResourceUrlAsync(cancellationToken);
 
         // Get package URL
-        var packageUrl = $"{resourceUrl}/{PackageIdNormalized}/{version}/{PackageIdNormalized}.{version}.nupkg";
+        var packageUrl =
+            $"{resourceUrl}/{PackageIdNormalized}/{version}/{PackageIdNormalized}.{version}.nupkg";
 
         // Get response
-        using var response = await _httpClient.GetAsync(packageUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        using var response = await _httpClient.GetAsync(
+            packageUrl,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken
+        );
 
         // If status code is 404 then this version doesn't exist
         if (response.StatusCode == HttpStatusCode.NotFound)

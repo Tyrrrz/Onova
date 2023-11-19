@@ -15,7 +15,9 @@ internal class DummyEnvironment : IDisposable
 {
     private static readonly Assembly DummyAssembly = typeof(Dummy.Program).Assembly;
     private static readonly string DummyAssemblyFileName = Path.GetFileName(DummyAssembly.Location);
-    private static readonly string DummyAssemblyDirPath = Path.GetDirectoryName(DummyAssembly.Location)!;
+    private static readonly string DummyAssemblyDirPath = Path.GetDirectoryName(
+        DummyAssembly.Location
+    )!;
 
     private readonly string _rootDirPath;
 
@@ -69,7 +71,12 @@ internal class DummyEnvironment : IDisposable
         SetAssemblyVersion(dummyTempFilePath, version);
 
         // Create package
-        using (var zip = ZipFile.Open(Path.Combine(DummyPackagesDirPath, $"{version}.onv"), ZipArchiveMode.Create))
+        using (
+            var zip = ZipFile.Open(
+                Path.Combine(DummyPackagesDirPath, $"{version}.onv"),
+                ZipArchiveMode.Create
+            )
+        )
             zip.CreateEntryFromFile(dummyTempFilePath, DummyAssemblyFileName);
 
         // Delete temp file
@@ -80,7 +87,7 @@ internal class DummyEnvironment : IDisposable
     {
         // Sometimes this fails for some reason, even when dummy has already exited.
         // Use a retry policy to circumvent that.
-        for (var retriesRemaining = 5;; retriesRemaining--)
+        for (var retriesRemaining = 5; ; retriesRemaining--)
         {
             try
             {
@@ -127,9 +134,7 @@ internal class DummyEnvironment : IDisposable
     public async Task<string> RunDummyAsync(params string[] arguments)
     {
         var result = await Cli.Wrap("dotnet")
-            .WithArguments(a => a
-                .Add(DummyFilePath)
-                .Add(arguments))
+            .WithArguments(a => a.Add(DummyFilePath).Add(arguments))
             .ExecuteBufferedAsync();
 
         return result.StandardOutput;

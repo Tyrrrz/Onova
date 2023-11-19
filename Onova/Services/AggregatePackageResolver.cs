@@ -27,12 +27,12 @@ public class AggregatePackageResolver : IPackageResolver
     /// Initializes an instance of <see cref="AggregatePackageResolver" />.
     /// </summary>
     public AggregatePackageResolver(params IPackageResolver[] resolvers)
-        : this((IReadOnlyList<IPackageResolver>) resolvers)
-    {
-    }
+        : this((IReadOnlyList<IPackageResolver>)resolvers) { }
 
     /// <inheritdoc />
-    public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync(
+        CancellationToken cancellationToken = default
+    )
     {
         var aggregateVersions = new HashSet<Version>();
 
@@ -48,7 +48,8 @@ public class AggregatePackageResolver : IPackageResolver
 
     private async Task<IPackageResolver?> TryGetResolverForPackageAsync(
         Version version,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         // Try to find the first resolver that has this package version
         foreach (var resolver in _resolvers)
@@ -67,12 +68,13 @@ public class AggregatePackageResolver : IPackageResolver
         Version version,
         string destFilePath,
         IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default
+    )
     {
         // Find a resolver that has this package version
         var resolver =
-            await TryGetResolverForPackageAsync(version, cancellationToken) ??
-            throw new PackageNotFoundException(version);
+            await TryGetResolverForPackageAsync(version, cancellationToken)
+            ?? throw new PackageNotFoundException(version);
 
         // Download package
         await resolver.DownloadPackageAsync(version, destFilePath, progress, cancellationToken);

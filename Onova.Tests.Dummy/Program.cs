@@ -1,52 +1,20 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Onova.Services;
+using CliFx;
 
 namespace Onova.Tests.Dummy;
 
-// This executable is used as dummy for end-to-end testing.
-// It can print its current version and use Onova to update.
-
 public static class Program
 {
-    private static Version Version => Assembly.GetExecutingAssembly().GetName().Version!;
+    // Path to the apphost
+    public static string FilePath { get; } =
+        Path.ChangeExtension(
+            Assembly.GetExecutingAssembly().Location,
+            RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "exe" : null
+        );
 
-    private static string AssemblyDirPath => AppDomain.CurrentDomain.BaseDirectory!;
-
-    private static string LastRunFilePath =>
-        Path.Combine(AssemblyDirPath, $"lastrun-{Version}.txt");
-
-    private static string PackagesDirPath => Path.Combine(AssemblyDirPath, "Packages");
-
-    private static readonly IUpdateManager UpdateManager = new UpdateManager(
-        new LocalPackageResolver(PackagesDirPath, "*.onv"),
-        new ZipPackageExtractor()
-    );
-
-    public static async Task Main(string[] args)
-    {
-        // Dump arguments to file.
-        // This is only accurate enough for simple inputs.
-        File.WriteAllLines(LastRunFilePath, args);
-
-        // Get command name
-        var command = args.FirstOrDefault();
-
-        // Print current assembly version
-        if (command is null or "version")
-        {
-            Console.WriteLine(Version);
-        }
-        // Update to latest version
-        else if (command is "update" or "update-and-restart")
-        {
-            var restart = command == "update-and-restart";
-            var progressHandler = new Progress<double>(p => Console.WriteLine($"Progress: {p:P0}"));
-
-            await UpdateManager.CheckPerformUpdateAsync(restart, progressHandler);
-        }
-    }
+    public static async Task<int> Main(string[] args) =>
+        await new CliApplicationBuilder().AddCommandsFromThisAssembly().Build().RunAsync(args);
 }

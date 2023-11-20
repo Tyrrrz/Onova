@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp3.0;net462</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
     <Authors>$(Company)</Authors>
-    <Description>Compact and extensible auto-update library</Description>
+    <Description>Unintrusive auto-update framework</Description>
     <PackageTags>auto update</PackageTags>
     <PackageProjectUrl>https://github.com/Tyrrrz/Onova</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/Tyrrrz/Onova/blob/master/Changelog.md</PackageReleaseNotes>
@@ -21,43 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets="all" />
     <PackageReference Include="CSharpier.MsBuild" Version="0.26.2" PrivateAssets="all" />
-    <PackageReference Include="Fody" Version="6.8.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
     <PackageReference Include="PolyShim" Version="1.8.0" PrivateAssets="all" />
     <PackageReference Include="System.Text.Json" Version="8.0.0" Condition="'$(TargetFramework)' != 'netcoreapp3.0'" />
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" Condition="'$(TargetFramework)' == 'net462'" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.IO.Compression" />
-  </ItemGroup>
-
-  <!-- Non-linking dependency on the updater project to ensure correct build order -->
-  <ItemGroup>
-    <ProjectReference Include="..\Onova.Updater\Onova.Updater.csproj">
-      <GlobalPropertiesToRemove>TargetFramework</GlobalPropertiesToRemove>
-      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-      <CopyLocal>false</CopyLocal>
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-
-  <!-- Embed the updater executable -->
-  <ItemGroup>
-    <EmbeddedResource Include="../Onova.Updater/bin/$(Configuration)/net35/Onova.Updater.exe">
-      <Link>Updater.exe</Link>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </EmbeddedResource>
-    <EmbeddedResource Include="../Onova.Updater/bin/$(Configuration)/net35/Onova.Updater.exe.config">
-      <Link>Updater.exe.config</Link>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

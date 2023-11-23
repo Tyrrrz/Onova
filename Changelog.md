@@ -1,5 +1,9 @@
 # Changelog
 
+> **Important**:
+> This changelog is no longer maintained and will be removed in the future.
+> Going forward, new versions of this package will have the corresponding release notes published on [GitHub Releases](https://github.com/Tyrrrz/Onova/releases).
+
 ## v2.6.10 (18-Jul-2023)
 
 - Fixed an issue where the updater failed to create subdirectories in the application directory.

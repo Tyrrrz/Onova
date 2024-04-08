@@ -37,7 +37,11 @@ public class Updater : IDisposable
         var date = DateTimeOffset
             .Now
             .ToString("dd-MMM-yyyy HH:mm:ss.fff", CultureInfo.InvariantCulture);
-        _log.WriteLine($"{date}> {content}");
+
+        var entry = $"{date}> {content}";
+
+        Console.Write(entry);
+        _log.WriteLine(entry);
         _log.Flush();
     }
 

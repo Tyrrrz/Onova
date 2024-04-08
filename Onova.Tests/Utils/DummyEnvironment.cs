@@ -129,8 +129,6 @@ internal class DummyEnvironment : IDisposable
         return File.Exists(filePath) ? File.ReadAllText(filePath) : "";
     }
 
-    public bool IsRunning() => !FileEx.CheckWriteAccess(DummyFilePath);
-
     public async Task<string> RunDummyAsync(params string[] arguments)
     {
         var result = await Cli.Wrap("dotnet")
@@ -138,6 +136,36 @@ internal class DummyEnvironment : IDisposable
             .ExecuteBufferedAsync();
 
         return result.StandardOutput;
+    }
+
+    public async Task WaitUntilUpdaterExitsAsync(CancellationToken cancellationToken = default)
+    {
+        var filePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Onova",
+            DummyAssembly.GetName().Name!,
+            "Onova.lock"
+        );
+
+        // Try deleting the lock file
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                File.Delete(filePath);
+                return;
+            }
+            catch (FileNotFoundException)
+            {
+                return;
+            }
+            catch (Exception ex) when (ex is UnauthorizedAccessException or IOException)
+            {
+                await Task.Delay(100, cancellationToken);
+            }
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
     }
 
     public void Dispose() => Cleanup();

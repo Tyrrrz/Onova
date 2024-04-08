@@ -228,7 +228,7 @@ public partial class UpdateSpecs : IDisposable
     public async Task I_can_install_an_update_after_preparing_it()
     {
         // Arrange
-        using var dummy = new DummyEnvironment(Path.Combine(TempDirPath, "Dummy"));
+        using var dummy = new DummyEnvironment(Path.Combine(TempDirPath, "Dummy_1"));
 
         var baseVersion = Version.Parse("1.0.0.0");
 
@@ -263,7 +263,7 @@ public partial class UpdateSpecs : IDisposable
     public async Task I_can_install_an_update_after_preparing_it_and_have_the_application_restarted_automatically()
     {
         // Arrange
-        using var dummy = new DummyEnvironment(Path.Combine(TempDirPath, "Dummy"));
+        using var dummy = new DummyEnvironment(Path.Combine(TempDirPath, "Dummy_2"));
 
         var baseVersion = Version.Parse("1.0.0.0");
 

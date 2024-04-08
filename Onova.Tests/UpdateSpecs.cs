@@ -249,6 +249,9 @@ public partial class UpdateSpecs : IDisposable
 
         // Act
         await dummy.RunDummyAsync("update");
+
+        await Task.Delay(1000); // wait for updater to start
+        await dummy.WaitUntilUpdaterExitsAsync();
         _testOutput.WriteLine(dummy.GetLastUpdaterLogs());
 
         // Assert (version after update)
@@ -278,10 +281,13 @@ public partial class UpdateSpecs : IDisposable
         // Act
         var args = new[] { "update-and-restart", "with", "extra", "arguments" };
         await dummy.RunDummyAsync(args);
+
+        await Task.Delay(1000); // wait for updater to start
+        await dummy.WaitUntilUpdaterExitsAsync();
         _testOutput.WriteLine(dummy.GetLastUpdaterLogs());
 
         // Wait until updatee has been ran a second time (we don't control this)
-        while (dummy.IsRunning() || !dummy.GetLastRunArguments(expectedFinalVersion).Any())
+        while (!dummy.GetLastRunArguments(expectedFinalVersion).Any())
             await Task.Delay(100);
 
         // Assert

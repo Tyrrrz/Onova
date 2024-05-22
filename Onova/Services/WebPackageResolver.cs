@@ -5,11 +5,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Onova.Exceptions;
-using Onova.Utils;
-using Onova.Utils.Extensions;
+using oZnova.Exceptions;
+using oZnova.Utils;
+using oZnova.Utils.Extensions;
 
-namespace Onova.Services;
+namespace oZnova.Services;
 
 /// <summary>
 /// Resolves packages using a manifest served by a web server.

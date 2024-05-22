@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Onova.Utils;
+namespace oZnova.Utils;
 
 internal class ProgressMixer
 {

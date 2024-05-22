@@ -4,10 +4,10 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Onova.Utils;
-using Onova.Utils.Extensions;
+using oZnova.Utils;
+using oZnova.Utils.Extensions;
 
-namespace Onova.Services;
+namespace oZnova.Services;
 
 /// <summary>
 /// Extracts files from zip-archived packages.

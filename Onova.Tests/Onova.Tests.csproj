@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Onova\Onova.csproj" />
-    <ProjectReference Include="..\Onova.Tests.Dummy\Onova.Tests.Dummy.csproj" />
+    <ProjectReference Include="..\oZnova\oZnova.csproj" />
+    <ProjectReference Include="..\oZnova.Tests.Dummy\oZnova.Tests.Dummy.csproj" />
   </ItemGroup>
 
   <ItemGroup>

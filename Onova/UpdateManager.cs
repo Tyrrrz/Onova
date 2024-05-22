@@ -7,20 +7,20 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Onova.Exceptions;
-using Onova.Models;
-using Onova.Services;
-using Onova.Utils;
-using Onova.Utils.Extensions;
+using oZnova.Exceptions;
+using oZnova.Models;
+using oZnova.Services;
+using oZnova.Utils;
+using oZnova.Utils.Extensions;
 
-namespace Onova;
+namespace oZnova;
 
 /// <summary>
 /// Entry point for handling application updates.
 /// </summary>
 public class UpdateManager : IUpdateManager
 {
-    private const string UpdaterResourceName = "Onova.Updater.exe";
+    private const string UpdaterResourceName = "oZnova.Updater.exe";
 
     private readonly IPackageResolver _resolver;
     private readonly IPackageExtractor _extractor;
@@ -51,7 +51,7 @@ public class UpdateManager : IUpdateManager
         // Set storage directory path
         _storageDirPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Onova",
+            "oZnova",
             updatee.Name
         );
 
@@ -59,7 +59,7 @@ public class UpdateManager : IUpdateManager
         _updaterFilePath = Path.Combine(_storageDirPath, $"{updatee.Name}.Updater.exe");
 
         // Set lock file path
-        _lockFilePath = Path.Combine(_storageDirPath, "Onova.lock");
+        _lockFilePath = Path.Combine(_storageDirPath, "oZnova.lock");
     }
 
     /// <summary>

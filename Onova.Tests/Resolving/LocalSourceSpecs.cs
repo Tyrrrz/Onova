@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Onova.Services;
-using Onova.Tests.Utils;
+using oZnova.Services;
+using oZnova.Tests.Utils;
 using Xunit;
 
-namespace Onova.Tests.Resolving;
+namespace oZnova.Tests.Resolving;
 
 public class LocalSourceSpecs : IDisposable
 {

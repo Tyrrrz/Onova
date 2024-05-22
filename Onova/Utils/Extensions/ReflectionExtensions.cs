@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Resources;
 using System.Threading.Tasks;
 
-namespace Onova.Utils.Extensions;
+namespace oZnova.Utils.Extensions;
 
 internal static class ReflectionExtensions
 {

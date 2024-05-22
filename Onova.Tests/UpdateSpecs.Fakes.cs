@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Onova.Services;
+using oZnova.Services;
 
-namespace Onova.Tests;
+namespace oZnova.Tests;
 
 public partial class UpdateSpecs
 {

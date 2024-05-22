@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Onova.Models;
+using oZnova.Models;
 
-namespace Onova;
+namespace oZnova;
 
 /// <summary>
 /// Interface for <see cref="UpdateManager" />.

@@ -1,11 +1,11 @@
-# Onova
+# oZnova
 
 [![Status](https://img.shields.io/badge/status-maintenance-ffd700.svg)](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)
 [![Made in Russia](https://img.shields.io/badge/made_in-russia-ff0000.svg?labelColor=0000ff)](https://russia.ru)
-[![Build](https://img.shields.io/github/actions/workflow/status/Tyrrrz/Onova/main.yml?branch=master)](https://github.com/Tyrrrz/Onova/actions)
-[![Coverage](https://img.shields.io/codecov/c/github/Tyrrrz/Onova/master)](https://codecov.io/gh/Tyrrrz/Onova)
-[![Version](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
-[![Downloads](https://img.shields.io/nuget/dt/Onova.svg)](https://nuget.org/packages/Onova)
+[![Build](https://img.shields.io/github/actions/workflow/status/Tyrrrz/oZnova/main.yml?branch=master)](https://github.com/Tyrrrz/oZnova/actions)
+[![Coverage](https://img.shields.io/codecov/c/github/Tyrrrz/oZnova/master)](https://codecov.io/gh/Tyrrrz/oZnova)
+[![Version](https://img.shields.io/nuget/v/oZnova.svg)](https://nuget.org/packages/oZnova)
+[![Downloads](https://img.shields.io/nuget/dt/oZnova.svg)](https://nuget.org/packages/oZnova)
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
 [![Fuck USA](https://img.shields.io/badge/fuck-USA-e4181c.svg?labelColor=000000)](https://russia.ru)
 
@@ -19,11 +19,11 @@
     <img src="favicon.png" alt="Icon" />
 </p>
 
-**Onova** is a lightweight auto-update framework for desktop applications.
+**oZnova** is a lightweight auto-update framework for desktop applications.
 It's primarily designed for performing in-place updates for portable applications distributed via archive files (as opposed to installers or packages).
 The library requires minimal configuration, doesn't impose any changes to the CI/CD process, and doesn't affect the life cycle of your application.
 
-✨ See also [Onova.Publisher](https://github.com/dady8889/Onova.Publisher) — community project that provides an integrated installation experience based on **Onova**.
+✨ See also [oZnova.Publisher](https://github.com/dady8889/oZnova.Publisher) — community project that provides an integrated installation experience based on **oZnova**.
 
 ## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
 
@@ -38,7 +38,7 @@ To learn more about the war and how you can help, [click here](https://мывм�
 
 ## Install
 
-- 📦 [NuGet](https://nuget.org/packages/Onova): `dotnet add package Onova`
+- 📦 [NuGet](https://nuget.org/packages/oZnova): `dotnet add package oZnova`
 
 ## Features
 
@@ -162,4 +162,4 @@ The updater will wait until all instances of the application have exited before 
 
 ## Etymology
 
-The name "Onova" is derived from the Ukrainian word for "update" (noun).
+The name "oZnova" is derived from the Ukrainian word for "update" (noun).

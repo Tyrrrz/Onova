@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Onova\Onova.csproj" />
+    <ProjectReference Include="..\oZnova\oZnova.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Onova.Updater.Utils.Extensions;
+namespace oZnova.Updater.Utils.Extensions;
 
 internal static class BinaryExtensions
 {

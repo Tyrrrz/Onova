@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Onova.Exceptions;
+namespace oZnova.Exceptions;
 
 /// <summary>
 /// Thrown when launching the updater to install an update that was not prepared.

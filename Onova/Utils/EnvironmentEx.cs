@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Onova.Utils;
+namespace oZnova.Utils;
 
 internal static class EnvironmentEx
 {

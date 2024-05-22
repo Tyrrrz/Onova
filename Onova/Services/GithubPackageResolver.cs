@@ -9,11 +9,11 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Onova.Exceptions;
-using Onova.Utils;
-using Onova.Utils.Extensions;
+using oZnova.Exceptions;
+using oZnova.Utils;
+using oZnova.Utils.Extensions;
 
-namespace Onova.Services;
+namespace oZnova.Services;
 
 /// <summary>
 /// Resolves packages from release assets of a GitHub repository.

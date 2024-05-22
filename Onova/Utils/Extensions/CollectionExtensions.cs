@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Onova.Utils.Extensions;
+namespace oZnova.Utils.Extensions;
 
 internal static class CollectionExtensions
 {

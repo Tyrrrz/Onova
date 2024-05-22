@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Onova.Services;
+namespace oZnova.Services;
 
 /// <summary>
 /// Provider for resolving packages.

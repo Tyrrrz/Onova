@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Onova.Utils;
+namespace oZnova.Utils;
 
 internal static class WildcardPattern
 {

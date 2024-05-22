@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Onova.Updater.Utils;
+namespace oZnova.Updater.Utils;
 
 internal partial class Disposable : IDisposable
 {

@@ -3,12 +3,12 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Onova.Services;
-using Onova.Tests.Utils;
-using Onova.Tests.Utils.Extensions;
+using oZnova.Services;
+using oZnova.Tests.Utils;
+using oZnova.Tests.Utils.Extensions;
 using Xunit;
 
-namespace Onova.Tests.Resolving;
+namespace oZnova.Tests.Resolving;
 
 public class NugetSourceSpecs : IDisposable
 {
@@ -23,7 +23,7 @@ public class NugetSourceSpecs : IDisposable
     public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
 
     private static NugetPackageResolver CreateNugetPackageResolver() =>
-        new("https://myget.org/F/tyrrrz-test/api/v3/index.json", "OnovaTest");
+        new("https://myget.org/F/tyrrrz-test/api/v3/index.json", "oZnovaTest");
 
     [Fact]
     public async Task I_can_use_a_NuGet_repository_as_a_package_source()

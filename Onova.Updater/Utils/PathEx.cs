@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Onova.Updater.Utils;
+namespace oZnova.Updater.Utils;
 
 internal static class PathEx
 {

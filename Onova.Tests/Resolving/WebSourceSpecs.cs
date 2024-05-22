@@ -2,11 +2,11 @@
 using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Onova.Services;
-using Onova.Tests.Utils;
+using oZnova.Services;
+using oZnova.Tests.Utils;
 using Xunit;
 
-namespace Onova.Tests.Resolving;
+namespace oZnova.Tests.Resolving;
 
 public class WebSourceSpecs : IDisposable
 {
@@ -19,7 +19,7 @@ public class WebSourceSpecs : IDisposable
 
     private WebPackageResolver CreateWebPackageResolver() =>
         new(
-            "https://raw.githubusercontent.com/Tyrrrz/OnovaTestRepo/master/TestWebPackageManifest.txt"
+            "https://raw.githubusercontent.com/Tyrrrz/oZnovaTestRepo/master/TestWebPackageManifest.txt"
         );
 
     [Fact]

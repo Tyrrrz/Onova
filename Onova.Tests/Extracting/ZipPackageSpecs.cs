@@ -4,12 +4,12 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Onova.Services;
-using Onova.Tests.Utils;
-using Onova.Tests.Utils.Extensions;
+using oZnova.Services;
+using oZnova.Tests.Utils;
+using oZnova.Tests.Utils.Extensions;
 using Xunit;
 
-namespace Onova.Tests.Extracting;
+namespace oZnova.Tests.Extracting;
 
 public class ZipPackageSpecs : IDisposable
 {

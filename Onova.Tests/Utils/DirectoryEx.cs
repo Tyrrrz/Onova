@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Onova.Tests.Utils;
+namespace oZnova.Tests.Utils;
 
 internal static class DirectoryEx
 {

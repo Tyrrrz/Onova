@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Onova.Exceptions;
+namespace oZnova.Exceptions;
 
 /// <summary>
 /// Thrown when launching the updater after it has already been launched.

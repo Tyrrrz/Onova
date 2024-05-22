@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Onova.Exceptions;
-using Onova.Utils.Extensions;
+using oZnova.Exceptions;
+using oZnova.Utils.Extensions;
 
-namespace Onova.Services;
+namespace oZnova.Services;
 
 /// <summary>
 /// Resolves packages using multiple other package resolvers.

@@ -9,8 +9,8 @@
     <Authors>$(Company)</Authors>
     <Description>Compact and extensible auto-update library</Description>
     <PackageTags>auto update</PackageTags>
-    <PackageProjectUrl>https://github.com/Tyrrrz/Onova</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/Tyrrrz/Onova/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/Tyrrrz/oZnova</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/Tyrrrz/oZnova/releases</PackageReleaseNotes>
     <PackageIcon>favicon.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -37,7 +37,7 @@
 
   <!-- Non-linking dependency on the updater project to ensure correct build order -->
   <ItemGroup>
-    <ProjectReference Include="..\Onova.Updater\Onova.Updater.csproj">
+    <ProjectReference Include="..\oZnova.Updater\oZnova.Updater.csproj">
       <GlobalPropertiesToRemove>TargetFramework</GlobalPropertiesToRemove>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
       <CopyLocal>false</CopyLocal>
@@ -48,12 +48,12 @@
 
   <!-- Embed the updater executable -->
   <ItemGroup>
-    <EmbeddedResource Include="../Onova.Updater/bin/$(Configuration)/net35/Onova.Updater.exe">
+    <EmbeddedResource Include="../oZnova.Updater/bin/$(Configuration)/net35/oZnova.Updater.exe">
       <Link>Updater.exe</Link>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <Visible>false</Visible>
     </EmbeddedResource>
-    <EmbeddedResource Include="../Onova.Updater/bin/$(Configuration)/net35/Onova.Updater.exe.config">
+    <EmbeddedResource Include="../oZnova.Updater/bin/$(Configuration)/net35/oZnova.Updater.exe.config">
       <Link>Updater.exe.config</Link>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <Visible>false</Visible>

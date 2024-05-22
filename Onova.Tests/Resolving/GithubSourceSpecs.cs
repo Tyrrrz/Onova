@@ -4,11 +4,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Onova.Services;
-using Onova.Tests.Utils;
+using oZnova.Services;
+using oZnova.Tests.Utils;
 using Xunit;
 
-namespace Onova.Tests.Resolving;
+namespace oZnova.Tests.Resolving;
 
 public class GithubSourceSpecs : IDisposable
 {
@@ -26,7 +26,7 @@ public class GithubSourceSpecs : IDisposable
     {
         var httpClient = new HttpClient();
 
-        httpClient.DefaultRequestHeaders.Add("User-Agent", "Onova Tests (github.com/Tyrrrz/Onova)");
+        httpClient.DefaultRequestHeaders.Add("User-Agent", "oZnova Tests (github.com/Tyrrrz/oZnova)");
 
         // Prefer authenticated requests to avoid rate limiting
         var accessToken = Environment.GetEnvironmentVariable("TEST_GITHUB_TOKEN");
@@ -37,7 +37,7 @@ public class GithubSourceSpecs : IDisposable
             );
         }
 
-        return new GithubPackageResolver(httpClient, "Tyrrrz", "OnovaTestRepo", "*.onv");
+        return new GithubPackageResolver(httpClient, "Tyrrrz", "oZnovaTestRepo", "*.onv");
     }
 
     [Fact]

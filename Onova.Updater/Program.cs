@@ -1,6 +1,6 @@
-﻿using Onova.Updater.Utils.Extensions;
+﻿using oZnova.Updater.Utils.Extensions;
 
-namespace Onova.Updater;
+namespace oZnova.Updater;
 
 // This executable applies the update by copying over new files.
 // It's required because the updatee cannot update itself while the files are still in use.

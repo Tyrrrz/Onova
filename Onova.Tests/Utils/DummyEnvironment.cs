@@ -9,7 +9,7 @@ using CliWrap;
 using CliWrap.Buffered;
 using Mono.Cecil;
 
-namespace Onova.Tests.Utils;
+namespace oZnova.Tests.Utils;
 
 internal class DummyEnvironment : IDisposable
 {
@@ -121,7 +121,7 @@ internal class DummyEnvironment : IDisposable
     {
         var filePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Onova",
+            "oZnova",
             DummyAssembly.GetName().Name!,
             "Log.txt"
         );
@@ -142,9 +142,9 @@ internal class DummyEnvironment : IDisposable
     {
         var filePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Onova",
+            "oZnova",
             DummyAssembly.GetName().Name!,
-            "Onova.lock"
+            "oZnova.lock"
         );
 
         // Try deleting the lock file

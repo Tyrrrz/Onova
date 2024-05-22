@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
-namespace Onova.Models;
+namespace oZnova.Models;
 
 /// <summary>
 /// Contains information about an assembly.

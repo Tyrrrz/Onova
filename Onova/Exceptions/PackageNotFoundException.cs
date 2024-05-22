@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Onova.Exceptions;
+namespace oZnova.Exceptions;
 
 /// <summary>
 /// Thrown when a package of given version was not found by a resolver.

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Onova.Models;
-using Onova.Tests.Utils;
+using oZnova.Models;
+using oZnova.Tests.Utils;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Onova.Tests;
+namespace oZnova.Tests;
 
 public partial class UpdateSpecs : IDisposable
 {
@@ -51,7 +51,7 @@ public partial class UpdateSpecs : IDisposable
         DirectoryEx.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova",
+                "oZnova",
                 updatee.Name
             )
         );
@@ -88,7 +88,7 @@ public partial class UpdateSpecs : IDisposable
         DirectoryEx.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova",
+                "oZnova",
                 updatee.Name
             )
         );
@@ -125,7 +125,7 @@ public partial class UpdateSpecs : IDisposable
         DirectoryEx.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova",
+                "oZnova",
                 updatee.Name
             )
         );
@@ -157,7 +157,7 @@ public partial class UpdateSpecs : IDisposable
         DirectoryEx.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova",
+                "oZnova",
                 updatee.Name
             )
         );
@@ -194,7 +194,7 @@ public partial class UpdateSpecs : IDisposable
         DirectoryEx.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "Onova",
+                "oZnova",
                 updatee.Name
             )
         );

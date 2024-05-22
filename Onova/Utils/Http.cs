@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http;
 
-namespace Onova.Utils;
+namespace oZnova.Utils;
 
 internal static class Http
 {
@@ -18,7 +18,7 @@ internal static class Http
             handler.UseCookies = false;
 
             var httpClient = new HttpClient(handler, true);
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Onova (github.com/Tyrrrz/Onova)");
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "oZnova (github.com/Tyrrrz/oZnova)");
 
             return httpClient;
         });

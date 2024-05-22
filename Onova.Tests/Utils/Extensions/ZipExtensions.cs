@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.IO.Compression;
 
-namespace Onova.Tests.Utils.Extensions;
+namespace oZnova.Tests.Utils.Extensions;
 
 internal static class ZipExtensions
 {

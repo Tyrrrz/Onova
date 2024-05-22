@@ -4,9 +4,9 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using Onova.Updater.Utils;
+using oZnova.Updater.Utils;
 
-namespace Onova.Updater;
+namespace oZnova.Updater;
 
 public class Updater : IDisposable
 {
@@ -130,7 +130,7 @@ public class Updater : IDisposable
 
             WriteLog(
                 $"""
-                Onova Updater v{updaterVersion} started with the following arguments:
+                oZnova Updater v{updaterVersion} started with the following arguments:
                 - UpdateeFilePath = {_updateeFilePath}
                 - PackageContentDirPath = {_packageContentDirPath}
                 - RestartUpdatee = {_restartUpdatee}

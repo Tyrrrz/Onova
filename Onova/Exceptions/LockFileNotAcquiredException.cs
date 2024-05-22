@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Onova.Exceptions;
+namespace oZnova.Exceptions;
 
 /// <summary>
 /// Thrown when an attempt to acquire a lock file failed.

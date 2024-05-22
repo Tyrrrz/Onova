@@ -3,12 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Onova.Services;
+using oZnova.Services;
 
-namespace Onova.Tests.Dummy;
+namespace oZnova.Tests.Dummy;
 
 // This executable is used as dummy for end-to-end testing.
-// It can print its current version and use Onova to update.
+// It can print its current version and use oZnova to update.
 
 public static class Program
 {

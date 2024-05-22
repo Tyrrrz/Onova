@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Onova.Models;
+namespace oZnova.Models;
 
 /// <summary>
 /// Result of checking for updates.

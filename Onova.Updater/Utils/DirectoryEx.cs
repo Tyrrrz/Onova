@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Onova.Updater.Utils.Extensions;
+using oZnova.Updater.Utils.Extensions;
 
-namespace Onova.Updater.Utils;
+namespace oZnova.Updater.Utils;
 
 internal static class DirectoryEx
 {

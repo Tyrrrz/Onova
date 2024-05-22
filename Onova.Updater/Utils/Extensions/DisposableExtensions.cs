@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Onova.Updater.Utils.Extensions;
+namespace oZnova.Updater.Utils.Extensions;
 
 internal static class DisposableExtensions
 {

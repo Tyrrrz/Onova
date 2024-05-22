@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Onova.Utils;
+using oZnova.Utils;
 
-namespace Onova;
+namespace oZnova;
 
 /// <summary>
-/// Extensions for <see cref="Onova" />.
+/// Extensions for <see cref="oZnova" />.
 /// </summary>
 public static class Extensions
 {

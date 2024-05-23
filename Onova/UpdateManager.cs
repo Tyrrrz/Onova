@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
@@ -18,6 +19,7 @@ namespace Onova;
 /// <summary>
 /// Entry point for handling application updates.
 /// </summary>
+[SupportedOSPlatform("windows")]
 public class UpdateManager : IUpdateManager
 {
     private const string UpdaterResourceName = "Onova.Updater.exe";

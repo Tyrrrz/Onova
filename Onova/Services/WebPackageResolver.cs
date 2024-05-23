@@ -15,20 +15,8 @@ namespace Onova.Services;
 /// Resolves packages using a manifest served by a web server.
 /// Manifest consists of package versions and URLs, separated by space, one line per version.
 /// </summary>
-public class WebPackageResolver : IPackageResolver
+public class WebPackageResolver(HttpClient http, string manifestUrl) : IPackageResolver
 {
-    private readonly HttpClient _httpClient;
-    private readonly string _manifestUrl;
-
-    /// <summary>
-    /// Initializes an instance of <see cref="WebPackageResolver" />.
-    /// </summary>
-    public WebPackageResolver(HttpClient httpClient, string manifestUrl)
-    {
-        _httpClient = httpClient;
-        _manifestUrl = manifestUrl;
-    }
-
     /// <summary>
     /// Initializes an instance of <see cref="WebPackageResolver" />.
     /// </summary>
@@ -37,7 +25,7 @@ public class WebPackageResolver : IPackageResolver
 
     private string ExpandRelativeUrl(string url)
     {
-        var manifestUri = new Uri(_manifestUrl);
+        var manifestUri = new Uri(manifestUrl);
         var uri = new Uri(manifestUri, url);
 
         return uri.ToString();
@@ -50,7 +38,7 @@ public class WebPackageResolver : IPackageResolver
         var map = new Dictionary<Version, string>();
 
         // Get manifest
-        var response = await _httpClient.GetStringAsync(_manifestUrl, cancellationToken);
+        var response = await http.GetStringAsync(manifestUrl, cancellationToken);
 
         foreach (var line in response.Split('\n'))
         {
@@ -102,7 +90,7 @@ public class WebPackageResolver : IPackageResolver
             throw new PackageNotFoundException(version);
 
         // Download
-        using var response = await _httpClient.GetAsync(
+        using var response = await http.GetAsync(
             packageUrl,
             HttpCompletionOption.ResponseHeadersRead,
             cancellationToken

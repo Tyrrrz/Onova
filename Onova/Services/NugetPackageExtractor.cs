@@ -12,18 +12,8 @@ namespace Onova.Services;
 /// <summary>
 /// Extracts files from NuGet packages.
 /// </summary>
-public class NugetPackageExtractor : IPackageExtractor
+public class NugetPackageExtractor(string rootDirPath) : IPackageExtractor
 {
-    private readonly string _rootDirPath;
-
-    /// <summary>
-    /// Initializes an instance of <see cref="NugetPackageExtractor" />.
-    /// </summary>
-    public NugetPackageExtractor(string rootDirPath)
-    {
-        _rootDirPath = rootDirPath;
-    }
-
     /// <inheritdoc />
     public async Task ExtractPackageAsync(
         string sourceFilePath,
@@ -37,8 +27,9 @@ public class NugetPackageExtractor : IPackageExtractor
 
         // Get entries in the content directory
         var entries = archive
-            .Entries
-            .Where(e => e.FullName.StartsWith(_rootDirPath, StringComparison.OrdinalIgnoreCase))
+            .Entries.Where(e =>
+                e.FullName.StartsWith(rootDirPath, StringComparison.OrdinalIgnoreCase)
+            )
             .ToArray();
 
         // For progress reporting
@@ -49,7 +40,7 @@ public class NugetPackageExtractor : IPackageExtractor
         foreach (var entry in entries)
         {
             // Get relative entry path
-            var relativeEntryPath = entry.FullName[_rootDirPath.Length..].TrimStart('/', '\\');
+            var relativeEntryPath = entry.FullName[rootDirPath.Length..].TrimStart('/', '\\');
 
             // Get destination paths
             var entryDestFilePath = Path.Combine(destDirPath, relativeEntryPath);
@@ -64,7 +55,9 @@ public class NugetPackageExtractor : IPackageExtractor
                 entry.FullName.Last() == Path.DirectorySeparatorChar
                 || entry.FullName.Last() == Path.AltDirectorySeparatorChar
             )
+            {
                 continue;
+            }
 
             // Extract entry
             using var input = entry.Open();

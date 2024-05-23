@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp3.0;net462</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.0;net462;net8.0</TargetFrameworks>
     <IsPackable>true</IsPackable>
+    <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
+    <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -22,12 +24,13 @@
 
   <ItemGroup>
     <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets="all" />
-    <PackageReference Include="CSharpier.MsBuild" Version="0.26.5" PrivateAssets="all" />
-    <PackageReference Include="Fody" Version="6.8.0" PrivateAssets="all" />
+    <PackageReference Include="CSharpier.MsBuild" Version="0.28.2" PrivateAssets="all" />
+    <PackageReference Include="Deorcify" Version="1.0.2" PrivateAssets="all" />
+    <PackageReference Include="Fody" Version="6.8.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
-    <PackageReference Include="PolyShim" Version="1.8.0" PrivateAssets="all" />
-    <PackageReference Include="System.Text.Json" Version="8.0.0" Condition="'$(TargetFramework)' != 'netcoreapp3.0'" />
-    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" Condition="'$(TargetFramework)' == 'net462'" />
+    <PackageReference Include="PolyShim" Version="1.12.0" PrivateAssets="all" />
+    <PackageReference Include="System.Text.Json" Version="8.0.3" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp3.0'))" />
+    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">

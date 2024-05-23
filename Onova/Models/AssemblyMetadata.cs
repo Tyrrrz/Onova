@@ -47,7 +47,9 @@ public partial class AssemblyMetadata
     /// <summary>
     /// Extracts assembly metadata from the specified assembly.
     /// </summary>
-    [RequiresAssemblyFiles("This method requires the specified assembly's file path to be available.")]
+    [RequiresAssemblyFiles(
+        "This method requires the specified assembly's file path to be available."
+    )]
     public static AssemblyMetadata FromAssembly(Assembly assembly)
     {
         if (string.IsNullOrEmpty(assembly.Location))

@@ -15,34 +15,23 @@ namespace Onova.Services;
 /// Resolves packages from a local repository.
 /// Package file names should contain package versions (e.g. "MyProject-v1.8.3.onv").
 /// </summary>
-public class LocalPackageResolver : IPackageResolver
+public class LocalPackageResolver(string repositoryDirPath, string fileNamePattern = "*")
+    : IPackageResolver
 {
-    private readonly string _repositoryDirPath;
-    private readonly string _fileNamePattern;
-
-    /// <summary>
-    /// Initializes an instance of <see cref="LocalPackageResolver" />.
-    /// </summary>
-    public LocalPackageResolver(string repositoryDirPath, string fileNamePattern = "*")
-    {
-        _repositoryDirPath = repositoryDirPath;
-        _fileNamePattern = fileNamePattern;
-    }
-
     private IReadOnlyDictionary<Version, string> GetPackageVersionFilePathMap()
     {
         var map = new Dictionary<Version, string>();
 
         // Check if repository directory exists
-        if (!Directory.Exists(_repositoryDirPath))
+        if (!Directory.Exists(repositoryDirPath))
             return map;
 
         // Enumerate files in repository directory
-        foreach (var filePath in Directory.EnumerateFiles(_repositoryDirPath))
+        foreach (var filePath in Directory.EnumerateFiles(repositoryDirPath))
         {
             // See if the name matches
             var fileName = Path.GetFileName(filePath);
-            if (!WildcardPattern.IsMatch(fileName, _fileNamePattern))
+            if (!WildcardPattern.IsMatch(fileName, fileNamePattern))
                 continue;
 
             // Try to parse version

@@ -15,36 +15,23 @@ namespace Onova.Services;
 /// <summary>
 /// Resolves packages from a NuGet feed.
 /// </summary>
-public class NugetPackageResolver : IPackageResolver
+public class NugetPackageResolver(HttpClient http, string serviceIndexUrl, string packageId)
+    : IPackageResolver
 {
-    private readonly HttpClient _httpClient;
-    private readonly string _serviceIndexUrl;
-    private readonly string _packageId;
-
-    private string PackageIdNormalized => _packageId.ToLowerInvariant();
-
-    /// <summary>
-    /// Initializes an instance of <see cref="NugetPackageResolver" />.
-    /// </summary>
-    public NugetPackageResolver(HttpClient httpClient, string serviceIndexUrl, string packageId)
-    {
-        _httpClient = httpClient;
-        _serviceIndexUrl = serviceIndexUrl;
-        _packageId = packageId;
-    }
-
     /// <summary>
     /// Initializes an instance of <see cref="NugetPackageResolver" />.
     /// </summary>
     public NugetPackageResolver(string serviceIndexUrl, string packageId)
         : this(Http.Client, serviceIndexUrl, packageId) { }
 
+    private string PackageIdNormalized { get; } = packageId.ToLowerInvariant();
+
     private async Task<string> GetPackageBaseAddressResourceUrlAsync(
         CancellationToken cancellationToken
     )
     {
         // Get all available resources
-        var responseJson = await _httpClient.GetJsonAsync(_serviceIndexUrl, cancellationToken);
+        var responseJson = await http.GetJsonAsync(serviceIndexUrl, cancellationToken);
         var resourcesJson = responseJson.GetProperty("resources");
 
         // Get URL of the required resource
@@ -59,7 +46,11 @@ public class NugetPackageResolver : IPackageResolver
                     StringComparison.OrdinalIgnoreCase
                 )
             )
-                return resourceJson.GetProperty("@id").GetString();
+            {
+                var url = resourceJson.GetProperty("@id").GetString();
+                if (!string.IsNullOrWhiteSpace(url))
+                    return url;
+            }
         }
 
         // Resource not found
@@ -76,7 +67,7 @@ public class NugetPackageResolver : IPackageResolver
 
         // Get versions
         var request = $"{resourceUrl}/{PackageIdNormalized}/index.json";
-        var responseJson = await _httpClient.GetJsonAsync(request, cancellationToken);
+        var responseJson = await http.GetJsonAsync(request, cancellationToken);
         var versionsJson = responseJson.GetProperty("versions");
         var versions = new HashSet<Version>();
 
@@ -107,7 +98,7 @@ public class NugetPackageResolver : IPackageResolver
             $"{resourceUrl}/{PackageIdNormalized}/{version}/{PackageIdNormalized}.{version}.nupkg";
 
         // Get response
-        using var response = await _httpClient.GetAsync(
+        using var response = await http.GetAsync(
             packageUrl,
             HttpCompletionOption.ResponseHeadersRead,
             cancellationToken

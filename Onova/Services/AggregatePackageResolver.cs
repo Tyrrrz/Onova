@@ -11,18 +11,8 @@ namespace Onova.Services;
 /// <summary>
 /// Resolves packages using multiple other package resolvers.
 /// </summary>
-public class AggregatePackageResolver : IPackageResolver
+public class AggregatePackageResolver(IReadOnlyList<IPackageResolver> resolvers) : IPackageResolver
 {
-    private readonly IReadOnlyList<IPackageResolver> _resolvers;
-
-    /// <summary>
-    /// Initializes an instance of <see cref="AggregatePackageResolver" />.
-    /// </summary>
-    public AggregatePackageResolver(IReadOnlyList<IPackageResolver> resolvers)
-    {
-        _resolvers = resolvers;
-    }
-
     /// <summary>
     /// Initializes an instance of <see cref="AggregatePackageResolver" />.
     /// </summary>
@@ -37,7 +27,7 @@ public class AggregatePackageResolver : IPackageResolver
         var aggregateVersions = new HashSet<Version>();
 
         // Get unique package versions provided by all resolvers
-        foreach (var resolver in _resolvers)
+        foreach (var resolver in resolvers)
         {
             var versions = await resolver.GetPackageVersionsAsync(cancellationToken);
             aggregateVersions.AddRange(versions);
@@ -52,7 +42,7 @@ public class AggregatePackageResolver : IPackageResolver
     )
     {
         // Try to find the first resolver that has this package version
-        foreach (var resolver in _resolvers)
+        foreach (var resolver in resolvers)
         {
             var versions = await resolver.GetPackageVersionsAsync(cancellationToken);
             if (versions.Contains(version))

@@ -19,14 +19,14 @@ namespace Onova.Services;
 /// Resolves packages from release assets of a GitHub repository.
 /// Release names should contain package versions (e.g. "v1.8.3").
 /// </summary>
-public class GithubPackageResolver : IPackageResolver
+public class GithubPackageResolver(
+    HttpClient http,
+    string apiBaseAddress,
+    string repositoryOwner,
+    string repositoryName,
+    string assetNamePattern
+) : IPackageResolver
 {
-    private readonly HttpClient _httpClient;
-    private readonly string _apiBaseAddress;
-    private readonly string _repositoryOwner;
-    private readonly string _repositoryName;
-    private readonly string _assetNamePattern;
-
     private EntityTagHeaderValue? _cachedPackageVersionUrlMapETag;
     private IReadOnlyDictionary<Version, string>? _cachedPackageVersionUrlMap;
 
@@ -34,36 +34,13 @@ public class GithubPackageResolver : IPackageResolver
     /// Initializes an instance of <see cref="GithubPackageResolver" />.
     /// </summary>
     public GithubPackageResolver(
-        HttpClient httpClient,
-        string apiBaseAddress,
+        HttpClient http,
         string repositoryOwner,
         string repositoryName,
         string assetNamePattern
     )
-    {
-        _httpClient = httpClient;
-        _apiBaseAddress = apiBaseAddress;
-        _repositoryOwner = repositoryOwner;
-        _repositoryName = repositoryName;
-        _assetNamePattern = assetNamePattern;
-    }
-
-    /// <summary>
-    /// Initializes an instance of <see cref="GithubPackageResolver" />.
-    /// </summary>
-    public GithubPackageResolver(
-        HttpClient httpClient,
-        string repositoryOwner,
-        string repositoryName,
-        string assetNamePattern
-    )
-        : this(
-            httpClient,
-            "https://api.github.com",
-            repositoryOwner,
-            repositoryName,
-            assetNamePattern
-        ) { }
+        : this(http, "https://api.github.com", repositoryOwner, repositoryName, assetNamePattern)
+    { }
 
     /// <summary>
     /// Initializes an instance of <see cref="GithubPackageResolver" />.
@@ -120,12 +97,14 @@ public class GithubPackageResolver : IPackageResolver
                 var assetName = assetJson.GetProperty("name").GetString();
                 var assetUrl = assetJson.GetProperty("url").GetString();
 
-                // See if name matches
                 if (
                     string.IsNullOrWhiteSpace(assetName)
-                    || !WildcardPattern.IsMatch(assetName, _assetNamePattern)
+                    || string.IsNullOrWhiteSpace(assetUrl)
+                    || !WildcardPattern.IsMatch(assetName, assetNamePattern)
                 )
+                {
                     continue;
+                }
 
                 // Add to dictionary
                 map[version] = assetUrl;
@@ -140,7 +119,7 @@ public class GithubPackageResolver : IPackageResolver
     )
     {
         // Get releases
-        var url = $"{_apiBaseAddress}/repos/{_repositoryOwner}/{_repositoryName}/releases";
+        var url = $"{apiBaseAddress}/repos/{repositoryOwner}/{repositoryName}/releases";
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
 
         // Set If-None-Match header if ETag is available
@@ -148,7 +127,7 @@ public class GithubPackageResolver : IPackageResolver
             request.Headers.IfNoneMatch.Add(_cachedPackageVersionUrlMapETag);
 
         // Get response
-        using var response = await _httpClient.SendAsync(
+        using var response = await http.SendAsync(
             request,
             HttpCompletionOption.ResponseHeadersRead,
             cancellationToken
@@ -202,7 +181,7 @@ public class GithubPackageResolver : IPackageResolver
         using var request = new HttpRequestMessage(HttpMethod.Get, packageUrl);
         request.Headers.Add("Accept", "application/octet-stream"); // required
 
-        using var response = await _httpClient.SendAsync(
+        using var response = await http.SendAsync(
             request,
             HttpCompletionOption.ResponseHeadersRead,
             cancellationToken

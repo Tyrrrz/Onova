@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -45,7 +46,11 @@ public partial class UpdateSpecs : IDisposable
     public async Task I_can_check_for_updates_and_get_a_higher_version_if_it_is_available()
     {
         // Arrange
-        var updatee = new AssemblyMetadata("TestUpdatee", Version.Parse("1.0"), "");
+        var updatee = new AssemblyMetadata(
+            "TestUpdatee",
+            Version.Parse("1.0"),
+            Assembly.GetExecutingAssembly().Location
+        );
 
         // Cleanup storage directory (TODO: move this to API)
         DirectoryEx.DeleteIfExists(
@@ -82,7 +87,11 @@ public partial class UpdateSpecs : IDisposable
     public async Task I_can_check_for_updates_and_get_nothing_if_there_is_no_higher_version_available()
     {
         // Arrange
-        var updatee = new AssemblyMetadata("TestUpdatee", Version.Parse("3.0"), "");
+        var updatee = new AssemblyMetadata(
+            "TestUpdatee",
+            Version.Parse("3.0"),
+            Assembly.GetExecutingAssembly().Location
+        );
 
         // Cleanup storage directory (TODO: move this to API)
         DirectoryEx.DeleteIfExists(
@@ -119,7 +128,11 @@ public partial class UpdateSpecs : IDisposable
     public async Task I_can_check_for_updates_and_get_nothing_if_the_package_source_contains_no_packages()
     {
         // Arrange
-        var updatee = new AssemblyMetadata("TestUpdatee", Version.Parse("1.0"), "");
+        var updatee = new AssemblyMetadata(
+            "TestUpdatee",
+            Version.Parse("1.0"),
+            Assembly.GetExecutingAssembly().Location
+        );
 
         // Cleanup storage directory (TODO: move this to API)
         DirectoryEx.DeleteIfExists(
@@ -151,7 +164,11 @@ public partial class UpdateSpecs : IDisposable
     public async Task I_can_prepare_an_update_so_that_it_can_be_installed()
     {
         // Arrange
-        var updatee = new AssemblyMetadata("TestUpdatee", Version.Parse("1.0"), "");
+        var updatee = new AssemblyMetadata(
+            "TestUpdatee",
+            Version.Parse("1.0"),
+            Assembly.GetExecutingAssembly().Location
+        );
 
         // Cleanup storage directory (TODO: move this to API)
         DirectoryEx.DeleteIfExists(
@@ -188,7 +205,11 @@ public partial class UpdateSpecs : IDisposable
     public async Task I_can_get_a_list_of_updates_which_are_already_prepared_to_install()
     {
         // Arrange
-        var updatee = new AssemblyMetadata("TestUpdatee", Version.Parse("1.0"), "");
+        var updatee = new AssemblyMetadata(
+            "TestUpdatee",
+            Version.Parse("1.0"),
+            Assembly.GetExecutingAssembly().Location
+        );
 
         // Cleanup storage directory (TODO: move this to API)
         DirectoryEx.DeleteIfExists(

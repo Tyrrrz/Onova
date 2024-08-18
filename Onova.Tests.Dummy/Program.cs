@@ -14,7 +14,7 @@ public static class Program
 {
     private static Version Version => Assembly.GetExecutingAssembly().GetName().Version!;
 
-    private static string AssemblyDirPath => AppDomain.CurrentDomain.BaseDirectory!;
+    private static string AssemblyDirPath => AppContext.BaseDirectory;
 
     private static string LastRunFilePath =>
         Path.Combine(AssemblyDirPath, $"lastrun-{Version}.txt");

@@ -73,7 +73,7 @@ public class Updater(
             WorkingDirectory = Path.GetDirectoryName(updateeFilePath),
             Arguments = routedArgs,
             // Don't let the child process inherit the current console window
-            UseShellExecute = true
+            UseShellExecute = true,
         };
 
         // If the updatee is an .exe file, start it directly.

@@ -65,7 +65,7 @@ public partial class UpdateSpecs : IDisposable
         {
             Version.Parse("1.0"),
             Version.Parse("2.0"),
-            Version.Parse("3.0")
+            Version.Parse("3.0"),
         };
 
         using var updateManager = new UpdateManager(
@@ -106,7 +106,7 @@ public partial class UpdateSpecs : IDisposable
         {
             Version.Parse("1.0"),
             Version.Parse("2.0"),
-            Version.Parse("3.0")
+            Version.Parse("3.0"),
         };
 
         using var updateManager = new UpdateManager(
@@ -183,7 +183,7 @@ public partial class UpdateSpecs : IDisposable
         {
             Version.Parse("1.0"),
             Version.Parse("2.0"),
-            Version.Parse("3.0")
+            Version.Parse("3.0"),
         };
 
         using var updateManager = new UpdateManager(
@@ -224,7 +224,7 @@ public partial class UpdateSpecs : IDisposable
         {
             Version.Parse("1.0"),
             Version.Parse("2.0"),
-            Version.Parse("3.0")
+            Version.Parse("3.0"),
         };
 
         using var manager = new UpdateManager(
@@ -257,7 +257,7 @@ public partial class UpdateSpecs : IDisposable
         {
             Version.Parse("1.0.0.0"),
             Version.Parse("2.0.0.0"),
-            Version.Parse("3.0.0.0")
+            Version.Parse("3.0.0.0"),
         };
 
         var expectedFinalVersion = Version.Parse("3.0.0.0");
@@ -292,7 +292,7 @@ public partial class UpdateSpecs : IDisposable
         {
             Version.Parse("1.0.0.0"),
             Version.Parse("2.0.0.0"),
-            Version.Parse("3.0.0.0")
+            Version.Parse("3.0.0.0"),
         };
 
         var expectedFinalVersion = Version.Parse("3.0.0.0");

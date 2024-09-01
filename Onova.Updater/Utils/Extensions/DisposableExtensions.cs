@@ -18,7 +18,7 @@ internal static class DisposableExtensions
             }
             catch (Exception ex)
             {
-                exceptions ??= new List<Exception>();
+                exceptions ??= [];
                 exceptions.Add(ex);
             }
         }

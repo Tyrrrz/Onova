@@ -104,7 +104,7 @@ internal class DummyEnvironment(string rootDirPath) : IDisposable
     public string[] GetLastRunArguments(Version version)
     {
         var filePath = Path.Combine(rootDirPath, $"lastrun-{version}.txt");
-        return File.Exists(filePath) ? File.ReadAllLines(filePath) : Array.Empty<string>();
+        return File.Exists(filePath) ? File.ReadAllLines(filePath) : [];
     }
 
     public string GetLastUpdaterLogs()

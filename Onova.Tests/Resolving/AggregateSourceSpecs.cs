@@ -71,9 +71,9 @@ public class AggregateSourceSpecs : IDisposable
         // Arrange
         var availablePackages = new Dictionary<Version, byte[]>
         {
-            [Version.Parse("1.0")] = new byte[] { 1, 2, 3 },
-            [Version.Parse("2.0")] = new byte[] { 4, 5, 6 },
-            [Version.Parse("3.0")] = new byte[] { 7, 8, 9 }
+            [Version.Parse("1.0")] = [1, 2, 3],
+            [Version.Parse("2.0")] = [4, 5, 6],
+            [Version.Parse("3.0")] = [7, 8, 9],
         };
 
         var resolver = CreateAggregatePackageResolver(availablePackages);
@@ -97,7 +97,7 @@ public class AggregateSourceSpecs : IDisposable
         {
             Version.Parse("1.0"),
             Version.Parse("2.0"),
-            Version.Parse("3.0")
+            Version.Parse("3.0"),
         };
 
         var resolver = CreateAggregatePackageResolver(availableVersions);

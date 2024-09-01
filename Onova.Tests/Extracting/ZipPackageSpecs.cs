@@ -37,12 +37,12 @@ public class ZipPackageSpecs : IDisposable
         // Arrange
         var entries = new Dictionary<string, byte[]>
         {
-            ["File1.bin"] = new byte[] { 1, 2, 3 },
-            ["File2.bin"] = new byte[] { 4, 5, 6 },
-            ["SubDir1/"] = new byte[0],
-            ["SubDir1/File3.bin"] = new byte[] { 7, 8, 9 },
-            ["SubDir1/SubDir2/"] = new byte[0],
-            ["SubDir1/SubDir2/File4.bin"] = new byte[] { 10, 11, 12 }
+            ["File1.bin"] = [1, 2, 3],
+            ["File2.bin"] = [4, 5, 6],
+            ["SubDir1/"] = [],
+            ["SubDir1/File3.bin"] = [7, 8, 9],
+            ["SubDir1/SubDir2/"] = [],
+            ["SubDir1/SubDir2/File4.bin"] = [10, 11, 12],
         };
 
         var packageFilePath = Path.Combine(TempDirPath, "Package.zip");

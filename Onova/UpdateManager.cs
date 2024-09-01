@@ -270,7 +270,7 @@ public class UpdateManager : IUpdateManager
             // in case the application is running inside a console window host.
             // Also required to run with elevated privileges.
             UseShellExecute = true,
-            Verb = isElevated ? "runas" : ""
+            Verb = isElevated ? "runas" : "",
         };
 
         updaterProcess.Start();

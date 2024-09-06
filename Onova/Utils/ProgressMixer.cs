@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Onova.Utils;
 
 internal class ProgressMixer
 {
+    private readonly Lock _lock = new();
     private readonly IProgress<double> _output;
     private readonly Dictionary<int, double> _splitTotals;
 
@@ -22,7 +24,7 @@ internal class ProgressMixer
         var index = _splitCount++;
         return new Progress<double>(p =>
         {
-            lock (_splitTotals)
+            using (_lock.EnterScope())
             {
                 _splitTotals[index] = multiplier * p;
                 _output.Report(_splitTotals.Values.Sum());

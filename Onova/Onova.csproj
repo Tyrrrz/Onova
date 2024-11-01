@@ -29,7 +29,7 @@
     <PackageReference Include="Fody" Version="6.8.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
     <PackageReference Include="PolyShim" Version="1.14.0" PrivateAssets="all" />
-    <PackageReference Include="System.Text.Json" Version="8.0.4" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp3.0'))" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp3.0'))" />
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'" />
   </ItemGroup>
 

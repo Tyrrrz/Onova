@@ -11,14 +11,9 @@ namespace Onova.Services;
 /// <summary>
 /// Resolves packages using multiple other package resolvers.
 /// </summary>
-public class AggregatePackageResolver(IReadOnlyList<IPackageResolver> resolvers) : IPackageResolver
+public class AggregatePackageResolver(params IReadOnlyList<IPackageResolver> resolvers)
+    : IPackageResolver
 {
-    /// <summary>
-    /// Initializes an instance of <see cref="AggregatePackageResolver" />.
-    /// </summary>
-    public AggregatePackageResolver(params IPackageResolver[] resolvers)
-        : this((IReadOnlyList<IPackageResolver>)resolvers) { }
-
     /// <inheritdoc />
     public async Task<IReadOnlyList<Version>> GetPackageVersionsAsync(
         CancellationToken cancellationToken = default

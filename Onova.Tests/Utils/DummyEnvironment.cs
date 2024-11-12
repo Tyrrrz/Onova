@@ -119,7 +119,7 @@ internal class DummyEnvironment(string rootDirPath) : IDisposable
         return File.Exists(filePath) ? File.ReadAllText(filePath) : "";
     }
 
-    public async Task<string> RunDummyAsync(params string[] arguments)
+    public async Task<string> RunDummyAsync(params IReadOnlyList<string> arguments)
     {
         var result = await Cli.Wrap("dotnet")
             .WithArguments(a => a.Add(DummyFilePath).Add(arguments))

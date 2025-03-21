@@ -28,7 +28,8 @@ public class Updater(
 
         var entry = $"{date}> {content}";
 
-        Console.Write(entry);
+        Console.WriteLine(entry);
+
         _log.WriteLine(entry);
         _log.Flush();
     }

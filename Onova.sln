@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onova.Updater", "Onova.Upda
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Onova.Tests.Dummy", "Onova.Tests.Dummy\Onova.Tests.Dummy.csproj", "{EED42D8E-1BDB-4BCD-B9BD-6B18F7F5BC3F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CFEC41F2-1FC6-431D-AE8A-62B1C69AD0AF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{CFEC41F2-1FC6-431D-AE8A-62B1C69AD0AF}"
 	ProjectSection(SolutionItems) = preProject
 		License.txt = License.txt
 		Readme.md = Readme.md

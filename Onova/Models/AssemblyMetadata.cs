@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
@@ -82,9 +81,8 @@ public partial class AssemblyMetadata
             return FromAssembly(assembly, assembly.Location);
 
         // For single-file applications, the executable is the entry point
-        using var currentProcess = Process.GetCurrentProcess();
         var filePath =
-            currentProcess.MainModule?.FileName
+            Environment.ProcessPath
             ?? throw new InvalidOperationException(
                 "Failed to get the current process's entry point."
             );

@@ -51,13 +51,8 @@ public class NugetPackageExtractor(string rootDirPath) : IPackageExtractor
                 Directory.CreateDirectory(entryDestDirPath);
 
             // If the entry is a directory - continue
-            if (
-                entry.FullName.Last() == Path.DirectorySeparatorChar
-                || entry.FullName.Last() == Path.AltDirectorySeparatorChar
-            )
-            {
+            if (Path.EndsInDirectorySeparator(entry.FullName))
                 continue;
-            }
 
             // Extract entry
             using var input = entry.Open();

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
@@ -256,7 +255,7 @@ public class UpdateManager : IUpdateManager
         var isElevated = !DirectoryEx.CheckWriteAccess(Updatee.DirPath);
 
         // Create the updater process
-        var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        var isWindows = OperatingSystem.IsWindows();
         var updaterArgs =
             $"\"{Updatee.FilePath}\" \"{packageContentDirPath}\" \"{restart}\" \"{routedArgs}\"";
 

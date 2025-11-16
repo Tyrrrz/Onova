@@ -5,9 +5,15 @@ namespace Onova.Updater.Utils.Extensions;
 
 internal static class BinaryExtensions
 {
-    public static string GetString(this byte[] data, Encoding encoding) => encoding.GetString(data);
+    extension(byte[] data)
+    {
+        public string GetString(Encoding encoding) => encoding.GetString(data);
 
-    public static string GetString(this byte[] data) => data.GetString(Encoding.UTF8);
+        public string GetString() => data.GetString(Encoding.UTF8);
+    }
 
-    public static byte[] FromBase64(this string input) => Convert.FromBase64String(input);
+    extension(string input)
+    {
+        public byte[] FromBase64() => Convert.FromBase64String(input);
+    }
 }

@@ -5,31 +5,35 @@ namespace Onova.Utils.Extensions;
 
 internal static class StringExtensions
 {
-    public static string SubstringUntil(
-        this string s,
-        string sub,
-        StringComparison comparison = StringComparison.Ordinal
-    )
+    extension(string s)
     {
-        var index = s.IndexOf(sub, comparison);
-        return index >= 0 ? s[..index] : s;
+        public string SubstringUntil(
+            string sub,
+            StringComparison comparison = StringComparison.Ordinal
+        )
+        {
+            var index = s.IndexOf(sub, comparison);
+            return index >= 0 ? s[..index] : s;
+        }
+
+        public string SubstringAfter(
+            string sub,
+            StringComparison comparison = StringComparison.Ordinal
+        )
+        {
+            var index = s.IndexOf(sub, comparison);
+            return index >= 0
+                ? s.Substring(index + sub.Length, s.Length - index - sub.Length)
+                : string.Empty;
+        }
+
+        public byte[] GetBytes(Encoding encoding) => encoding.GetBytes(s);
+
+        public byte[] GetBytes() => s.GetBytes(Encoding.UTF8);
     }
 
-    public static string SubstringAfter(
-        this string s,
-        string sub,
-        StringComparison comparison = StringComparison.Ordinal
-    )
+    extension(byte[] data)
     {
-        var index = s.IndexOf(sub, comparison);
-        return index >= 0
-            ? s.Substring(index + sub.Length, s.Length - index - sub.Length)
-            : string.Empty;
+        public string ToBase64() => Convert.ToBase64String(data);
     }
-
-    public static byte[] GetBytes(this string input, Encoding encoding) => encoding.GetBytes(input);
-
-    public static byte[] GetBytes(this string input) => input.GetBytes(Encoding.UTF8);
-
-    public static string ToBase64(this byte[] data) => Convert.ToBase64String(data);
 }

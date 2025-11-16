@@ -5,6 +5,8 @@ namespace Onova.Utils.Extensions;
 
 internal static class CollectionExtensions
 {
-    public static int AddRange<T>(this HashSet<T> hashSet, IEnumerable<T> sequence) =>
-        sequence.Count(hashSet.Add);
+    extension<T>(HashSet<T> hashSet)
+    {
+        public int AddRange(IEnumerable<T> sequence) => sequence.Count(hashSet.Add);
+    }
 }

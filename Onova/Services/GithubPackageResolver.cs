@@ -71,8 +71,9 @@ public class GithubPackageResolver(
         {
             // Get release name
             var releaseName =
-                releaseJson.GetProperty("name").GetString()
-                ?? releaseJson.GetProperty("tag_name").GetString();
+                releaseJson.GetProperty("name").GetString() ?? releaseJson
+                    .GetProperty("tag_name")
+                    .GetString();
 
             if (string.IsNullOrWhiteSpace(releaseName))
                 continue;

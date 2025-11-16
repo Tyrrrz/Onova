@@ -7,19 +7,18 @@ namespace Onova.Utils.Extensions;
 
 internal static class ReflectionExtensions
 {
-    public static async Task ExtractManifestResourceAsync(
-        this Assembly assembly,
-        string resourceName,
-        string destFilePath
-    )
+    extension(Assembly assembly)
     {
-        var input =
-            assembly.GetManifestResourceStream(resourceName)
-            ?? throw new MissingManifestResourceException(
-                $"Could not find resource '{resourceName}'."
-            );
+        public async Task ExtractManifestResourceAsync(string resourceName, string destFilePath)
+        {
+            var input =
+                assembly.GetManifestResourceStream(resourceName)
+                ?? throw new MissingManifestResourceException(
+                    $"Could not find resource '{resourceName}'."
+                );
 
-        using var output = File.Create(destFilePath);
-        await input.CopyToAsync(output);
+            using var output = File.Create(destFilePath);
+            await input.CopyToAsync(output);
+        }
     }
 }

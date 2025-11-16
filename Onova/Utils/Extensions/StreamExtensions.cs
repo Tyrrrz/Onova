@@ -7,40 +7,41 @@ namespace Onova.Utils.Extensions;
 
 internal static class StreamExtensions
 {
-    public static async Task<int> CopyBufferedToAsync(
-        this Stream source,
-        Stream destination,
-        byte[] buffer,
-        CancellationToken cancellationToken = default
-    )
+    extension(Stream source)
     {
-        var bytesCopied = await source.ReadAsync(buffer, cancellationToken);
-        await destination.WriteAsync(buffer, 0, bytesCopied, cancellationToken);
-
-        return bytesCopied;
-    }
-
-    public static async Task CopyToAsync(
-        this Stream source,
-        Stream destination,
-        IProgress<double>? progress = null,
-        CancellationToken cancellationToken = default
-    )
-    {
-        using var buffer = PooledBuffer.ForStream();
-
-        var totalBytesCopied = 0L;
-        int bytesCopied;
-        do
+        public async Task<int> CopyBufferedToAsync(
+            Stream destination,
+            byte[] buffer,
+            CancellationToken cancellationToken = default
+        )
         {
-            bytesCopied = await source.CopyBufferedToAsync(
-                destination,
-                buffer.Array,
-                cancellationToken
-            );
-            totalBytesCopied += bytesCopied;
+            var bytesCopied = await source.ReadAsync(buffer, cancellationToken);
+            await destination.WriteAsync(buffer, 0, bytesCopied, cancellationToken);
 
-            progress?.Report(1.0 * totalBytesCopied / source.Length);
-        } while (bytesCopied > 0);
+            return bytesCopied;
+        }
+
+        public async Task CopyToAsync(
+            Stream destination,
+            IProgress<double>? progress = null,
+            CancellationToken cancellationToken = default
+        )
+        {
+            using var buffer = PooledBuffer.ForStream();
+
+            var totalBytesCopied = 0L;
+            int bytesCopied;
+            do
+            {
+                bytesCopied = await source.CopyBufferedToAsync(
+                    destination,
+                    buffer.Array,
+                    cancellationToken
+                );
+                totalBytesCopied += bytesCopied;
+
+                progress?.Report(1.0 * totalBytesCopied / source.Length);
+            } while (bytesCopied > 0);
+        }
     }
 }

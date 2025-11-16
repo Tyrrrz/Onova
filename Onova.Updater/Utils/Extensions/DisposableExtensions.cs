@@ -6,26 +6,29 @@ namespace Onova.Updater.Utils.Extensions;
 
 internal static class DisposableExtensions
 {
-    public static void DisposeAll(this IEnumerable<IDisposable> disposables)
+    extension(IEnumerable<IDisposable> disposables)
     {
-        var exceptions = default(List<Exception>);
-
-        foreach (var i in disposables)
+        public void DisposeAll()
         {
-            try
-            {
-                i.Dispose();
-            }
-            catch (Exception ex)
-            {
-                exceptions ??= [];
-                exceptions.Add(ex);
-            }
-        }
+            var exceptions = default(List<Exception>);
 
-        if (exceptions?.Any() == true)
-        {
-            throw new AggregateException(exceptions);
+            foreach (var i in disposables)
+            {
+                try
+                {
+                    i.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    exceptions ??= [];
+                    exceptions.Add(ex);
+                }
+            }
+
+            if (exceptions?.Any() == true)
+            {
+                throw new AggregateException(exceptions);
+            }
         }
     }
 }

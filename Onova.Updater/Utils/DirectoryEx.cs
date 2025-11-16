@@ -31,7 +31,7 @@ internal static class DirectoryEx
 
                 var destFilePath = Path.Combine(
                     destDirPath,
-                    PathEx.GetRelativePath(sourceDirPath, sourceFilePath)
+                    Path.GetRelativePath(sourceDirPath, sourceFilePath)
                 );
 
                 Directory.CreateDirectory(Path.GetDirectoryName(destFilePath) ?? destDirPath);

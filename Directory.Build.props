@@ -22,4 +22,13 @@
     <EnableAotAnalyzer>false</EnableAotAnalyzer>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Authors>$(Company)</Authors>
+    <Description>Compact and extensible auto-update library. Note: this package has limited availability in Russia and Belarus.</Description>
+    <PackageTags>auto update</PackageTags>
+    <PackageProjectUrl>https://github.com/Tyrrrz/Onova</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/Tyrrrz/Onova/releases</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
 </Project>

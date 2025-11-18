@@ -11,19 +11,16 @@
       >true</IsAotCompatible
     >
   </PropertyGroup>
+
   <PropertyGroup>
-    <Authors>$(Company)</Authors>
-    <Description>Compact and extensible auto-update library. Note: this package has limited availability in Russia and Belarus.</Description>
-    <PackageTags>auto update</PackageTags>
-    <PackageProjectUrl>https://github.com/Tyrrrz/Onova</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/Tyrrrz/Onova/releases</PackageReleaseNotes>
     <PackageIcon>favicon.png</PackageIcon>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
   <ItemGroup>
     <None Include="../favicon.png" Pack="true" PackagePath="" Visible="false" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets="all" />
     <PackageReference Include="CSharpier.MsBuild" Version="1.2.1" PrivateAssets="all" />
@@ -42,10 +39,12 @@
       Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'"
     />
   </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
     <Reference Include="System.Net.Http" />
     <Reference Include="System.IO.Compression" />
   </ItemGroup>
+
   <!-- Non-linking dependency on the updater project to ensure correct build order -->
   <ItemGroup>
     <ProjectReference Include="..\Onova.Updater\Onova.Updater.csproj">
@@ -56,6 +55,7 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
+
   <!-- Embed the updater executable -->
   <ItemGroup>
     <EmbeddedResource Include="../Onova.Updater/bin/$(Configuration)/net35/Onova.Updater.exe">

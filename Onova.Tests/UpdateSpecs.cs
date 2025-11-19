@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Models;
 using Onova.Tests.Utils;
+using Onova.Tests.Utils.Extensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -23,7 +24,7 @@ public partial class UpdateSpecs : IDisposable
     {
         _testOutput = testOutput;
 
-        DirectoryEx.Reset(TempDirPath);
+        Directory.Reset(TempDirPath);
     }
 
     public void Dispose()
@@ -32,7 +33,7 @@ public partial class UpdateSpecs : IDisposable
         {
             try
             {
-                DirectoryEx.DeleteIfExists(TempDirPath);
+                Directory.DeleteIfExists(TempDirPath);
                 break;
             }
             catch (UnauthorizedAccessException) when (retriesRemaining > 0)
@@ -53,7 +54,7 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        DirectoryEx.DeleteIfExists(
+        Directory.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
@@ -94,7 +95,7 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        DirectoryEx.DeleteIfExists(
+        Directory.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
@@ -135,7 +136,7 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        DirectoryEx.DeleteIfExists(
+        Directory.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
@@ -171,7 +172,7 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        DirectoryEx.DeleteIfExists(
+        Directory.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
@@ -212,7 +213,7 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        DirectoryEx.DeleteIfExists(
+        Directory.DeleteIfExists(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",

@@ -98,7 +98,7 @@ public class UpdateManager : IUpdateManager
     {
         // Check whether we have write access to updater executable
         // (this is a reasonably accurate check for whether that process is running)
-        if (File.Exists(_updaterFilePath) && !FileEx.CheckWriteAccess(_updaterFilePath))
+        if (File.Exists(_updaterFilePath) && !File.CheckWriteAccess(_updaterFilePath))
             throw new UpdaterAlreadyLaunchedException();
     }
 
@@ -209,7 +209,7 @@ public class UpdateManager : IUpdateManager
         );
 
         // Ensure package content directory exists and is empty
-        DirectoryEx.Reset(packageContentDirPath);
+        Directory.Reset(packageContentDirPath);
 
         // Extract package contents
         await _extractor.ExtractPackageAsync(
@@ -252,7 +252,7 @@ public class UpdateManager : IUpdateManager
         var routedArgs = restartArguments.GetBytes().ToBase64();
 
         // If we don't have write access to the target directory, the child process needs to be elevated
-        var isElevated = !DirectoryEx.CheckWriteAccess(Updatee.DirPath);
+        var isElevated = !Directory.CheckWriteAccess(Updatee.DirPath);
 
         // Create the updater process
         var isWindows = OperatingSystem.IsWindows();

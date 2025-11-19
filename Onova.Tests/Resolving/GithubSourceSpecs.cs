@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using Onova.Tests.Utils;
+using Onova.Tests.Utils.Extensions;
 using Xunit;
 
 namespace Onova.Tests.Resolving;
@@ -18,9 +18,9 @@ public class GithubSourceSpecs : IDisposable
             $"{nameof(GithubSourceSpecs)}_{Guid.NewGuid()}"
         );
 
-    public GithubSourceSpecs() => DirectoryEx.Reset(TempDirPath);
+    public GithubSourceSpecs() => Directory.Reset(TempDirPath);
 
-    public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
+    public void Dispose() => Directory.DeleteIfExists(TempDirPath);
 
     private GithubPackageResolver CreateGithubPackageResolver()
     {

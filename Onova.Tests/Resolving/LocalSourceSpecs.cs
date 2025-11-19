@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using Onova.Tests.Utils;
+using Onova.Tests.Utils.Extensions;
 using Xunit;
 
 namespace Onova.Tests.Resolving;
@@ -18,9 +18,9 @@ public class LocalSourceSpecs : IDisposable
             $"{nameof(LocalSourceSpecs)}_{Guid.NewGuid()}"
         );
 
-    public LocalSourceSpecs() => DirectoryEx.Reset(TempDirPath);
+    public LocalSourceSpecs() => Directory.Reset(TempDirPath);
 
-    public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
+    public void Dispose() => Directory.DeleteIfExists(TempDirPath);
 
     private LocalPackageResolver CreateLocalPackageResolver(
         IReadOnlyDictionary<Version, byte[]> packages

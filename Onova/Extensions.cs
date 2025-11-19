@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Onova.Utils;
+using Onova.Utils.Extensions;
 
 namespace Onova;
 
@@ -19,11 +19,7 @@ public static class Extensions
         /// If the application is to be restarted, it will receive the same command line arguments as it did initially.
         /// </summary>
         public void LaunchUpdater(Version version, bool restart = true) =>
-            manager.LaunchUpdater(
-                version,
-                restart,
-                EnvironmentEx.GetCommandLineWithoutExecutable()
-            );
+            manager.LaunchUpdater(version, restart, Environment.GetCommandLineWithoutExecutable());
 
         /// <summary>
         /// Checks for new version and performs an update if available.

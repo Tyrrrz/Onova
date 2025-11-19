@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CliWrap;
 using CliWrap.Buffered;
 using Mono.Cecil;
+using Onova.Tests.Utils.Extensions;
 
 namespace Onova.Tests.Utils;
 
@@ -81,7 +82,7 @@ internal class DummyEnvironment(string rootDirPath) : IDisposable
         {
             try
             {
-                DirectoryEx.DeleteIfExists(rootDirPath);
+                Directory.DeleteIfExists(rootDirPath);
                 break;
             }
             catch (UnauthorizedAccessException) when (retriesRemaining > 0)
@@ -119,14 +120,10 @@ internal class DummyEnvironment(string rootDirPath) : IDisposable
         return File.Exists(filePath) ? File.ReadAllText(filePath) : "";
     }
 
-    public async Task<string> RunDummyAsync(params IReadOnlyList<string> arguments)
-    {
-        var result = await Cli.Wrap("dotnet")
+    public async Task<string> RunDummyAsync(params IReadOnlyList<string> arguments) =>
+        await Cli.Wrap("dotnet")
             .WithArguments(a => a.Add(DummyFilePath).Add(arguments))
             .ExecuteBufferedAsync();
-
-        return result.StandardOutput;
-    }
 
     public async Task WaitUntilUpdaterExitsAsync(CancellationToken cancellationToken = default)
     {

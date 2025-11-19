@@ -4,7 +4,6 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using Onova.Tests.Utils;
 using Onova.Tests.Utils.Extensions;
 using Xunit;
 
@@ -18,9 +17,9 @@ public class NugetSourceSpecs : IDisposable
             $"{nameof(NugetSourceSpecs)}_{Guid.NewGuid()}"
         );
 
-    public NugetSourceSpecs() => DirectoryEx.Reset(TempDirPath);
+    public NugetSourceSpecs() => Directory.Reset(TempDirPath);
 
-    public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
+    public void Dispose() => Directory.DeleteIfExists(TempDirPath);
 
     private static NugetPackageResolver CreateNugetPackageResolver() =>
         new("https://myget.org/F/tyrrrz-test/api/v3/index.json", "OnovaTest");

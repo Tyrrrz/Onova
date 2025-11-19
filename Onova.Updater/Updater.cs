@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using Onova.Updater.Utils;
+using Onova.Updater.Utils.Extensions;
 
 namespace Onova.Updater;
 
@@ -52,7 +53,7 @@ public class Updater(
     private void ApplyUpdate()
     {
         WriteLog("Copying package contents from storage to the updatee directory...");
-        DirectoryEx.Copy(packageContentDirPath, Path.GetDirectoryName(updateeFilePath)!);
+        Directory.Copy(packageContentDirPath, Path.GetDirectoryName(updateeFilePath)!);
 
         try
         {

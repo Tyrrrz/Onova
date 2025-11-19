@@ -5,7 +5,6 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using Onova.Tests.Utils;
 using Onova.Tests.Utils.Extensions;
 using Xunit;
 
@@ -19,9 +18,9 @@ public class ZipPackageSpecs : IDisposable
             $"{nameof(ZipPackageSpecs)}_{Guid.NewGuid()}"
         );
 
-    public ZipPackageSpecs() => DirectoryEx.Reset(TempDirPath);
+    public ZipPackageSpecs() => Directory.Reset(TempDirPath);
 
-    public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
+    public void Dispose() => Directory.DeleteIfExists(TempDirPath);
 
     private void CreateZipArchive(string filePath, IReadOnlyDictionary<string, byte[]> entries)
     {

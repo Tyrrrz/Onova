@@ -5,7 +5,6 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using Onova.Tests.Utils;
 using Onova.Tests.Utils.Extensions;
 using Xunit;
 
@@ -19,9 +18,9 @@ public class NugetPackageSpecs : IDisposable
             $"{nameof(NugetPackageSpecs)}_{Guid.NewGuid()}"
         );
 
-    public NugetPackageSpecs() => DirectoryEx.Reset(TempDirPath);
+    public NugetPackageSpecs() => Directory.Reset(TempDirPath);
 
-    public void Dispose() => DirectoryEx.DeleteIfExists(TempDirPath);
+    public void Dispose() => Directory.DeleteIfExists(TempDirPath);
 
     private void CreateNugetPackage(
         string filePath,

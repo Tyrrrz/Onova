@@ -22,20 +22,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets="all" />
-    <PackageReference Include="CSharpier.MsBuild" Version="1.2.1" PrivateAssets="all" />
-    <PackageReference Include="Deorcify" Version="1.1.0" PrivateAssets="all" />
-    <PackageReference Include="Fody" Version="6.9.3" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="all" />
-    <PackageReference Include="PolyShim" Version="2.2.0" PrivateAssets="all" />
+    <PackageReference Include="ConfigureAwait.Fody" PrivateAssets="all" />
+    <PackageReference Include="CSharpier.MsBuild" PrivateAssets="all" />
+    <PackageReference Include="Deorcify" PrivateAssets="all" />
+    <PackageReference Include="Fody" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
+    <PackageReference Include="PolyShim" PrivateAssets="all" />
     <PackageReference
       Include="System.Text.Json"
-      Version="10.0.0"
       Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp3.0'))"
     />
     <PackageReference
       Include="System.Runtime.InteropServices.RuntimeInformation"
-      Version="4.3.0"
       Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'"
     />
   </ItemGroup>

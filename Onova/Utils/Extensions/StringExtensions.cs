@@ -13,7 +13,7 @@ internal static class StringExtensions
         )
         {
             var index = str.IndexOf(sub, comparison);
-            return index >= 0 ? str[..index] : str;
+            return index < 0 ? str : str[..index];
         }
 
         public string SubstringAfter(
@@ -22,7 +22,7 @@ internal static class StringExtensions
         )
         {
             var index = str.IndexOf(sub, comparison);
-            return index >= 0 ? str[(index + sub.Length)..] : string.Empty;
+            return index < 0 ? string.Empty : str[(index + sub.Length)..];
         }
 
         public byte[] GetBytes(Encoding encoding) => encoding.GetBytes(str);

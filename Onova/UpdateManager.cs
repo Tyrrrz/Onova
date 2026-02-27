@@ -190,8 +190,8 @@ public class UpdateManager : IUpdateManager
         EnsureLockFileAcquired();
         EnsureUpdaterNotLaunched();
 
-        // Set up progress mixer
-        var progressMixer = progress != null ? new ProgressMixer(progress) : null;
+        // Set up progress muxer
+        var progressMuxer = progress != null ? new ProgressMuxer(progress) : null;
 
         // Get package file path and content directory path
         var packageFilePath = GetPackageFilePath(version);
@@ -204,7 +204,7 @@ public class UpdateManager : IUpdateManager
         await _resolver.DownloadPackageAsync(
             version,
             packageFilePath,
-            progressMixer?.Split(0.9), // 0% -> 90%
+            progressMuxer?.CreateInput(0.9), // 0% -> 90%
             cancellationToken
         );
 
@@ -215,7 +215,7 @@ public class UpdateManager : IUpdateManager
         await _extractor.ExtractPackageAsync(
             packageFilePath,
             packageContentDirPath,
-            progressMixer?.Split(0.1), // 90% -> 100%
+            progressMuxer?.CreateInput(0.1), // 90% -> 100%
             cancellationToken
         );
 

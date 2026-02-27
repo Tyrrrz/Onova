@@ -2,7 +2,7 @@
 
 namespace Onova.Tests.Utils.Extensions;
 
-internal static class Directorytensions
+internal static class DirectoryExtensions
 {
     extension(Directory)
     {

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Onova.Utils.Extensions;
 
-internal static class Directorytensions
+internal static class DirectoryExtensions
 {
     extension(Directory)
     {
@@ -24,7 +24,7 @@ internal static class Directorytensions
 
         public static bool CheckWriteAccess(string dirPath)
         {
-            var testFilePath = Path.Combine(dirPath, $"{Guid.NewGuid()}");
+            var testFilePath = Path.Combine(dirPath, Guid.NewGuid().ToString());
 
             try
             {

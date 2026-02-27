@@ -23,7 +23,7 @@ internal static class StringExtensions
         {
             var index = s.IndexOf(sub, comparison);
             return index >= 0
-                ? s.Substring(index + sub.Length, s.Length - index - sub.Length)
+                ? s[(index + sub.Length)..]
                 : string.Empty;
         }
 

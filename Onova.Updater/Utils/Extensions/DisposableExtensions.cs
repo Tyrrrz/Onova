@@ -12,23 +12,20 @@ internal static class DisposableExtensions
         {
             var exceptions = default(List<Exception>);
 
-            foreach (var i in disposables)
+            foreach (var disposable in disposables)
             {
                 try
                 {
-                    i.Dispose();
+                    disposable.Dispose();
                 }
                 catch (Exception ex)
                 {
-                    exceptions ??= [];
-                    exceptions.Add(ex);
+                    (exceptions ??= []).Add(ex);
                 }
             }
 
             if (exceptions?.Any() == true)
-            {
                 throw new AggregateException(exceptions);
-            }
         }
     }
 }

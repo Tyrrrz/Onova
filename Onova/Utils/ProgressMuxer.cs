@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Onova.Utils;
 
-internal class ProgressMixer
+internal class ProgressMuxer
 {
     private readonly Lock _lock = new();
     private readonly IProgress<double> _output;
@@ -13,20 +13,20 @@ internal class ProgressMixer
 
     private int _splitCount;
 
-    public ProgressMixer(IProgress<double> output)
+    public ProgressMuxer(IProgress<double> output)
     {
         _output = output;
         _splitTotals = new Dictionary<int, double>();
     }
 
-    public IProgress<double> Split(double multiplier)
+    public IProgress<double> CreateInput(double weight = 1)
     {
         var index = _splitCount++;
         return new Progress<double>(p =>
         {
             using (_lock.EnterScope())
             {
-                _splitTotals[index] = multiplier * p;
+                _splitTotals[index] = weight * p;
                 _output.Report(_splitTotals.Values.Sum());
             }
         });

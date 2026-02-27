@@ -5,15 +5,15 @@ namespace Onova.Utils.Extensions;
 
 internal static class StringExtensions
 {
-    extension(string s)
+    extension(string str)
     {
         public string SubstringUntil(
             string sub,
             StringComparison comparison = StringComparison.Ordinal
         )
         {
-            var index = s.IndexOf(sub, comparison);
-            return index >= 0 ? s[..index] : s;
+            var index = str.IndexOf(sub, comparison);
+            return index >= 0 ? str[..index] : str;
         }
 
         public string SubstringAfter(
@@ -21,15 +21,13 @@ internal static class StringExtensions
             StringComparison comparison = StringComparison.Ordinal
         )
         {
-            var index = s.IndexOf(sub, comparison);
-            return index >= 0
-                ? s.Substring(index + sub.Length, s.Length - index - sub.Length)
-                : string.Empty;
+            var index = str.IndexOf(sub, comparison);
+            return index >= 0 ? str[(index + sub.Length)..] : string.Empty;
         }
 
-        public byte[] GetBytes(Encoding encoding) => encoding.GetBytes(s);
+        public byte[] GetBytes(Encoding encoding) => encoding.GetBytes(str);
 
-        public byte[] GetBytes() => s.GetBytes(Encoding.UTF8);
+        public byte[] GetBytes() => str.GetBytes(Encoding.UTF8);
     }
 
     extension(byte[] data)

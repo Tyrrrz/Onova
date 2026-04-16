@@ -5,22 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using PowerKit.Extensions;
+using PowerKit;
 using Xunit;
 
 namespace Onova.Tests.Resolving;
 
 public class AggregateSourceSpecs : IDisposable
 {
-    private string TempDirPath { get; } =
-        Path.Combine(
-            Directory.GetCurrentDirectory(),
-            $"{nameof(AggregateSourceSpecs)}_{Guid.NewGuid()}"
-        );
+    private TempDirectory TempDir { get; } = TempDirectory.Create();
 
-    public AggregateSourceSpecs() => Directory.Reset(TempDirPath);
-
-    public void Dispose() => Directory.TryDelete(TempDirPath, true);
+    public void Dispose() => TempDir.Dispose();
 
     private LocalPackageResolver CreateLocalPackageResolver(
         IReadOnlyDictionary<Version, byte[]> packages
@@ -28,11 +22,11 @@ public class AggregateSourceSpecs : IDisposable
     {
         foreach (var (version, data) in packages)
         {
-            var packageFilePath = Path.Combine(TempDirPath, $"{version}.onv");
+            var packageFilePath = Path.Combine(TempDir.Path, $"{version}.onv");
             File.WriteAllBytes(packageFilePath, data);
         }
 
-        return new LocalPackageResolver(TempDirPath, "*.onv");
+        return new LocalPackageResolver(TempDir.Path, "*.onv");
     }
 
     private AggregatePackageResolver CreateAggregatePackageResolver(
@@ -46,8 +40,8 @@ public class AggregateSourceSpecs : IDisposable
             .Skip(packages.Count / 2)
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-        var repository1DirPath = Path.Combine(TempDirPath, "1");
-        var repository2DirPath = Path.Combine(TempDirPath, "2");
+        var repository1DirPath = Path.Combine(TempDir.Path, "1");
+        var repository2DirPath = Path.Combine(TempDir.Path, "2");
 
         Directory.CreateDirectory(repository1DirPath);
         Directory.CreateDirectory(repository2DirPath);
@@ -79,7 +73,7 @@ public class AggregateSourceSpecs : IDisposable
         var resolver = CreateAggregatePackageResolver(availablePackages);
 
         var (version, expectedData) = availablePackages.Last();
-        var destFilePath = Path.Combine(TempDirPath, "Output.onv");
+        var destFilePath = Path.Combine(TempDir.Path, "Output.onv");
 
         // Act
         await resolver.DownloadPackageAsync(version, destFilePath);

@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
+using PowerKit;
 using PowerKit.Extensions;
 using Xunit;
 
@@ -12,15 +13,9 @@ namespace Onova.Tests.Extracting;
 
 public class ZipPackageSpecs : IDisposable
 {
-    private string TempDirPath { get; } =
-        Path.Combine(
-            Directory.GetCurrentDirectory(),
-            $"{nameof(ZipPackageSpecs)}_{Guid.NewGuid()}"
-        );
+    private TempDirectory TempDir { get; } = TempDirectory.Create();
 
-    public ZipPackageSpecs() => Directory.Reset(TempDirPath);
-
-    public void Dispose() => Directory.TryDelete(TempDirPath, true);
+    public void Dispose() => TempDir.Dispose();
 
     private void CreateZipArchive(string filePath, IReadOnlyDictionary<string, byte[]> entries)
     {
@@ -44,12 +39,12 @@ public class ZipPackageSpecs : IDisposable
             ["SubDir1/SubDir2/File4.bin"] = [10, 11, 12],
         };
 
-        var packageFilePath = Path.Combine(TempDirPath, "Package.zip");
+        var packageFilePath = Path.Combine(TempDir.Path, "Package.zip");
         CreateZipArchive(packageFilePath, entries);
 
         var extractor = new ZipPackageExtractor();
 
-        var destDirPath = Path.Combine(TempDirPath, "Output");
+        var destDirPath = Path.Combine(TempDir.Path, "Output");
 
         // Act
         await extractor.ExtractPackageAsync(packageFilePath, destDirPath);

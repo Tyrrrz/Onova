@@ -5,22 +5,16 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using PowerKit.Extensions;
+using PowerKit;
 using Xunit;
 
 namespace Onova.Tests.Resolving;
 
 public class GithubSourceSpecs : IDisposable
 {
-    private string TempDirPath { get; } =
-        Path.Combine(
-            Directory.GetCurrentDirectory(),
-            $"{nameof(GithubSourceSpecs)}_{Guid.NewGuid()}"
-        );
+    private TempDirectory TempDir { get; } = TempDirectory.Create();
 
-    public GithubSourceSpecs() => Directory.Reset(TempDirPath);
-
-    public void Dispose() => Directory.TryDelete(TempDirPath, true);
+    public void Dispose() => TempDir.Dispose();
 
     private GithubPackageResolver CreateGithubPackageResolver()
     {
@@ -47,7 +41,7 @@ public class GithubSourceSpecs : IDisposable
         var resolver = CreateGithubPackageResolver();
 
         var version = Version.Parse("2.0");
-        var destFilePath = Path.Combine(TempDirPath, "Output.onv");
+        var destFilePath = Path.Combine(TempDir.Path, "Output.onv");
 
         // Act
         await resolver.DownloadPackageAsync(version, destFilePath);

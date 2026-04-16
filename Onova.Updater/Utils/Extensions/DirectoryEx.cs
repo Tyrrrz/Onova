@@ -59,11 +59,7 @@ internal static class DirectoryExtensions
             }
             finally
             {
-                Disposable
-                    .Merge(
-                        sourceStreams.Cast<IDisposable>().Concat(destStreams.Cast<IDisposable>())
-                    )
-                    .Dispose();
+                Disposable.Merge([.. sourceStreams, .. destStreams]).Dispose();
             }
         }
     }

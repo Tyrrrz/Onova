@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using PowerKit;
 
 namespace Onova.Updater.Utils.Extensions;
 
@@ -58,7 +59,11 @@ internal static class DirectoryExtensions
             }
             finally
             {
-                sourceStreams.Concat(destStreams).Cast<IDisposable>().DisposeAll();
+                Disposable
+                    .Merge(
+                        sourceStreams.Cast<IDisposable>().Concat(destStreams.Cast<IDisposable>())
+                    )
+                    .Dispose();
             }
         }
     }

@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PowerKit.Extensions;
 
 namespace Onova.Services;
 
@@ -56,9 +57,17 @@ public class NugetPackageExtractor(string rootDirPath) : IPackageExtractor
             using var input = entry.Open();
             using var output = File.Create(entryDestFilePath);
 
-            await input.CopyToAsync(output, cancellationToken);
+            var entryLocalProgress =
+                progress is null || entry.Length <= 0
+                    ? null
+                    : new Progress<double>(p =>
+                        progress.Report(
+                            (totalBytesCopied + (long)(p * entry.Length)) / (double)totalBytes
+                        )
+                    );
+
+            await input.CopyToAsync(output, entry.Length, entryLocalProgress, cancellationToken);
             totalBytesCopied += entry.Length;
-            progress?.Report(1.0 * totalBytesCopied / totalBytes);
         }
     }
 }

@@ -4,8 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using Onova.Updater.Utils;
 using Onova.Updater.Utils.Extensions;
+using PowerKit.Extensions;
 
 namespace Onova.Updater;
 
@@ -41,7 +41,7 @@ public class Updater(
 
         for (var retriesRemaining = 15; retriesRemaining > 0; retriesRemaining--)
         {
-            if (FileEx.CheckWriteAccess(updateeFilePath))
+            if (File.CheckWriteAccess(updateeFilePath))
                 return;
 
             Thread.Sleep(1000);

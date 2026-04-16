@@ -4,8 +4,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Onova.Utils;
-using Onova.Utils.Extensions;
 
 namespace Onova.Services;
 
@@ -48,18 +46,9 @@ public class ZipPackageExtractor : IPackageExtractor
             using var input = entry.Open();
             using var output = File.Create(entryDestFilePath);
 
-            using var buffer = PooledBuffer.ForStream();
-            int bytesCopied;
-            do
-            {
-                bytesCopied = await input.CopyBufferedToAsync(
-                    output,
-                    buffer.Array,
-                    cancellationToken
-                );
-                totalBytesCopied += bytesCopied;
-                progress?.Report(1.0 * totalBytesCopied / totalBytes);
-            } while (bytesCopied > 0);
+            await input.CopyToAsync(output, cancellationToken);
+            totalBytesCopied += entry.Length;
+            progress?.Report(1.0 * totalBytesCopied / totalBytes);
         }
     }
 }

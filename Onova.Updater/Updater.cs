@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using Onova.Updater.Utils.Extensions;
 using PowerKit.Extensions;
 
 namespace Onova.Updater;

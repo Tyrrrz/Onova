@@ -61,13 +61,9 @@ public class NugetPackageExtractor(string rootDirPath) : IPackageExtractor
             await input.CopyToAsync(
                 output,
                 entry.Length,
-                progress?.Pipe(p =>
-                    new Progress<double>(entryP =>
-                        p.Report(
-                            (entryBaseOffset + (long)(entryP * entry.Length)) / (double)totalBytes
-                        )
-                    )
-                ),
+                progress?.Pipe(p => new Progress<double>(entryP =>
+                    p.Report((entryBaseOffset + (long)(entryP * entry.Length)) / (double)totalBytes)
+                )),
                 cancellationToken
             );
             totalBytesCopied += entry.Length;

@@ -44,7 +44,7 @@
 
   <!-- Non-linking dependency on the updater project to ensure correct build order -->
   <ItemGroup>
-    <ProjectReference Include="..\Onova.Updater\Onova.Updater.csproj">
+    <ProjectReference Include="../Onova.Updater/Onova.Updater.csproj">
       <GlobalPropertiesToRemove>TargetFramework</GlobalPropertiesToRemove>
       <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
       <CopyLocal>false</CopyLocal>

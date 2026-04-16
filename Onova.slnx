@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Misc/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="License.txt" />
+    <File Path="NuGet.config" />
+    <File Path="Readme.md" />
+  </Folder>
+
+  <Project Path="Onova/Onova.csproj" />
+  <Project Path="Onova.Tests.Dummy/Onova.Tests.Dummy.csproj" />
+  <Project Path="Onova.Tests/Onova.Tests.csproj" />
+  <Project Path="Onova.Updater/Onova.Updater.csproj" />
+</Solution>

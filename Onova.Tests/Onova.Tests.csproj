@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Onova\Onova.csproj" />
-    <ProjectReference Include="..\Onova.Tests.Dummy\Onova.Tests.Dummy.csproj" />
+    <ProjectReference Include="../Onova/Onova.csproj" />
+    <ProjectReference Include="../Onova.Tests.Dummy/Onova.Tests.Dummy.csproj" />
   </ItemGroup>
 </Project>

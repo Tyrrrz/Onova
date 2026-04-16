@@ -9,6 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Onova\Onova.csproj" />
+    <ProjectReference Include="../Onova/Onova.csproj" />
   </ItemGroup>
 </Project>

@@ -27,6 +27,9 @@ env:
 jobs:
   main:
     uses: Tyrrrz/.github/.github/workflows/nuget.yml@prime
+    permissions:
+      actions: write
+      contents: write
     with:
       windows-only: true
       deploy: ${{ inputs.deploy || github.ref_type == 'tag' }}

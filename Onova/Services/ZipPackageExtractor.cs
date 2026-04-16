@@ -47,13 +47,14 @@ public class ZipPackageExtractor : IPackageExtractor
             using var input = entry.Open();
             using var output = File.Create(entryDestFilePath);
 
+            var entryBaseOffset = totalBytesCopied;
             await input.CopyToAsync(
                 output,
                 entry.Length,
                 progress?.Pipe(p =>
                     new Progress<double>(entryP =>
                         p.Report(
-                            (totalBytesCopied + (long)(entryP * entry.Length)) / (double)totalBytes
+                            (entryBaseOffset + (long)(entryP * entry.Length)) / (double)totalBytes
                         )
                     )
                 ),

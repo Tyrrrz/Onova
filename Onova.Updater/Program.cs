@@ -1,4 +1,5 @@
-﻿using Onova.Updater.Utils.Extensions;
+﻿using System;
+using System.Text;
 
 namespace Onova.Updater;
 
@@ -12,7 +13,7 @@ public static class Program
         var updateeFilePath = args[0];
         var packageContentDirPath = args[1];
         var restartUpdatee = bool.Parse(args[2]);
-        var routedArgs = args[3].FromBase64().GetString();
+        var routedArgs = Encoding.UTF8.GetString(Convert.FromBase64String(args[3]));
 
         using var updater = new Updater(
             updateeFilePath,

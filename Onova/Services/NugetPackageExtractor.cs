@@ -57,16 +57,18 @@ public class NugetPackageExtractor(string rootDirPath) : IPackageExtractor
             using var input = entry.Open();
             using var output = File.Create(entryDestFilePath);
 
-            var entryLocalProgress =
-                progress is null || entry.Length <= 0
-                    ? null
-                    : new Progress<double>(p =>
-                        progress.Report(
-                            (totalBytesCopied + (long)(p * entry.Length)) / (double)totalBytes
+            await input.CopyToAsync(
+                output,
+                entry.Length,
+                progress?.Pipe(p =>
+                    new Progress<double>(entryP =>
+                        p.Report(
+                            (totalBytesCopied + (long)(entryP * entry.Length)) / (double)totalBytes
                         )
-                    );
-
-            await input.CopyToAsync(output, entry.Length, entryLocalProgress, cancellationToken);
+                    )
+                ),
+                cancellationToken
+            );
             totalBytesCopied += entry.Length;
         }
     }

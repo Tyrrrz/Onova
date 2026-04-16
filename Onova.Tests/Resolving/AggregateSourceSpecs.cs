@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using Onova.Tests.Utils.Extensions;
+using PowerKit.Extensions;
 using Xunit;
 
 namespace Onova.Tests.Resolving;
@@ -20,7 +20,7 @@ public class AggregateSourceSpecs : IDisposable
 
     public AggregateSourceSpecs() => Directory.Reset(TempDirPath);
 
-    public void Dispose() => Directory.DeleteIfExists(TempDirPath);
+    public void Dispose() => Directory.TryDelete(TempDirPath, true);
 
     private LocalPackageResolver CreateLocalPackageResolver(
         IReadOnlyDictionary<Version, byte[]> packages

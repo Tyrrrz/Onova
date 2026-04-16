@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using CliWrap;
 using CliWrap.Buffered;
 using Mono.Cecil;
-using Onova.Tests.Utils.Extensions;
 
 namespace Onova.Tests.Utils;
 
@@ -82,7 +81,11 @@ internal class DummyEnvironment(string rootDirPath) : IDisposable
         {
             try
             {
-                Directory.DeleteIfExists(rootDirPath);
+                Directory.Delete(rootDirPath, true);
+                break;
+            }
+            catch (DirectoryNotFoundException)
+            {
                 break;
             }
             catch (UnauthorizedAccessException) when (retriesRemaining > 0)

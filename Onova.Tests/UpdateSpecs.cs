@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Models;
 using Onova.Tests.Utils;
-using Onova.Tests.Utils.Extensions;
+using PowerKit.Extensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -33,7 +33,11 @@ public partial class UpdateSpecs : IDisposable
         {
             try
             {
-                Directory.DeleteIfExists(TempDirPath);
+                Directory.Delete(TempDirPath, true);
+                break;
+            }
+            catch (DirectoryNotFoundException)
+            {
                 break;
             }
             catch (UnauthorizedAccessException) when (retriesRemaining > 0)
@@ -54,12 +58,13 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        Directory.DeleteIfExists(
+        Directory.TryDelete(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
                 updatee.Name
-            )
+            ),
+            true
         );
 
         var availableVersions = new[]
@@ -95,12 +100,13 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        Directory.DeleteIfExists(
+        Directory.TryDelete(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
                 updatee.Name
-            )
+            ),
+            true
         );
 
         var availableVersions = new[]
@@ -136,12 +142,13 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        Directory.DeleteIfExists(
+        Directory.TryDelete(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
                 updatee.Name
-            )
+            ),
+            true
         );
 
         var availableVersions = Array.Empty<Version>();
@@ -172,12 +179,13 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        Directory.DeleteIfExists(
+        Directory.TryDelete(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
                 updatee.Name
-            )
+            ),
+            true
         );
 
         var availableVersions = new[]
@@ -213,12 +221,13 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        Directory.DeleteIfExists(
+        Directory.TryDelete(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
                 updatee.Name
-            )
+            ),
+            true
         );
 
         var availableVersions = new[]

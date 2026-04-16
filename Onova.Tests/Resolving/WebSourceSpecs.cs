@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using Onova.Tests.Utils.Extensions;
+using PowerKit.Extensions;
 using Xunit;
 
 namespace Onova.Tests.Resolving;
@@ -15,7 +15,7 @@ public class WebSourceSpecs : IDisposable
 
     public WebSourceSpecs() => Directory.Reset(TempDirPath);
 
-    public void Dispose() => Directory.DeleteIfExists(TempDirPath);
+    public void Dispose() => Directory.TryDelete(TempDirPath, true);
 
     private WebPackageResolver CreateWebPackageResolver() =>
         new(

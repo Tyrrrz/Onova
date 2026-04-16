@@ -4,22 +4,17 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using Onova.Tests.Utils.Extensions;
+using PowerKit;
+using PowerKit.Extensions;
 using Xunit;
 
 namespace Onova.Tests.Resolving;
 
 public class NugetSourceSpecs : IDisposable
 {
-    private string TempDirPath { get; } =
-        Path.Combine(
-            Directory.GetCurrentDirectory(),
-            $"{nameof(NugetSourceSpecs)}_{Guid.NewGuid()}"
-        );
+    private TempDirectory TempDir { get; } = TempDirectory.Create();
 
-    public NugetSourceSpecs() => Directory.Reset(TempDirPath);
-
-    public void Dispose() => Directory.DeleteIfExists(TempDirPath);
+    public void Dispose() => TempDir.Dispose();
 
     private static NugetPackageResolver CreateNugetPackageResolver() =>
         new("https://myget.org/F/tyrrrz-test/api/v3/index.json", "OnovaTest");
@@ -31,7 +26,7 @@ public class NugetSourceSpecs : IDisposable
         var resolver = CreateNugetPackageResolver();
 
         var version = Version.Parse("2.0.0");
-        var destFilePath = Path.Combine(TempDirPath, "Output.onv");
+        var destFilePath = Path.Combine(TempDir.Path, "Output.onv");
 
         // Act
         await resolver.DownloadPackageAsync(version, destFilePath);

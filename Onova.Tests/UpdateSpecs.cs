@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Models;
 using Onova.Tests.Utils;
-using Onova.Tests.Utils.Extensions;
+using PowerKit;
+using PowerKit.Extensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -17,14 +18,11 @@ public partial class UpdateSpecs : IDisposable
 {
     private readonly ITestOutputHelper _testOutput;
 
-    private string TempDirPath { get; } =
-        Path.Combine(Directory.GetCurrentDirectory(), $"{nameof(UpdateSpecs)}_{Guid.NewGuid()}");
+    private TempDirectory TempDir { get; } = TempDirectory.Create();
 
     public UpdateSpecs(ITestOutputHelper testOutput)
     {
         _testOutput = testOutput;
-
-        Directory.Reset(TempDirPath);
     }
 
     public void Dispose()
@@ -33,7 +31,11 @@ public partial class UpdateSpecs : IDisposable
         {
             try
             {
-                Directory.DeleteIfExists(TempDirPath);
+                Directory.Delete(TempDir.Path, true);
+                break;
+            }
+            catch (DirectoryNotFoundException)
+            {
                 break;
             }
             catch (UnauthorizedAccessException) when (retriesRemaining > 0)
@@ -54,12 +56,13 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        Directory.DeleteIfExists(
+        Directory.TryDelete(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
                 updatee.Name
-            )
+            ),
+            true
         );
 
         var availableVersions = new[]
@@ -95,12 +98,13 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        Directory.DeleteIfExists(
+        Directory.TryDelete(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
                 updatee.Name
-            )
+            ),
+            true
         );
 
         var availableVersions = new[]
@@ -136,12 +140,13 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        Directory.DeleteIfExists(
+        Directory.TryDelete(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
                 updatee.Name
-            )
+            ),
+            true
         );
 
         var availableVersions = Array.Empty<Version>();
@@ -172,12 +177,13 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        Directory.DeleteIfExists(
+        Directory.TryDelete(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
                 updatee.Name
-            )
+            ),
+            true
         );
 
         var availableVersions = new[]
@@ -213,12 +219,13 @@ public partial class UpdateSpecs : IDisposable
         );
 
         // Cleanup storage directory (TODO: move this to API)
-        Directory.DeleteIfExists(
+        Directory.TryDelete(
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                 "Onova",
                 updatee.Name
-            )
+            ),
+            true
         );
 
         var availableVersions = new[]
@@ -250,7 +257,7 @@ public partial class UpdateSpecs : IDisposable
     public async Task I_can_install_an_update_after_preparing_it()
     {
         // Arrange
-        using var dummy = new DummyEnvironment(Path.Combine(TempDirPath, "Dummy"));
+        using var dummy = new DummyEnvironment(Path.Combine(TempDir.Path, "Dummy"));
 
         var baseVersion = Version.Parse("1.0.0.0");
 
@@ -285,7 +292,7 @@ public partial class UpdateSpecs : IDisposable
     public async Task I_can_install_an_update_after_preparing_it_and_have_the_application_restarted_automatically()
     {
         // Arrange
-        using var dummy = new DummyEnvironment(Path.Combine(TempDirPath, "Dummy"));
+        using var dummy = new DummyEnvironment(Path.Combine(TempDir.Path, "Dummy"));
 
         var baseVersion = Version.Parse("1.0.0.0");
 

@@ -5,22 +5,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using Onova.Tests.Utils.Extensions;
+using PowerKit;
 using Xunit;
 
 namespace Onova.Tests.Resolving;
 
 public class LocalSourceSpecs : IDisposable
 {
-    private string TempDirPath { get; } =
-        Path.Combine(
-            Directory.GetCurrentDirectory(),
-            $"{nameof(LocalSourceSpecs)}_{Guid.NewGuid()}"
-        );
+    private TempDirectory TempDir { get; } = TempDirectory.Create();
 
-    public LocalSourceSpecs() => Directory.Reset(TempDirPath);
-
-    public void Dispose() => Directory.DeleteIfExists(TempDirPath);
+    public void Dispose() => TempDir.Dispose();
 
     private LocalPackageResolver CreateLocalPackageResolver(
         IReadOnlyDictionary<Version, byte[]> packages
@@ -28,11 +22,11 @@ public class LocalSourceSpecs : IDisposable
     {
         foreach (var (version, data) in packages)
         {
-            var packageFilePath = Path.Combine(TempDirPath, $"{version}.onv");
+            var packageFilePath = Path.Combine(TempDir.Path, $"{version}.onv");
             File.WriteAllBytes(packageFilePath, data);
         }
 
-        return new LocalPackageResolver(TempDirPath, "*.onv");
+        return new LocalPackageResolver(TempDir.Path, "*.onv");
     }
 
     private LocalPackageResolver CreateLocalPackageResolver(IReadOnlyList<Version> versions) =>
@@ -54,7 +48,7 @@ public class LocalSourceSpecs : IDisposable
         var resolver = CreateLocalPackageResolver(availablePackages);
 
         var (version, expectedData) = availablePackages.Last();
-        var destFilePath = Path.Combine(TempDirPath, "Output.onv");
+        var destFilePath = Path.Combine(TempDir.Path, "Output.onv");
 
         // Act
         await resolver.DownloadPackageAsync(version, destFilePath);

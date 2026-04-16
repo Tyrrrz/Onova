@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
@@ -12,6 +13,8 @@ using Onova.Models;
 using Onova.Services;
 using Onova.Utils;
 using Onova.Utils.Extensions;
+using PowerKit;
+using PowerKit.Extensions;
 
 namespace Onova;
 
@@ -249,7 +252,7 @@ public class UpdateManager : IUpdateManager
         var packageContentDirPath = GetPackageContentDirPath(version);
 
         // Get original command line arguments and encode them to avoid escaping issues
-        var routedArgs = restartArguments.GetBytes().ToBase64();
+        var routedArgs = Convert.ToBase64String(Encoding.UTF8.GetBytes(restartArguments));
 
         // If we don't have write access to the target directory, the child process needs to be elevated
         var isElevated = !Directory.CheckWriteAccess(Updatee.DirPath);

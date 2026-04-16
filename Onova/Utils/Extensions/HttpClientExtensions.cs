@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using PowerKit.Extensions;
 
 namespace Onova.Utils.Extensions;
 
@@ -27,25 +28,10 @@ internal static class HttpClientExtensions
             CancellationToken cancellationToken = default
         )
         {
-            var length = content.Headers.ContentLength;
+            var length = content.Headers.ContentLength ?? -1;
             using var source = await content.ReadAsStreamAsync();
 
-            using var buffer = PooledBuffer.ForStream();
-
-            var totalBytesCopied = 0L;
-            int bytesCopied;
-            do
-            {
-                bytesCopied = await source.CopyBufferedToAsync(
-                    destination,
-                    buffer.Array,
-                    cancellationToken
-                );
-                totalBytesCopied += bytesCopied;
-
-                if (length != null)
-                    progress?.Report(1.0 * totalBytesCopied / length.Value);
-            } while (bytesCopied > 0);
+            await source.CopyToAsync(destination, length, progress, cancellationToken);
         }
     }
 

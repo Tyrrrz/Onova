@@ -5,22 +5,17 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Onova.Services;
-using Onova.Tests.Utils.Extensions;
+using PowerKit;
+using PowerKit.Extensions;
 using Xunit;
 
 namespace Onova.Tests.Extracting;
 
 public class NugetPackageSpecs : IDisposable
 {
-    private string TempDirPath { get; } =
-        Path.Combine(
-            Directory.GetCurrentDirectory(),
-            $"{nameof(NugetPackageSpecs)}_{Guid.NewGuid()}"
-        );
+    private TempDirectory TempDir { get; } = TempDirectory.Create();
 
-    public NugetPackageSpecs() => Directory.Reset(TempDirPath);
-
-    public void Dispose() => Directory.DeleteIfExists(TempDirPath);
+    public void Dispose() => TempDir.Dispose();
 
     private void CreateNugetPackage(
         string filePath,
@@ -48,12 +43,12 @@ public class NugetPackageSpecs : IDisposable
             ["SubDir1/SubDir2/File4.bin"] = [10, 11, 12],
         };
 
-        var packageFilePath = Path.Combine(TempDirPath, "Package.nupkg");
+        var packageFilePath = Path.Combine(TempDir.Path, "Package.nupkg");
         CreateNugetPackage(packageFilePath, "Files", entries);
 
         var extractor = new NugetPackageExtractor("Files");
 
-        var destDirPath = Path.Combine(TempDirPath, "Output");
+        var destDirPath = Path.Combine(TempDir.Path, "Output");
 
         // Act
         await extractor.ExtractPackageAsync(packageFilePath, destDirPath);

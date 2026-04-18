@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Onova.Exceptions;
 using Onova.Utils;
 using Onova.Utils.Extensions;
+using PowerKit.Extensions;
 
 namespace Onova.Services;
 
@@ -100,7 +101,7 @@ public class GithubPackageResolver(
                 if (
                     string.IsNullOrWhiteSpace(assetName)
                     || string.IsNullOrWhiteSpace(assetUrl)
-                    || !WildcardPattern.IsMatch(assetName, assetNamePattern)
+                    || !Regex.FromWildcardPattern(assetNamePattern).IsMatch(assetName)
                 )
                 {
                     continue;

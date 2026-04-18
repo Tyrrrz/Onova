@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Onova.Exceptions;
-using Onova.Utils;
 using PowerKit.Extensions;
 
 namespace Onova.Services;
@@ -31,7 +30,7 @@ public class LocalPackageResolver(string repositoryDirPath, string fileNamePatte
         {
             // See if the name matches
             var fileName = Path.GetFileName(filePath);
-            if (!WildcardPattern.IsMatch(fileName, fileNamePattern))
+            if (!Regex.FromWildcardPattern(fileNamePattern).IsMatch(fileName))
                 continue;
 
             // Try to parse version

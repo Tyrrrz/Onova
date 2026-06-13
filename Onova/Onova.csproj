@@ -17,24 +17,20 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
-    <PublicSign>false</PublicSign>
-  </PropertyGroup>
-
   <ItemGroup>
     <None Include="../favicon.png" Pack="true" PackagePath="" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Binternal" PrivateAssets="all" />
     <PackageReference Include="ConfigureAwait.Fody" PrivateAssets="all" />
     <PackageReference Include="CSharpier.MsBuild" PrivateAssets="all" />
-    <PackageReference Include="Deorcify" PrivateAssets="all" />
+    <PackageReference Include="Deorcify" Internalize="true" PrivateAssets="all" />
     <PackageReference Include="Fody" PrivateAssets="all" />
-    <PackageReference Include="JsonExtensions" />
+    <PackageReference Include="JsonExtensions" Internalize="true" PrivateAssets="all" />
     <PackageReference Include="PolyShim" PrivateAssets="all" />
-    <PackageReference Include="PowerKit" PrivateAssets="all" />
+    <PackageReference Include="PowerKit" Internalize="true" PrivateAssets="all" />
+    <PackageReference Include="Snek" PrivateAssets="all" />
     <PackageReference
       Include="System.Text.Json"
       Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp3.0'))"

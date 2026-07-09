@@ -74,11 +74,11 @@ Packages and their versions are resolved using an implementation of `IPackageRes
 
 #### `LocalPackageResolver`
 
-This implementation looks for files in the specified directory using a predefined pattern. Package versions are extracted from file names, e.g. file named `MyProject-v2.1.5.zip` corresponds to package version `2.1.5`.
+This implementation looks for files in the specified directory using a predefined pattern. Package versions are extracted from file names, e.g., file named `MyProject-v2.1.5.zip` corresponds to package version `2.1.5`.
 
 #### `GithubPackageResolver`
 
-This implementation looks for assets in releases of specified GitHub repository using a predefined pattern. Package versions are extracted from release names, e.g. release named `v1.0` corresponds to package version `1.0`.
+This implementation looks for assets in releases of specified GitHub repository using a predefined pattern. Package versions are extracted from release names, e.g., release named `v1.0` corresponds to package version `1.0`.
 
 Since .NET assemblies do not support semantic versions, pre-releases are ignored.
 

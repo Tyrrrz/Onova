@@ -12,7 +12,7 @@ namespace Onova.Services;
 
 /// <summary>
 /// Resolves packages from a local repository.
-/// Package file names should contain package versions (e.g. "MyProject-v1.8.3.onv").
+/// Package file names should contain package versions (e.g., "MyProject-v1.8.3.onv").
 /// </summary>
 public class LocalPackageResolver(string repositoryDirPath, string fileNamePattern = "*")
     : IPackageResolver

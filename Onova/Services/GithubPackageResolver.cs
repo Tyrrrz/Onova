@@ -43,9 +43,7 @@ public class GithubPackageResolver(
         : this(http, "https://api.github.com", repositoryOwner, repositoryName, assetNamePattern)
     { }
 
-    /// <summary>
-    /// Initializes an instance of <see cref="GithubPackageResolver" />.
-    /// </summary>
+    /// <inheritdoc cref="GithubPackageResolver(HttpClient, string, string, string)" />
     public GithubPackageResolver(
         string apiBaseAddress,
         string repositoryOwner,
@@ -54,9 +52,7 @@ public class GithubPackageResolver(
     )
         : this(Http.Client, apiBaseAddress, repositoryOwner, repositoryName, assetNamePattern) { }
 
-    /// <summary>
-    /// Initializes an instance of <see cref="GithubPackageResolver" />.
-    /// </summary>
+    /// <inheritdoc cref="GithubPackageResolver(HttpClient, string, string, string)" />
     public GithubPackageResolver(
         string repositoryOwner,
         string repositoryName,

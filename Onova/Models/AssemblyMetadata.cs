@@ -43,7 +43,9 @@ public partial class AssemblyMetadata
             assemblyFilePath
         );
 
-    /// <inheritdoc cref="FromAssembly(Assembly, string)" />
+    /// <summary>
+    /// Extracts assembly metadata from the specified assembly.
+    /// </summary>
     [RequiresAssemblyFiles(
         "This method requires the specified assembly's file path to be available."
     )]

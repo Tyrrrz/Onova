@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
-using FluentAssertions;
+using AwesomeAssertions;
 using Onova.Services;
 using PowerKit;
 using PowerKit.Extensions;

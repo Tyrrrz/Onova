@@ -6,10 +6,10 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using JsonExtensions.Http;
 using Onova.Exceptions;
 using Onova.Utils;
 using PowerKit.Extensions;
+using PowerKit.Json.Extensions;
 
 namespace Onova.Services;
 

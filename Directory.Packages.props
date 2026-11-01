@@ -5,7 +5,7 @@
 
   <ItemGroup>
     <PackageVersion Include="AwesomeAssertions" Version="9.6.0" />
-    <PackageVersion Include="Binternal" Version="1.0.2" />
+    <PackageVersion Include="Binternal" Version="1.0.3" />
     <PackageVersion Include="CliWrap" Version="3.10.5" />
     <PackageVersion Include="ConfigureAwait.Fody" Version="3.4.1" />
     <PackageVersion Include="CSharpier.MsBuild" Version="1.2.6" />
@@ -13,15 +13,15 @@
     <PackageVersion Include="Deorcify" Version="2.0.1" />
     <PackageVersion Include="Fody" Version="6.9.3" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="3.0.5" />
-    <PackageVersion Include="JsonExtensions" Version="1.2.3" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <PackageVersion Include="JsonExtensions" Version="2.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
     <PackageVersion Include="Mono.Cecil" Version="0.11.6" />
-    <PackageVersion Include="PolyShim" Version="2.13.0" />
-    <PackageVersion Include="PowerKit" Version="2.4.0" />
-    <PackageVersion Include="Snek" Version="1.0.0" />
+    <PackageVersion Include="PolyShim" Version="2.15.0" />
+    <PackageVersion Include="PowerKit" Version="2.5.0" />
+    <PackageVersion Include="Snek" Version="2.0.1" />
     <PackageVersion Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
-    <PackageVersion Include="System.Text.Json" Version="10.0.12" />
+    <PackageVersion Include="System.Text.Json" Version="10.0.14" />
     <PackageVersion Include="xunit" Version="2.9.3" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />
   </ItemGroup>
 </Project>

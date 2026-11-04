@@ -1,13 +1,11 @@
 # Onova
 
 [![Status](https://img.shields.io/badge/status-maintenance-ffd700.svg)](https://github.com/Tyrrrz/.github/blob/prime/docs/project-status.md)
-[![Made in Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://tyrrrz.me/ukraine)
 [![Build](https://img.shields.io/github/actions/workflow/status/Tyrrrz/Onova/main.yml?branch=prime)](https://github.com/Tyrrrz/Onova/actions)
 [![Coverage](https://img.shields.io/codecov/c/github/Tyrrrz/Onova/prime)](https://codecov.io/gh/Tyrrrz/Onova)
 [![Version](https://img.shields.io/nuget/v/Onova.svg)](https://nuget.org/packages/Onova)
 [![Downloads](https://img.shields.io/nuget/dt/Onova.svg)](https://nuget.org/packages/Onova)
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
-[![Fuck Russia](https://img.shields.io/badge/fuck-russia-e4181c.svg?labelColor=000000)](https://twitter.com/tyrrrz/status/1495972128977571848)
 
 <table>
     <tr>
@@ -19,29 +17,19 @@
     <img src="favicon.png" alt="Icon" />
 </p>
 
+> **Made in 🇺🇦 Ukraine — [despite Russia's best efforts](https://tyrrrz.me/ukraine)**.
+> Using this project or its source code comes with the implicit agreement that you condemn Russia's war of aggression against Ukraine, recognize Russia as a terrorist state, and support Ukraine's territorial integrity.
+
 **Onova** is a lightweight auto-update framework for desktop applications.
 It's primarily designed for performing in-place updates for portable applications distributed via archive files (as opposed to installers or packages).
 The library requires minimal configuration, doesn't impose any changes to the CI/CD process, and doesn't affect the life cycle of your application.
 
-✨ See also [Onova.Publisher](https://github.com/dady8889/Onova.Publisher) — community project that provides an integrated installation experience based on **Onova**.
-
-## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/prime/docs/why-so-political.md)</sup>
-
-By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
-
-- You **condemn Russia and its military aggression against Ukraine**
-- You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
-- You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
-- You **reject false narratives perpetuated by Russian state propaganda**
-
-To learn more about the war and how you can help, [click here](https://tyrrrz.me/ukraine). Glory to Ukraine! 🇺🇦
+**See also**:
+- 📦 [dady8889/Onova.Publisher](https://github.com/dady8889/Onova.Publisher) — integrated installation experience based on **Onova**
 
 ## Install
 
 - 📦 [NuGet](https://nuget.org/packages/Onova): `dotnet add package Onova`
-
-> [!TIP]
-> You can use [**Binternal**](https://github.com/Tyrrrz/Binternal) to internalize this library if you prefer to avoid taking an external dependency.
 
 ## Features
 
